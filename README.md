@@ -4,7 +4,7 @@
 EMBEDDING_URL=<embedding_url> \
 LLM_URL=<llm_url> \
 EMBEDDING_API_KEY=<your_api_key> \
-LLM_API_KEY=<your_api_key> \
+LLM_API_KEY=<your_api_key>
 
 
 source <path_to_conda.sh>
