@@ -14,7 +14,7 @@ python LLM_Toolkit_CLI.py   --input-folder ./UD7/Medical_Record \
                             --overlap-tokens 40 \
                             --top-k 5 \
                             --cosine-threshold 0.3 \
-                            --prompt-file ./laboratory_tests_hlh_diagnosis_promptset_cleaner_TARGET_DATE.txt \
+                            --prompt-file ./prompts/promptset/clinical_characteristics_hlh_diagnosis_prompts_v3_with_page_evidence.txt \
                             --prompt-index 0 \
                             --llm-model phi4:14b \
                             --temperature 0.1 \
