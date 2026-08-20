@@ -5,6 +5,7 @@ source <path_to_conda.sh>
 conda activate llm_toolkit
 
 python LLM_Toolkit_CLI.py   --input-folder ./UD7/Medical_Record \
+                            --markdown-dir ./data/markdown \
                             --folder ./data/markdown \
                             --backend chroma \
                             --vector-store-dir ./my_rag_datastore \
