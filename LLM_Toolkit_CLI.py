@@ -49,6 +49,7 @@ def build_parser() -> argparse.ArgumentParser:
     ingestion = parser.add_argument_group("Document ingestion")
     ingestion.add_argument("--input-folder", type=str, default="./test_input", help="Folder containing the original patient documents to convert to Markdown.",)
     ingestion.add_argument("--folder", type=str, default="./data/markdown", help="Folder containing documents to ingest.",)
+    ingestion.add_argument("--markdown-dir", type=str, default="./data/markdown", help="Directory where generated Markdown files/reports are written.",)
     ingestion.add_argument("--vector-store-dir", type=str, default="./vector_store", help="Root directory for vector stores and embedding cache.",)
     ingestion.add_argument("--embedding-model", type=str, default="embeddinggemma:latest", help="Embedding model used to generate document/query embeddings.",)
     ingestion.add_argument("--backend", type=str, choices=["numpy", "chroma", "faiss"], default="numpy", help="Vector store backend.",)
@@ -130,6 +131,7 @@ def main() -> int:
         config = RAGConfig(
             input_folder=args.input_folder,
             folder=args.folder,
+            markdown_dir=args.markdown_dir,
             vector_store_dir=args.vector_store_dir,
             output_dir=args.output_dir,
             embedding_model=args.embedding_model,
