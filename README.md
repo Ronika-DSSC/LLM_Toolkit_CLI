@@ -7,7 +7,7 @@ EMBEDDING_API_KEY=<your_api_key> \
 LLM_API_KEY=<your_api_key>
 
 
-job.bat file for job submission to the HPC:
+job.bat file for job submission to the HPC: \
 source <path_to_conda.sh>
 conda activate llm_toolkit
 
