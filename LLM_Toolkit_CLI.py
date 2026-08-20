@@ -8,6 +8,7 @@ Examples:
     python LLM_Toolkit_CLI.py
 
     python LLM_Toolkit_CLI.py \
+        --markdown-dir ./data/markdown \
         --folder ./data/markdown \
         --backend numpy \
         --embedding-model embeddinggemma:latest \
@@ -16,6 +17,7 @@ Examples:
         --llm-model phi4:14b
 
     python LLM_Toolkit_CLI.py \
+        --markdown-dir ./data/markdown \
         --folder ./data/markdown \
         --backend faiss \
         --collection-name clinical_chromaDB_test_docs \
