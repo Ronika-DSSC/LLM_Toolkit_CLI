@@ -1,0 +1,1044 @@
+#### PROMPT_SET: inflammatory_markers_during_treatment
+---RAG---
+REDCap form: inflammatory_markers_during_treatment
+Retrieve document text needed to answer this form.
+Prefer labeled fields/tables; ignore repetitive footers/headers.
+Additional cues: demographics/face sheet, problem list, assessment & plan, discharge summary, lab results/flowsheets, medication list, imaging/pathology reports.
+Key terms: Sequence, number, cytokines, evaluated, during, this, timeframe, Date, Test, Soluble, CD25, not, available, value, unit, normal, abnormal, Name, Lab, Performing, Ferritin, CXCL9, IFN, IL-6, IL-18, CD163, sC5-9, Abstractor, Notes
+
+---USER---
+You are a clinical information extractor.
+Given a clinical note (or EHR text), extract answers for the REDCap form: eligibility_and_patient_profile.
+
+Instructions:
+- Fill in the JSON TEMPLATE below using ONLY evidence explicitly present in the text. Do not guess.
+- Keep the same JSON keys and nesting.
+- For choice questions: replace 'True|False' with true or false.
+  * Single-choice (radio/dropdown/yes-no): set exactly one option to true if supported.
+  * Multi-choice (checkbox): set all supported options to true.
+- For 'String'/'Number'/'Integer'/'Date' placeholders: replace with the extracted value (or null if not found).
+- Only populate 'Nested Fields' (e.g., 'please specify') when the parent condition is met AND evidence supports it.
+- Output ONLY the filled JSON (no extra commentary).
+
+EVIDENCE / PAGE CITATION RULE (for auditability):
+- The retrieved Context snippets may include headers like [<source> p<page>] or [<source> p<start>-<end>].
+- For every non-null extracted field (any field whose answer is not null and/or any option you set to true), add an evidence line into profile_ab_notes.
+- Evidence line format (one per field): <VariableName>: <EvidenceTag> — <verbatim short phrase>.
+  * Example: profile_elig1: [patient.pdf p3] — "clinically suspected HLH"
+- Use the EvidenceTag exactly as shown in the Context header (including page number).
+- If no page header is present, cite the source header only (e.g., [note]) and still provide a short verbatim phrase.
+- Do NOT add new JSON keys for evidence; record all citations ONLY inside profile_ab_notes.
+
+OUTPUT FORMAT OVERRIDE (CRITICAL):
+- The JSON TEMPLATE below is REFERENCE ONLY (schema/choices/branching). Do NOT output it.
+- Output ONLY an ANSWERS JSON object, where EACH variable is formatted as:
+  "<variable_name>": { "answer": <value> }
+- Do NOT output "Form Name", "Questions", "Variable / Field Name", "Field Label", "Field Type",
+  "Possible Values", "answer_type", "answer_template", or "codes".
+- Keep the same variable names (e.g., record_id, profile_brthyr, profile_cntry, profile_usregn).
+- Output ONLY valid JSON (no commentary, no markdown, no extra keys).
+
+ANSWERS JSON TEMPLATE (THIS IS THE ONLY THING YOU SHOULD OUTPUT):
+{
+  "labct_ctseq": {
+    "answer": null
+  },
+  "labct_none": {
+    "answer": {
+      "No cytokines evaluated during this timeframe": false
+    }
+  },
+  "labct_labctdt": {
+    "answer": null
+  },
+  "labct_cd25nd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labct_cd25v": {
+    "answer": null
+  },
+  "labct_cd25u": {
+    "answer": {
+      "pg/ML": false,
+      "U/mL": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labct_cd25us": {
+      "answer": null
+    }
+  },
+  "labct_cd25nl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labct_cd25lab": {
+    "answer": null
+  },
+  "labct_frtnnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labct_frtnv": {
+    "answer": null
+  },
+  "labct_frtnu": {
+    "answer": {
+      "µg/L": false,
+      "ng/mL": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labct_frtnus": {
+      "answer": null
+    }
+  },
+  "labct_frtnnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labct_frtnlab": {
+    "answer": null
+  },
+  "labct_cxcl9nd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labct_cxcl9v": {
+    "answer": null
+  },
+  "labct_cxcl9u": {
+    "answer": {
+      "pg/ML": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labct_cxcl9us": {
+      "answer": null
+    }
+  },
+  "labct_cxcl9nl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labct_cxcl9lab": {
+    "answer": null
+  },
+  "labct_ifnynd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labct_ifnyv": {
+    "answer": null
+  },
+  "labct_ifnyu": {
+    "answer": {
+      "pg/ML": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labct_ifnyus": {
+      "answer": null
+    }
+  },
+  "labct_ifny9nl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labct_ifnylab": {
+    "answer": null
+  },
+  "labct_il6nd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labct_il6v": {
+    "answer": null
+  },
+  "labct_il6u": {
+    "answer": {
+      "pg/ML": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labct_il6us": {
+      "answer": null
+    }
+  },
+  "labct_il6nl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labct_il6lab": {
+    "answer": null
+  },
+  "labct_il18nd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labct_il18v": {
+    "answer": null
+  },
+  "labct_il18u": {
+    "answer": {
+      "pg/ML": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labct_il18us": {
+      "answer": null
+    }
+  },
+  "labct_il18nl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labct_il18lab": {
+    "answer": null
+  },
+  "labct_s163nd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labct_s163v": {
+    "answer": null
+  },
+  "labct_s163u": {
+    "answer": {
+      "pg/ML": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labct_s163us": {
+      "answer": null
+    }
+  },
+  "labct_s163nl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labct_s163lab": {
+    "answer": null
+  },
+  "labct_sc59nd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labct_sc59v": {
+    "answer": null
+  },
+  "labct_sc5u": {
+    "answer": {
+      "ng/mL": false
+    }
+  },
+  "labct_sc59nl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labct_sc59lab": {
+    "answer": null
+  },
+  "labct_notes": {
+    "answer": null
+  },
+  "profile_ab_notes": {
+    "answer": null
+  }
+}
+
+GENERAL "OTHER" FALLBACK RULE (applies to ALL fields):
+- For any radio/dropdown/checkbox field:
+  1) First try to map the evidence to one of the allowed option labels (or clear synonyms).
+  2) If the evidence clearly provides a value but it does NOT match any allowed option label/code:
+     - If the field has an "Other" option AND has a nested/branching "Other specify" text field:
+       * Select/check the "Other" option (use its REDCap code)
+       * Put the exact unmatched value phrase from the evidence into the "Other specify" field
+     - If the field has "Other" option but no specify field:
+       * Select/check "Other" and do not invent text
+     - If the field does not have an "Other" option:
+       * Output null and add the variable name to not_found
+- Do NOT use "Other" when the value matches a valid option label or a clear synonym of a valid option.
+
+JSON TEMPLATE (schema + answer placeholders):
+{
+  "Form Name": "inflammatory_markers_during_treatment",
+  "Questions": {
+    "labct_ctseq": {
+      "Variable / Field Name": "labct_ctseq",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "Sequence number",
+      "Field Type": "text",
+      "Field Note": "Ex: 1",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labct_none": {
+      "Variable / Field Name": "labct_none",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "No cytokines evaluated during this timeframe",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "No cytokines evaluated during this timeframe"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "No cytokines evaluated during this timeframe": "True|False"
+      },
+      "codes": {
+        "No cytokines evaluated during this timeframe": "1"
+      }
+    },
+    "labct_labctdt": {
+      "Variable / Field Name": "labct_labctdt",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "Date of Test",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labct_cd25nd": {
+      "Variable / Field Name": "labct_cd25nd",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "Soluble CD25 not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labct_cd25v": {
+      "Variable / Field Name": "labct_cd25v",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "Soluble CD25 value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labct_cd25u": {
+      "Variable / Field Name": "labct_cd25u",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "Soluble CD25 unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "pg/ML",
+        "2": "U/mL",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "pg/ML": "True|False",
+        "U/mL": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "pg/ML": "1",
+        "U/mL": "2",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labct_cd25us": {
+          "Variable / Field Name": "labct_cd25us",
+          "Form Name": "inflammatory_markers_during_treatment",
+          "Field Label": "Soluble CD25 other, specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labct_cd25u] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labct_cd25nl": {
+      "Variable / Field Name": "labct_cd25nl",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "Soluble CD25 normal or abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labct_cd25lab": {
+      "Variable / Field Name": "labct_cd25lab",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "Name of the Lab Performing the Assay",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labct_frtnnd": {
+      "Variable / Field Name": "labct_frtnnd",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "Ferritin not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labct_frtnv": {
+      "Variable / Field Name": "labct_frtnv",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "Ferritin value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labct_frtnu": {
+      "Variable / Field Name": "labct_frtnu",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "Ferritin unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "µg/L",
+        "2": "ng/mL",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "µg/L": "True|False",
+        "ng/mL": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "µg/L": "1",
+        "ng/mL": "2",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labct_frtnus": {
+          "Variable / Field Name": "labct_frtnus",
+          "Form Name": "inflammatory_markers_during_treatment",
+          "Field Label": "Ferritin unit other, specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labct_frtnu] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labct_frtnnl": {
+      "Variable / Field Name": "labct_frtnnl",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "Ferritin normal or abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labct_frtnlab": {
+      "Variable / Field Name": "labct_frtnlab",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "Name of the Lab Performing the Assay",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labct_cxcl9nd": {
+      "Variable / Field Name": "labct_cxcl9nd",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "CXCL9 not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labct_cxcl9v": {
+      "Variable / Field Name": "labct_cxcl9v",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "CXCL9 value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labct_cxcl9u": {
+      "Variable / Field Name": "labct_cxcl9u",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "CXCL9 unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "pg/ML",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "pg/ML": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "pg/ML": "1",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labct_cxcl9us": {
+          "Variable / Field Name": "labct_cxcl9us",
+          "Form Name": "inflammatory_markers_during_treatment",
+          "Field Label": "CXCL9 unit other, specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labct_cxcl9u] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labct_cxcl9nl": {
+      "Variable / Field Name": "labct_cxcl9nl",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "CXCL9 normal or abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labct_cxcl9lab": {
+      "Variable / Field Name": "labct_cxcl9lab",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "Name of the Lab Performing the Assay",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labct_ifnynd": {
+      "Variable / Field Name": "labct_ifnynd",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "IFNγ not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labct_ifnyv": {
+      "Variable / Field Name": "labct_ifnyv",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "IFNγ value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labct_ifnyu": {
+      "Variable / Field Name": "labct_ifnyu",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "IFNγ unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "pg/ML",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "pg/ML": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "pg/ML": "1",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labct_ifnyus": {
+          "Variable / Field Name": "labct_ifnyus",
+          "Form Name": "inflammatory_markers_during_treatment",
+          "Field Label": "IFNγ unit, other specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labct_ifnyu] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labct_ifny9nl": {
+      "Variable / Field Name": "labct_ifny9nl",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "IFNγ normal or abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labct_ifnylab": {
+      "Variable / Field Name": "labct_ifnylab",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "Name of the Lab Performing the Assay",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labct_il6nd": {
+      "Variable / Field Name": "labct_il6nd",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "IL-6 not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labct_il6v": {
+      "Variable / Field Name": "labct_il6v",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "IL-6 value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labct_il6u": {
+      "Variable / Field Name": "labct_il6u",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "IL-6 unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "pg/ML",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "pg/ML": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "pg/ML": "1",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labct_il6us": {
+          "Variable / Field Name": "labct_il6us",
+          "Form Name": "inflammatory_markers_during_treatment",
+          "Field Label": "IL-6 unit, other specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labct_il6u] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labct_il6nl": {
+      "Variable / Field Name": "labct_il6nl",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "IL-6 normal or abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labct_il6lab": {
+      "Variable / Field Name": "labct_il6lab",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "Name of the Lab Performing the Assay",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labct_il18nd": {
+      "Variable / Field Name": "labct_il18nd",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "IL-18 not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labct_il18v": {
+      "Variable / Field Name": "labct_il18v",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "IL-18 value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labct_il18u": {
+      "Variable / Field Name": "labct_il18u",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "IL-18 unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "pg/ML",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "pg/ML": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "pg/ML": "1",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labct_il18us": {
+          "Variable / Field Name": "labct_il18us",
+          "Form Name": "inflammatory_markers_during_treatment",
+          "Field Label": "IL-18 unit, other specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labct_il18u] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labct_il18nl": {
+      "Variable / Field Name": "labct_il18nl",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "IL-18 normal or abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labct_il18lab": {
+      "Variable / Field Name": "labct_il18lab",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "Name of the Lab Performing the Assay",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labct_s163nd": {
+      "Variable / Field Name": "labct_s163nd",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "Soluble CD163 not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labct_s163v": {
+      "Variable / Field Name": "labct_s163v",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "Soluble CD163 value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labct_s163u": {
+      "Variable / Field Name": "labct_s163u",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "Soluble CD163 unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "pg/ML",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "pg/ML": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "pg/ML": "1",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labct_s163us": {
+          "Variable / Field Name": "labct_s163us",
+          "Form Name": "inflammatory_markers_during_treatment",
+          "Field Label": "Soluble CD163 unit, other specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labct_s163u] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labct_s163nl": {
+      "Variable / Field Name": "labct_s163nl",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "Soluble CD163 normal or abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labct_s163lab": {
+      "Variable / Field Name": "labct_s163lab",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "Name of the Lab Performing the Assay",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labct_sc59nd": {
+      "Variable / Field Name": "labct_sc59nd",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "sC5-9 not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labct_sc59v": {
+      "Variable / Field Name": "labct_sc59v",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "sC5-9 value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labct_sc5u": {
+      "Variable / Field Name": "labct_sc5u",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "sC5-9 unit",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "ng/mL"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "ng/mL": "True|False"
+      },
+      "codes": {
+        "ng/mL": "1"
+      }
+    },
+    "labct_sc59nl": {
+      "Variable / Field Name": "labct_sc59nl",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "sC5-9 normal or abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labct_sc59lab": {
+      "Variable / Field Name": "labct_sc59lab",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "Name of the Lab Performing the Assay",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labct_notes": {
+      "Variable / Field Name": "labct_notes",
+      "Form Name": "inflammatory_markers_during_treatment",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    },
+    "profile_ab_notes": {
+      "Variable / Field Name": "profile_ab_notes",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    }
+  }
+}

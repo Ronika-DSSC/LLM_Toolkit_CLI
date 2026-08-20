@@ -1,0 +1,626 @@
+#### PROMPT_SET: malignancy
+---RAG---
+REDCap form: malignancy
+Retrieve document text needed to answer this form.
+Prefer labeled fields/tables; ignore repetitive footers/headers.
+Additional cues: demographics/face sheet, problem list, assessment & plan, discharge summary, lab results/flowsheets, medication list, imaging/pathology reports.
+Key terms: Sequence, Number, Date, malignancy, Indicate, type, exact, histologic, subtype, unknown, Was, treated, Abstractor, Notes
+
+---USER---
+You are a clinical information extractor.
+Given a clinical note (or EHR text), extract answers for the REDCap form: eligibility_and_patient_profile.
+
+Instructions:
+- Fill in the JSON TEMPLATE below using ONLY evidence explicitly present in the text. Do not guess.
+- Keep the same JSON keys and nesting.
+- For choice questions: replace 'True|False' with true or false.
+  * Single-choice (radio/dropdown/yes-no): set exactly one option to true if supported.
+  * Multi-choice (checkbox): set all supported options to true.
+- For 'String'/'Number'/'Integer'/'Date' placeholders: replace with the extracted value (or null if not found).
+- Only populate 'Nested Fields' (e.g., 'please specify') when the parent condition is met AND evidence supports it.
+- Output ONLY the filled JSON (no extra commentary).
+
+EVIDENCE / PAGE CITATION RULE (for auditability):
+- The retrieved Context snippets may include headers like [<source> p<page>] or [<source> p<start>-<end>].
+- For every non-null extracted field (any field whose answer is not null and/or any option you set to true), add an evidence line into profile_ab_notes.
+- Evidence line format (one per field): <VariableName>: <EvidenceTag> — <verbatim short phrase>.
+  * Example: profile_elig1: [patient.pdf p3] — "clinically suspected HLH"
+- Use the EvidenceTag exactly as shown in the Context header (including page number).
+- If no page header is present, cite the source header only (e.g., [note]) and still provide a short verbatim phrase.
+- Do NOT add new JSON keys for evidence; record all citations ONLY inside profile_ab_notes.
+
+OUTPUT FORMAT OVERRIDE (CRITICAL):
+- The JSON TEMPLATE below is REFERENCE ONLY (schema/choices/branching). Do NOT output it.
+- Output ONLY an ANSWERS JSON object, where EACH variable is formatted as:
+  "<variable_name>": { "answer": <value> }
+- Do NOT output "Form Name", "Questions", "Variable / Field Name", "Field Label", "Field Type",
+  "Possible Values", "answer_type", "answer_template", or "codes".
+- Keep the same variable names (e.g., record_id, profile_brthyr, profile_cntry, profile_usregn).
+- Output ONLY valid JSON (no commentary, no markdown, no extra keys).
+
+ANSWERS JSON TEMPLATE (THIS IS THE ONLY THING YOU SHOULD OUTPUT):
+{
+  "malig_maligseq": {
+    "answer": null
+  },
+  "malig_maligdt": {
+    "answer": null
+  },
+  "malig_maligtyp": {
+    "answer": {
+      "Hematologic": false,
+      "Non-hematologic": false
+    },
+    "malig_bcell": {
+      "answer": {
+        "B cell non-Hodgkin's lymphoma": false
+      }
+    },
+    "malig_hodgkn": {
+      "answer": {
+        "Hodgkin's lymphoma": false
+      }
+    },
+    "malig_tnkcell": {
+      "answer": {
+        "T/NK cell lymphoma": false
+      }
+    },
+    "malig_myldlkma": {
+      "answer": {
+        "Acute myeloid leukemia": false
+      }
+    },
+    "malig_myldysp": {
+      "answer": {
+        "Myelodysplastic syndromes": false
+      }
+    },
+    "malig_mylprlif": {
+      "answer": {
+        "Myeloproliferative neoplasms": false
+      }
+    },
+    "malig_clymphlk": {
+      "answer": {
+        "Chronic lymphocyte leukemia": false
+      }
+    },
+    "malig_hemooth": {
+      "answer": {
+        "Other": false
+      },
+      "malig_maligsp": {
+        "answer": null
+      }
+    },
+    "malig_hemounk": {
+      "answer": {
+        "Unknown": false
+      }
+    },
+    "malig_lung": {
+      "answer": {
+        "Lung": false
+      }
+    },
+    "malig_brst": {
+      "answer": {
+        "Breast": false
+      }
+    },
+    "malig_colon": {
+      "answer": {
+        "Colon": false
+      }
+    },
+    "malig_liver": {
+      "answer": {
+        "Liver": false
+      }
+    },
+    "malig_mlnma": {
+      "answer": {
+        "Melanoma": false
+      }
+    },
+    "malig_thyrd": {
+      "answer": {
+        "Thyroid": false
+      }
+    },
+    "malig_grmnma": {
+      "answer": {
+        "Germinoma": false
+      }
+    },
+    "malig_nhemooth": {
+      "answer": {
+        "Other": false
+      }
+    },
+    "malig_nhemounk": {
+      "answer": {
+        "Unknown": false
+      }
+    }
+  },
+  "malig_sybtyp": {
+    "answer": null
+  },
+  "malig_sybtypuk": {
+    "answer": {
+      "Exact histologic subtype unknown": false
+    }
+  },
+  "malig_maligtrt": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "if_the_patient_was_treated": {
+      "answer": null
+    }
+  },
+  "malig_notesa": {
+    "answer": null
+  },
+  "profile_ab_notes": {
+    "answer": null
+  }
+}
+
+GENERAL "OTHER" FALLBACK RULE (applies to ALL fields):
+- For any radio/dropdown/checkbox field:
+  1) First try to map the evidence to one of the allowed option labels (or clear synonyms).
+  2) If the evidence clearly provides a value but it does NOT match any allowed option label/code:
+     - If the field has an "Other" option AND has a nested/branching "Other specify" text field:
+       * Select/check the "Other" option (use its REDCap code)
+       * Put the exact unmatched value phrase from the evidence into the "Other specify" field
+     - If the field has "Other" option but no specify field:
+       * Select/check "Other" and do not invent text
+     - If the field does not have an "Other" option:
+       * Output null and add the variable name to not_found
+- Do NOT use "Other" when the value matches a valid option label or a clear synonym of a valid option.
+
+JSON TEMPLATE (schema + answer placeholders):
+{
+  "Form Name": "malignancy",
+  "Questions": {
+    "malig_maligseq": {
+      "Variable / Field Name": "malig_maligseq",
+      "Form Name": "malignancy",
+      "Field Label": "Sequence Number",
+      "Field Type": "text",
+      "Field Note": "Ex: 1",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "malig_maligdt": {
+      "Variable / Field Name": "malig_maligdt",
+      "Form Name": "malignancy",
+      "Field Label": "Date of malignancy",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "malig_maligtyp": {
+      "Variable / Field Name": "malig_maligtyp",
+      "Form Name": "malignancy",
+      "Field Label": "Indicate type",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Hematologic",
+        "2": "Non-hematologic"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Hematologic": "True|False",
+        "Non-hematologic": "True|False"
+      },
+      "codes": {
+        "Hematologic": "1",
+        "Non-hematologic": "2"
+      },
+      "Nested Fields": {
+        "malig_bcell": {
+          "Variable / Field Name": "malig_bcell",
+          "Form Name": "malignancy",
+          "Field Label": "If hematologic, please specify: B cell non-Hodgkin's lymphoma",
+          "Field Type": "checkbox",
+          "Branching Logic": "[malig_maligtyp] = '1'",
+          "Possible Values (code->label)": {
+            "1": "B cell non-Hodgkin's lymphoma"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "B cell non-Hodgkin's lymphoma": "True|False"
+          },
+          "codes": {
+            "B cell non-Hodgkin's lymphoma": "1"
+          }
+        },
+        "malig_hodgkn": {
+          "Variable / Field Name": "malig_hodgkn",
+          "Form Name": "malignancy",
+          "Field Label": "If hematologic, please specify: Hodgkin's lymphoma",
+          "Field Type": "checkbox",
+          "Branching Logic": "[malig_maligtyp] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Hodgkin's lymphoma"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Hodgkin's lymphoma": "True|False"
+          },
+          "codes": {
+            "Hodgkin's lymphoma": "1"
+          }
+        },
+        "malig_tnkcell": {
+          "Variable / Field Name": "malig_tnkcell",
+          "Form Name": "malignancy",
+          "Field Label": "If hematologic, please specify: T/NK cell lymphoma",
+          "Field Type": "checkbox",
+          "Branching Logic": "[malig_maligtyp] = '1'",
+          "Possible Values (code->label)": {
+            "1": "T/NK cell lymphoma"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "T/NK cell lymphoma": "True|False"
+          },
+          "codes": {
+            "T/NK cell lymphoma": "1"
+          }
+        },
+        "malig_myldlkma": {
+          "Variable / Field Name": "malig_myldlkma",
+          "Form Name": "malignancy",
+          "Field Label": "If hematologic, please specify: Acute myeloid leukemia",
+          "Field Type": "checkbox",
+          "Branching Logic": "[malig_maligtyp] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Acute myeloid leukemia"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Acute myeloid leukemia": "True|False"
+          },
+          "codes": {
+            "Acute myeloid leukemia": "1"
+          }
+        },
+        "malig_myldysp": {
+          "Variable / Field Name": "malig_myldysp",
+          "Form Name": "malignancy",
+          "Field Label": "If hematologic, please specify: Myelodysplastic syndromes",
+          "Field Type": "checkbox",
+          "Branching Logic": "[malig_maligtyp] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Myelodysplastic syndromes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Myelodysplastic syndromes": "True|False"
+          },
+          "codes": {
+            "Myelodysplastic syndromes": "1"
+          }
+        },
+        "malig_mylprlif": {
+          "Variable / Field Name": "malig_mylprlif",
+          "Form Name": "malignancy",
+          "Field Label": "If hematologic, please specify: Myeloproliferative neoplasms",
+          "Field Type": "checkbox",
+          "Branching Logic": "[malig_maligtyp] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Myeloproliferative neoplasms"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Myeloproliferative neoplasms": "True|False"
+          },
+          "codes": {
+            "Myeloproliferative neoplasms": "1"
+          }
+        },
+        "malig_clymphlk": {
+          "Variable / Field Name": "malig_clymphlk",
+          "Form Name": "malignancy",
+          "Field Label": "If hematologic, please specify: Chronic lymphocyte leukemia",
+          "Field Type": "checkbox",
+          "Branching Logic": "[malig_maligtyp] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Chronic lymphocyte leukemia"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Chronic lymphocyte leukemia": "True|False"
+          },
+          "codes": {
+            "Chronic lymphocyte leukemia": "1"
+          }
+        },
+        "malig_hemooth": {
+          "Variable / Field Name": "malig_hemooth",
+          "Form Name": "malignancy",
+          "Field Label": "If hematologic, please specify: Other",
+          "Field Type": "checkbox",
+          "Branching Logic": "[malig_maligtyp] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Other"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Other": "True|False"
+          },
+          "codes": {
+            "Other": "1"
+          },
+          "Nested Fields": {
+            "malig_maligsp": {
+              "Variable / Field Name": "malig_maligsp",
+              "Form Name": "malignancy",
+              "Field Label": "Please specify the exact type",
+              "Field Type": "text",
+              "Required Field?": "y",
+              "Branching Logic": "[malig_hemooth(1)] = '1' or [malig_nhemooth(1)] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "malig_hemounk": {
+          "Variable / Field Name": "malig_hemounk",
+          "Form Name": "malignancy",
+          "Field Label": "If hematologic, please specify: Unknown",
+          "Field Type": "checkbox",
+          "Branching Logic": "[malig_maligtyp] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Unknown"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Unknown": "1"
+          }
+        },
+        "malig_lung": {
+          "Variable / Field Name": "malig_lung",
+          "Form Name": "malignancy",
+          "Field Label": "If non-hematologic, please specify: Lung",
+          "Field Type": "checkbox",
+          "Branching Logic": "[malig_maligtyp] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Lung"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Lung": "True|False"
+          },
+          "codes": {
+            "Lung": "1"
+          }
+        },
+        "malig_brst": {
+          "Variable / Field Name": "malig_brst",
+          "Form Name": "malignancy",
+          "Field Label": "If non-hematologic, please specify: Breast",
+          "Field Type": "checkbox",
+          "Branching Logic": "[malig_maligtyp] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Breast"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Breast": "True|False"
+          },
+          "codes": {
+            "Breast": "1"
+          }
+        },
+        "malig_colon": {
+          "Variable / Field Name": "malig_colon",
+          "Form Name": "malignancy",
+          "Field Label": "If non-hematologic, please specify: Colon",
+          "Field Type": "checkbox",
+          "Branching Logic": "[malig_maligtyp] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Colon"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Colon": "True|False"
+          },
+          "codes": {
+            "Colon": "1"
+          }
+        },
+        "malig_liver": {
+          "Variable / Field Name": "malig_liver",
+          "Form Name": "malignancy",
+          "Field Label": "If non-hematologic, please specify: Liver",
+          "Field Type": "checkbox",
+          "Branching Logic": "[malig_maligtyp] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Liver"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Liver": "True|False"
+          },
+          "codes": {
+            "Liver": "1"
+          }
+        },
+        "malig_mlnma": {
+          "Variable / Field Name": "malig_mlnma",
+          "Form Name": "malignancy",
+          "Field Label": "If non-hematologic, please specify: Melanoma",
+          "Field Type": "checkbox",
+          "Branching Logic": "[malig_maligtyp] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Melanoma"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Melanoma": "True|False"
+          },
+          "codes": {
+            "Melanoma": "1"
+          }
+        },
+        "malig_thyrd": {
+          "Variable / Field Name": "malig_thyrd",
+          "Form Name": "malignancy",
+          "Field Label": "If non-hematologic, please specify: Thyroid",
+          "Field Type": "checkbox",
+          "Branching Logic": "[malig_maligtyp] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Thyroid"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Thyroid": "True|False"
+          },
+          "codes": {
+            "Thyroid": "1"
+          }
+        },
+        "malig_grmnma": {
+          "Variable / Field Name": "malig_grmnma",
+          "Form Name": "malignancy",
+          "Field Label": "If non-hematologic, please specify: Germinoma",
+          "Field Type": "checkbox",
+          "Branching Logic": "[malig_maligtyp] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Germinoma"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Germinoma": "True|False"
+          },
+          "codes": {
+            "Germinoma": "1"
+          }
+        },
+        "malig_nhemooth": {
+          "Variable / Field Name": "malig_nhemooth",
+          "Form Name": "malignancy",
+          "Field Label": "If non-hematologic, please specify: Other",
+          "Field Type": "checkbox",
+          "Branching Logic": "[malig_maligtyp] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Other"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Other": "True|False"
+          },
+          "codes": {
+            "Other": "1"
+          }
+        },
+        "malig_nhemounk": {
+          "Variable / Field Name": "malig_nhemounk",
+          "Form Name": "malignancy",
+          "Field Label": "If non-hematologic, please specify: Unknown",
+          "Field Type": "checkbox",
+          "Branching Logic": "[malig_maligtyp] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Unknown"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Unknown": "1"
+          }
+        }
+      }
+    },
+    "malig_sybtyp": {
+      "Variable / Field Name": "malig_sybtyp",
+      "Form Name": "malignancy",
+      "Field Label": "Specify the exact histologic subtype",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "malig_sybtypuk": {
+      "Variable / Field Name": "malig_sybtypuk",
+      "Form Name": "malignancy",
+      "Field Label": "Exact histologic subtype unknown",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Exact histologic subtype unknown"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Exact histologic subtype unknown": "True|False"
+      },
+      "codes": {
+        "Exact histologic subtype unknown": "1"
+      }
+    },
+    "malig_maligtrt": {
+      "Variable / Field Name": "malig_maligtrt",
+      "Form Name": "malignancy",
+      "Field Label": "Was the patient treated for the malignancy at the time of HLH diagnosis?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "if_the_patient_was_treated": {
+          "Variable / Field Name": "if_the_patient_was_treated",
+          "Form Name": "malignancy",
+          "Field Label": "If the patient was treated for malignancy at the time of HLH diagnosis, please complete the Malignancy Therapy Details CRF.",
+          "Field Type": "descriptive",
+          "Branching Logic": "[malig_maligtrt] = '1'",
+          "answer_type": "display_only",
+          "answer_template": null
+        }
+      }
+    },
+    "malig_notesa": {
+      "Variable / Field Name": "malig_notesa",
+      "Form Name": "malignancy",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    },
+    "profile_ab_notes": {
+      "Variable / Field Name": "profile_ab_notes",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    }
+  }
+}

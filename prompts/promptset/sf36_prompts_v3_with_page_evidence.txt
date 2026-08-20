@@ -1,0 +1,1363 @@
+#### PROMPT_SET: sf36
+---RAG---
+REDCap form: sf36
+Retrieve document text needed to answer this form.
+Prefer labeled fields/tables; ignore repetitive footers/headers.
+Additional cues: demographics/face sheet, problem list, assessment & plan, discharge summary, lab results/flowsheets, medication list, imaging/pathology reports.
+Key terms: ePRO, Date, Time, general, would, you, say, your, Compared, one, year, ago, how, Does, health, now, limit, During, past, weeks, much, what, bodily, pain, have, seem, get, sick, little, easier
+
+---USER---
+You are a clinical information extractor.
+Given a clinical note (or EHR text), extract answers for the REDCap form: eligibility_and_patient_profile.
+
+Instructions:
+- Fill in the JSON TEMPLATE below using ONLY evidence explicitly present in the text. Do not guess.
+- Keep the same JSON keys and nesting.
+- For choice questions: replace 'True|False' with true or false.
+  * Single-choice (radio/dropdown/yes-no): set exactly one option to true if supported.
+  * Multi-choice (checkbox): set all supported options to true.
+- For 'String'/'Number'/'Integer'/'Date' placeholders: replace with the extracted value (or null if not found).
+- Only populate 'Nested Fields' (e.g., 'please specify') when the parent condition is met AND evidence supports it.
+- Output ONLY the filled JSON (no extra commentary).
+
+EVIDENCE / PAGE CITATION RULE (for auditability):
+- The retrieved Context snippets may include headers like [<source> p<page>] or [<source> p<start>-<end>].
+- For every non-null extracted field (any field whose answer is not null and/or any option you set to true), add an evidence line into profile_ab_notes.
+- Evidence line format (one per field): <VariableName>: <EvidenceTag> — <verbatim short phrase>.
+  * Example: profile_elig1: [patient.pdf p3] — "clinically suspected HLH"
+- Use the EvidenceTag exactly as shown in the Context header (including page number).
+- If no page header is present, cite the source header only (e.g., [note]) and still provide a short verbatim phrase.
+- Do NOT add new JSON keys for evidence; record all citations ONLY inside profile_ab_notes.
+
+OUTPUT FORMAT OVERRIDE (CRITICAL):
+- The JSON TEMPLATE below is REFERENCE ONLY (schema/choices/branching). Do NOT output it.
+- Output ONLY an ANSWERS JSON object, where EACH variable is formatted as:
+  "<variable_name>": { "answer": <value> }
+- Do NOT output "Form Name", "Questions", "Variable / Field Name", "Field Label", "Field Type",
+  "Possible Values", "answer_type", "answer_template", or "codes".
+- Keep the same variable names (e.g., record_id, profile_brthyr, profile_cntry, profile_usregn).
+- Output ONLY valid JSON (no commentary, no markdown, no extra keys).
+
+ANSWERS JSON TEMPLATE (THIS IS THE ONLY THING YOU SHOULD OUTPUT):
+{
+  "sf36_sf36dt": {
+    "answer": null
+  },
+  "sf36_sf36tm": {
+    "answer": null
+  },
+  "sf36_gh1": {
+    "answer": {
+      "Excellent": false,
+      "Very good": false,
+      "Good": false,
+      "Fair": false,
+      "Poor": false
+    }
+  },
+  "sf36_ht": {
+    "answer": {
+      "Much better now than one year ago": false,
+      "Somewhat better now than one year ago": false,
+      "About the same as one year ago": false,
+      "Somewhat worse now than one year ago": false,
+      "Much worse now than one year ago": false
+    }
+  },
+  "sf36_pf01": {
+    "answer": {
+      "Yes, limited a lot": false,
+      "Yes, limited a little": false,
+      "No, not limited at all": false
+    }
+  },
+  "sf36_pf02": {
+    "answer": {
+      "Yes, limited a lot": false,
+      "Yes, limited a little": false,
+      "No, not limited at all": false
+    }
+  },
+  "sf36_pf03": {
+    "answer": {
+      "Yes, limited a lot": false,
+      "Yes, limited a little": false,
+      "No, not limited at all": false
+    }
+  },
+  "sf36_pf04": {
+    "answer": {
+      "Yes, limited a lot": false,
+      "Yes, limited a little": false,
+      "No, not limited at all": false
+    }
+  },
+  "sf36_pf05": {
+    "answer": {
+      "Yes, limited a lot": false,
+      "Yes, limited a little": false,
+      "No, not limited at all": false
+    }
+  },
+  "sf36_pf06": {
+    "answer": {
+      "Yes, limited a lot": false,
+      "Yes, limited a little": false,
+      "No, not limited at all": false
+    }
+  },
+  "sf36_pf07": {
+    "answer": {
+      "Yes, limited a lot": false,
+      "Yes, limited a little": false,
+      "No, not limited at all": false
+    }
+  },
+  "sf36_pf08": {
+    "answer": {
+      "Yes, limited a lot": false,
+      "Yes, limited a little": false,
+      "No, not limited at all": false
+    }
+  },
+  "sf36_pf09": {
+    "answer": {
+      "Yes, limited a lot": false,
+      "Yes, limited a little": false,
+      "No, not limited at all": false
+    }
+  },
+  "sf36_pf10": {
+    "answer": {
+      "Yes, limited a lot": false,
+      "Yes, limited a little": false,
+      "No, not limited at all": false
+    }
+  },
+  "sf36_rp1": {
+    "answer": {
+      "All of the time": false,
+      "Most of the time": false,
+      "Some of the time": false,
+      "A little of the time": false,
+      "None of the time": false
+    }
+  },
+  "sf36_rp2": {
+    "answer": {
+      "All of the time": false,
+      "Most of the time": false,
+      "Some of the time": false,
+      "A little of the time": false,
+      "None of the time": false
+    }
+  },
+  "sf36_rp3": {
+    "answer": {
+      "All of the time": false,
+      "Most of the time": false,
+      "Some of the time": false,
+      "A little of the time": false,
+      "None of the time": false
+    }
+  },
+  "sf36_rp4": {
+    "answer": {
+      "All of the time": false,
+      "Most of the time": false,
+      "Some of the time": false,
+      "A little of the time": false,
+      "None of the time": false
+    }
+  },
+  "sf36_re1": {
+    "answer": {
+      "All of the time": false,
+      "Most of the time": false,
+      "Some of the time": false,
+      "A little of the time": false,
+      "None of the time": false
+    }
+  },
+  "sf36_re2": {
+    "answer": {
+      "All of the time": false,
+      "Most of the time": false,
+      "Some of the time": false,
+      "A little of the time": false,
+      "None of the time": false
+    }
+  },
+  "sf36_re3": {
+    "answer": {
+      "All of the time": false,
+      "Most of the time": false,
+      "Some of the time": false,
+      "A little of the time": false,
+      "None of the time": false
+    }
+  },
+  "sf36_sf1": {
+    "answer": {
+      "Not at all": false,
+      "Slightly": false,
+      "Moderately": false,
+      "Quite a bit": false,
+      "Extremely": false
+    }
+  },
+  "sf36_bp1": {
+    "answer": {
+      "None": false,
+      "Very mild": false,
+      "Mild": false,
+      "Moderate": false,
+      "Severe": false,
+      "Very severe": false
+    }
+  },
+  "sf36_bp2": {
+    "answer": {
+      "Not at all": false,
+      "A little bit": false,
+      "Moderately": false,
+      "Quite a bit": false,
+      "Extremely": false
+    }
+  },
+  "sf36_vt1": {
+    "answer": {
+      "All of the time": false,
+      "Most of the time": false,
+      "Some of the time": false,
+      "A little of the time": false,
+      "None of the time": false
+    }
+  },
+  "sf36_mh1": {
+    "answer": {
+      "All of the time": false,
+      "Most of the time": false,
+      "Some of the time": false,
+      "A little of the time": false,
+      "None of the time": false
+    }
+  },
+  "sf36_mh2": {
+    "answer": {
+      "All of the time": false,
+      "Most of the time": false,
+      "Some of the time": false,
+      "A little of the time": false,
+      "None of the time": false
+    }
+  },
+  "sf36_mh3": {
+    "answer": {
+      "All of the time": false,
+      "Most of the time": false,
+      "Some of the time": false,
+      "A little of the time": false,
+      "None of the time": false
+    }
+  },
+  "sf36_vt2": {
+    "answer": {
+      "All of the time": false,
+      "Most of the time": false,
+      "Some of the time": false,
+      "A little of the time": false,
+      "None of the time": false
+    }
+  },
+  "sf36_mh4": {
+    "answer": {
+      "All of the time": false,
+      "Most of the time": false,
+      "Some of the time": false,
+      "A little of the time": false,
+      "None of the time": false
+    }
+  },
+  "sf36_vt3": {
+    "answer": {
+      "All of the time": false,
+      "Most of the time": false,
+      "Some of the time": false,
+      "A little of the time": false,
+      "None of the time": false
+    }
+  },
+  "sf36_mh5": {
+    "answer": {
+      "All of the time": false,
+      "Most of the time": false,
+      "Some of the time": false,
+      "A little of the time": false,
+      "None of the time": false
+    }
+  },
+  "sf36_vt4": {
+    "answer": {
+      "All of the time": false,
+      "Most of the time": false,
+      "Some of the time": false,
+      "A little of the time": false,
+      "None of the time": false
+    }
+  },
+  "sf36_sf2": {
+    "answer": {
+      "All of the time": false,
+      "Most of the time": false,
+      "Some of the time": false,
+      "A little of the time": false,
+      "None of the time": false
+    }
+  },
+  "sf36_gh2": {
+    "answer": {
+      "Definitely true": false,
+      "Mostly true": false,
+      "Don't know": false,
+      "Mostly false": false,
+      "Definitely false": false
+    }
+  },
+  "sf36_gh3": {
+    "answer": {
+      "Definitely true": false,
+      "Mostly true": false,
+      "Don't know": false,
+      "Mostly false": false,
+      "Definitely false": false
+    }
+  },
+  "sf36_gh4": {
+    "answer": {
+      "Definitely true": false,
+      "Mostly true": false,
+      "Don't know": false,
+      "Mostly false": false,
+      "Definitely false": false
+    }
+  },
+  "sf36_gh5": {
+    "answer": {
+      "Definitely true": false,
+      "Mostly true": false,
+      "Don't know": false,
+      "Mostly false": false,
+      "Definitely false": false
+    }
+  },
+  "sf_36v2_health_survey_1992": {
+    "answer": null
+  },
+  "profile_ab_notes": {
+    "answer": null
+  }
+}
+
+GENERAL "OTHER" FALLBACK RULE (applies to ALL fields):
+- For any radio/dropdown/checkbox field:
+  1) First try to map the evidence to one of the allowed option labels (or clear synonyms).
+  2) If the evidence clearly provides a value but it does NOT match any allowed option label/code:
+     - If the field has an "Other" option AND has a nested/branching "Other specify" text field:
+       * Select/check the "Other" option (use its REDCap code)
+       * Put the exact unmatched value phrase from the evidence into the "Other specify" field
+     - If the field has "Other" option but no specify field:
+       * Select/check "Other" and do not invent text
+     - If the field does not have an "Other" option:
+       * Output null and add the variable name to not_found
+- Do NOT use "Other" when the value matches a valid option label or a clear synonym of a valid option.
+
+JSON TEMPLATE (schema + answer placeholders):
+{
+  "Form Name": "sf36",
+  "Questions": {
+    "sf36_sf36dt": {
+      "Variable / Field Name": "sf36_sf36dt",
+      "Form Name": "sf36",
+      "Field Label": "ePRO Date",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "sf36_sf36tm": {
+      "Variable / Field Name": "sf36_sf36tm",
+      "Form Name": "sf36",
+      "Field Label": "ePRO Time",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "sf36_gh1": {
+      "Variable / Field Name": "sf36_gh1",
+      "Form Name": "sf36",
+      "Field Label": "In general, would you say your health is:",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Excellent",
+        "2": "Very good",
+        "3": "Good",
+        "4": "Fair",
+        "5": "Poor"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Excellent": "True|False",
+        "Very good": "True|False",
+        "Good": "True|False",
+        "Fair": "True|False",
+        "Poor": "True|False"
+      },
+      "codes": {
+        "Excellent": "1",
+        "Very good": "2",
+        "Good": "3",
+        "Fair": "4",
+        "Poor": "5"
+      }
+    },
+    "sf36_ht": {
+      "Variable / Field Name": "sf36_ht",
+      "Form Name": "sf36",
+      "Field Label": "Compared to one year ago, how would you rate your health in general now?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Much better now than one year ago",
+        "2": "Somewhat better now than one year ago",
+        "3": "About the same as one year ago",
+        "4": "Somewhat worse now than one year ago",
+        "5": "Much worse now than one year ago"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Much better now than one year ago": "True|False",
+        "Somewhat better now than one year ago": "True|False",
+        "About the same as one year ago": "True|False",
+        "Somewhat worse now than one year ago": "True|False",
+        "Much worse now than one year ago": "True|False"
+      },
+      "codes": {
+        "Much better now than one year ago": "1",
+        "Somewhat better now than one year ago": "2",
+        "About the same as one year ago": "3",
+        "Somewhat worse now than one year ago": "4",
+        "Much worse now than one year ago": "5"
+      }
+    },
+    "sf36_pf01": {
+      "Variable / Field Name": "sf36_pf01",
+      "Form Name": "sf36",
+      "Field Label": "Does your health now limit you in vigorous activities, such as running, lifting heavy objects, participating in strenuous sports? If so, how much?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Yes, limited a lot",
+        "2": "Yes, limited a little",
+        "3": "No, not limited at all"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes, limited a lot": "True|False",
+        "Yes, limited a little": "True|False",
+        "No, not limited at all": "True|False"
+      },
+      "codes": {
+        "Yes, limited a lot": "1",
+        "Yes, limited a little": "2",
+        "No, not limited at all": "3"
+      }
+    },
+    "sf36_pf02": {
+      "Variable / Field Name": "sf36_pf02",
+      "Form Name": "sf36",
+      "Field Label": "Does your health now limit you in moderate activities, such as moving a table, pushing a vacuum cleaner, bowling, or playing golf? If so, how much?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Yes, limited a lot",
+        "2": "Yes, limited a little",
+        "3": "No, not limited at all"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes, limited a lot": "True|False",
+        "Yes, limited a little": "True|False",
+        "No, not limited at all": "True|False"
+      },
+      "codes": {
+        "Yes, limited a lot": "1",
+        "Yes, limited a little": "2",
+        "No, not limited at all": "3"
+      }
+    },
+    "sf36_pf03": {
+      "Variable / Field Name": "sf36_pf03",
+      "Form Name": "sf36",
+      "Field Label": "Does your health now limit you in lifting or carrying groceries? If so, how much?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Yes, limited a lot",
+        "2": "Yes, limited a little",
+        "3": "No, not limited at all"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes, limited a lot": "True|False",
+        "Yes, limited a little": "True|False",
+        "No, not limited at all": "True|False"
+      },
+      "codes": {
+        "Yes, limited a lot": "1",
+        "Yes, limited a little": "2",
+        "No, not limited at all": "3"
+      }
+    },
+    "sf36_pf04": {
+      "Variable / Field Name": "sf36_pf04",
+      "Form Name": "sf36",
+      "Field Label": "Does your health now limit you in climbing several flights of stairs? If so, how much?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Yes, limited a lot",
+        "2": "Yes, limited a little",
+        "3": "No, not limited at all"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes, limited a lot": "True|False",
+        "Yes, limited a little": "True|False",
+        "No, not limited at all": "True|False"
+      },
+      "codes": {
+        "Yes, limited a lot": "1",
+        "Yes, limited a little": "2",
+        "No, not limited at all": "3"
+      }
+    },
+    "sf36_pf05": {
+      "Variable / Field Name": "sf36_pf05",
+      "Form Name": "sf36",
+      "Field Label": "Does your health now limit you in climbing one flight of stairs? If so, how much?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Yes, limited a lot",
+        "2": "Yes, limited a little",
+        "3": "No, not limited at all"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes, limited a lot": "True|False",
+        "Yes, limited a little": "True|False",
+        "No, not limited at all": "True|False"
+      },
+      "codes": {
+        "Yes, limited a lot": "1",
+        "Yes, limited a little": "2",
+        "No, not limited at all": "3"
+      }
+    },
+    "sf36_pf06": {
+      "Variable / Field Name": "sf36_pf06",
+      "Form Name": "sf36",
+      "Field Label": "Does your health now limit you in bending, kneeling, or stooping? If so, how much?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Yes, limited a lot",
+        "2": "Yes, limited a little",
+        "3": "No, not limited at all"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes, limited a lot": "True|False",
+        "Yes, limited a little": "True|False",
+        "No, not limited at all": "True|False"
+      },
+      "codes": {
+        "Yes, limited a lot": "1",
+        "Yes, limited a little": "2",
+        "No, not limited at all": "3"
+      }
+    },
+    "sf36_pf07": {
+      "Variable / Field Name": "sf36_pf07",
+      "Form Name": "sf36",
+      "Field Label": "Does your health now limit you in walking more than a mile? If so, how much?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Yes, limited a lot",
+        "2": "Yes, limited a little",
+        "3": "No, not limited at all"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes, limited a lot": "True|False",
+        "Yes, limited a little": "True|False",
+        "No, not limited at all": "True|False"
+      },
+      "codes": {
+        "Yes, limited a lot": "1",
+        "Yes, limited a little": "2",
+        "No, not limited at all": "3"
+      }
+    },
+    "sf36_pf08": {
+      "Variable / Field Name": "sf36_pf08",
+      "Form Name": "sf36",
+      "Field Label": "Does your health now limit you in walking several hundred yards? If so, how much?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Yes, limited a lot",
+        "2": "Yes, limited a little",
+        "3": "No, not limited at all"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes, limited a lot": "True|False",
+        "Yes, limited a little": "True|False",
+        "No, not limited at all": "True|False"
+      },
+      "codes": {
+        "Yes, limited a lot": "1",
+        "Yes, limited a little": "2",
+        "No, not limited at all": "3"
+      }
+    },
+    "sf36_pf09": {
+      "Variable / Field Name": "sf36_pf09",
+      "Form Name": "sf36",
+      "Field Label": "Does your health now limit you in walking one hundred yards? If so, how much?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Yes, limited a lot",
+        "2": "Yes, limited a little",
+        "3": "No, not limited at all"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes, limited a lot": "True|False",
+        "Yes, limited a little": "True|False",
+        "No, not limited at all": "True|False"
+      },
+      "codes": {
+        "Yes, limited a lot": "1",
+        "Yes, limited a little": "2",
+        "No, not limited at all": "3"
+      }
+    },
+    "sf36_pf10": {
+      "Variable / Field Name": "sf36_pf10",
+      "Form Name": "sf36",
+      "Field Label": "Does your health now limit you in bathing or dressing yourself? If so, how much?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Yes, limited a lot",
+        "2": "Yes, limited a little",
+        "3": "No, not limited at all"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes, limited a lot": "True|False",
+        "Yes, limited a little": "True|False",
+        "No, not limited at all": "True|False"
+      },
+      "codes": {
+        "Yes, limited a lot": "1",
+        "Yes, limited a little": "2",
+        "No, not limited at all": "3"
+      }
+    },
+    "sf36_rp1": {
+      "Variable / Field Name": "sf36_rp1",
+      "Form Name": "sf36",
+      "Field Label": "During the past 4 weeks, how much of the time have you cut down on the amount of time you spent on work or other activities as a result of your physical health?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "All of the time",
+        "2": "Most of the time",
+        "3": "Some of the time",
+        "4": "A little of the time",
+        "5": "None of the time"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "All of the time": "True|False",
+        "Most of the time": "True|False",
+        "Some of the time": "True|False",
+        "A little of the time": "True|False",
+        "None of the time": "True|False"
+      },
+      "codes": {
+        "All of the time": "1",
+        "Most of the time": "2",
+        "Some of the time": "3",
+        "A little of the time": "4",
+        "None of the time": "5"
+      }
+    },
+    "sf36_rp2": {
+      "Variable / Field Name": "sf36_rp2",
+      "Form Name": "sf36",
+      "Field Label": "During the past 4 weeks, how much of the time have you accomplished less than you would like as a result of your physical health?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "All of the time",
+        "2": "Most of the time",
+        "3": "Some of the time",
+        "4": "A little of the time",
+        "5": "None of the time"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "All of the time": "True|False",
+        "Most of the time": "True|False",
+        "Some of the time": "True|False",
+        "A little of the time": "True|False",
+        "None of the time": "True|False"
+      },
+      "codes": {
+        "All of the time": "1",
+        "Most of the time": "2",
+        "Some of the time": "3",
+        "A little of the time": "4",
+        "None of the time": "5"
+      }
+    },
+    "sf36_rp3": {
+      "Variable / Field Name": "sf36_rp3",
+      "Form Name": "sf36",
+      "Field Label": "During the past 4 weeks, how much of the time were you limited in the kind of work or other activities as a result of your physical health?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "All of the time",
+        "2": "Most of the time",
+        "3": "Some of the time",
+        "4": "A little of the time",
+        "5": "None of the time"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "All of the time": "True|False",
+        "Most of the time": "True|False",
+        "Some of the time": "True|False",
+        "A little of the time": "True|False",
+        "None of the time": "True|False"
+      },
+      "codes": {
+        "All of the time": "1",
+        "Most of the time": "2",
+        "Some of the time": "3",
+        "A little of the time": "4",
+        "None of the time": "5"
+      }
+    },
+    "sf36_rp4": {
+      "Variable / Field Name": "sf36_rp4",
+      "Form Name": "sf36",
+      "Field Label": "During the past 4 weeks, how much of the time have you had difficulty performing the work or other activities as a result of your physical health (for example, it took extra effort)?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "All of the time",
+        "2": "Most of the time",
+        "3": "Some of the time",
+        "4": "A little of the time",
+        "5": "None of the time"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "All of the time": "True|False",
+        "Most of the time": "True|False",
+        "Some of the time": "True|False",
+        "A little of the time": "True|False",
+        "None of the time": "True|False"
+      },
+      "codes": {
+        "All of the time": "1",
+        "Most of the time": "2",
+        "Some of the time": "3",
+        "A little of the time": "4",
+        "None of the time": "5"
+      }
+    },
+    "sf36_re1": {
+      "Variable / Field Name": "sf36_re1",
+      "Form Name": "sf36",
+      "Field Label": "During the past 4 weeks, how much of the time have you cut down on the amount of time you spent on work or other activities as a result of any emotional problems (such as feeling depressed or anxious)?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "All of the time",
+        "2": "Most of the time",
+        "3": "Some of the time",
+        "4": "A little of the time",
+        "5": "None of the time"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "All of the time": "True|False",
+        "Most of the time": "True|False",
+        "Some of the time": "True|False",
+        "A little of the time": "True|False",
+        "None of the time": "True|False"
+      },
+      "codes": {
+        "All of the time": "1",
+        "Most of the time": "2",
+        "Some of the time": "3",
+        "A little of the time": "4",
+        "None of the time": "5"
+      }
+    },
+    "sf36_re2": {
+      "Variable / Field Name": "sf36_re2",
+      "Form Name": "sf36",
+      "Field Label": "During the past 4 weeks, how much of the time have you accomplished less than you would like as a result of any emotional problems (such as feeling depressed or anxious)?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "All of the time",
+        "2": "Most of the time",
+        "3": "Some of the time",
+        "4": "A little of the time",
+        "5": "None of the time"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "All of the time": "True|False",
+        "Most of the time": "True|False",
+        "Some of the time": "True|False",
+        "A little of the time": "True|False",
+        "None of the time": "True|False"
+      },
+      "codes": {
+        "All of the time": "1",
+        "Most of the time": "2",
+        "Some of the time": "3",
+        "A little of the time": "4",
+        "None of the time": "5"
+      }
+    },
+    "sf36_re3": {
+      "Variable / Field Name": "sf36_re3",
+      "Form Name": "sf36",
+      "Field Label": "During the past 4 weeks, how much of the time have you done work or other activities less carefully than usual as a result of any emotional problems (such as feeling depressed or anxious)?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "All of the time",
+        "2": "Most of the time",
+        "3": "Some of the time",
+        "4": "A little of the time",
+        "5": "None of the time"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "All of the time": "True|False",
+        "Most of the time": "True|False",
+        "Some of the time": "True|False",
+        "A little of the time": "True|False",
+        "None of the time": "True|False"
+      },
+      "codes": {
+        "All of the time": "1",
+        "Most of the time": "2",
+        "Some of the time": "3",
+        "A little of the time": "4",
+        "None of the time": "5"
+      }
+    },
+    "sf36_sf1": {
+      "Variable / Field Name": "sf36_sf1",
+      "Form Name": "sf36",
+      "Field Label": "During the past 4 weeks, to what extent has your physical health or emotional problems interfered with your normal social activities with family, friends, neighbors, or groups?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Not at all",
+        "2": "Slightly",
+        "3": "Moderately",
+        "4": "Quite a bit",
+        "5": "Extremely"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Not at all": "True|False",
+        "Slightly": "True|False",
+        "Moderately": "True|False",
+        "Quite a bit": "True|False",
+        "Extremely": "True|False"
+      },
+      "codes": {
+        "Not at all": "1",
+        "Slightly": "2",
+        "Moderately": "3",
+        "Quite a bit": "4",
+        "Extremely": "5"
+      }
+    },
+    "sf36_bp1": {
+      "Variable / Field Name": "sf36_bp1",
+      "Form Name": "sf36",
+      "Field Label": "How much bodily pain have you had during the past 4 weeks?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "None",
+        "2": "Very mild",
+        "3": "Mild",
+        "4": "Moderate",
+        "5": "Severe",
+        "6": "Very severe"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "None": "True|False",
+        "Very mild": "True|False",
+        "Mild": "True|False",
+        "Moderate": "True|False",
+        "Severe": "True|False",
+        "Very severe": "True|False"
+      },
+      "codes": {
+        "None": "1",
+        "Very mild": "2",
+        "Mild": "3",
+        "Moderate": "4",
+        "Severe": "5",
+        "Very severe": "6"
+      }
+    },
+    "sf36_bp2": {
+      "Variable / Field Name": "sf36_bp2",
+      "Form Name": "sf36",
+      "Field Label": "During the past 4 weeks, how much did pain interfere with your normal work (including both work outside the home and housework)?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Not at all",
+        "2": "A little bit",
+        "3": "Moderately",
+        "4": "Quite a bit",
+        "5": "Extremely"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Not at all": "True|False",
+        "A little bit": "True|False",
+        "Moderately": "True|False",
+        "Quite a bit": "True|False",
+        "Extremely": "True|False"
+      },
+      "codes": {
+        "Not at all": "1",
+        "A little bit": "2",
+        "Moderately": "3",
+        "Quite a bit": "4",
+        "Extremely": "5"
+      }
+    },
+    "sf36_vt1": {
+      "Variable / Field Name": "sf36_vt1",
+      "Form Name": "sf36",
+      "Field Label": "How much of the time during the past 4 weeks did you feel full of life?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "All of the time",
+        "2": "Most of the time",
+        "3": "Some of the time",
+        "4": "A little of the time",
+        "5": "None of the time"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "All of the time": "True|False",
+        "Most of the time": "True|False",
+        "Some of the time": "True|False",
+        "A little of the time": "True|False",
+        "None of the time": "True|False"
+      },
+      "codes": {
+        "All of the time": "1",
+        "Most of the time": "2",
+        "Some of the time": "3",
+        "A little of the time": "4",
+        "None of the time": "5"
+      }
+    },
+    "sf36_mh1": {
+      "Variable / Field Name": "sf36_mh1",
+      "Form Name": "sf36",
+      "Field Label": "How much of the time during the past 4 weeks have you been very nervous?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "All of the time",
+        "2": "Most of the time",
+        "3": "Some of the time",
+        "4": "A little of the time",
+        "5": "None of the time"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "All of the time": "True|False",
+        "Most of the time": "True|False",
+        "Some of the time": "True|False",
+        "A little of the time": "True|False",
+        "None of the time": "True|False"
+      },
+      "codes": {
+        "All of the time": "1",
+        "Most of the time": "2",
+        "Some of the time": "3",
+        "A little of the time": "4",
+        "None of the time": "5"
+      }
+    },
+    "sf36_mh2": {
+      "Variable / Field Name": "sf36_mh2",
+      "Form Name": "sf36",
+      "Field Label": "How much of the time during the past 4 weeks have you felt so down in the dumps that nothing could cheer you up?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "All of the time",
+        "2": "Most of the time",
+        "3": "Some of the time",
+        "4": "A little of the time",
+        "5": "None of the time"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "All of the time": "True|False",
+        "Most of the time": "True|False",
+        "Some of the time": "True|False",
+        "A little of the time": "True|False",
+        "None of the time": "True|False"
+      },
+      "codes": {
+        "All of the time": "1",
+        "Most of the time": "2",
+        "Some of the time": "3",
+        "A little of the time": "4",
+        "None of the time": "5"
+      }
+    },
+    "sf36_mh3": {
+      "Variable / Field Name": "sf36_mh3",
+      "Form Name": "sf36",
+      "Field Label": "How much of the time during the past 4 weeks have you felt calm and peaceful?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "All of the time",
+        "2": "Most of the time",
+        "3": "Some of the time",
+        "4": "A little of the time",
+        "5": "None of the time"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "All of the time": "True|False",
+        "Most of the time": "True|False",
+        "Some of the time": "True|False",
+        "A little of the time": "True|False",
+        "None of the time": "True|False"
+      },
+      "codes": {
+        "All of the time": "1",
+        "Most of the time": "2",
+        "Some of the time": "3",
+        "A little of the time": "4",
+        "None of the time": "5"
+      }
+    },
+    "sf36_vt2": {
+      "Variable / Field Name": "sf36_vt2",
+      "Form Name": "sf36",
+      "Field Label": "How much of the time during the past 4 weeks did you have a lot of energy?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "All of the time",
+        "2": "Most of the time",
+        "3": "Some of the time",
+        "4": "A little of the time",
+        "5": "None of the time"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "All of the time": "True|False",
+        "Most of the time": "True|False",
+        "Some of the time": "True|False",
+        "A little of the time": "True|False",
+        "None of the time": "True|False"
+      },
+      "codes": {
+        "All of the time": "1",
+        "Most of the time": "2",
+        "Some of the time": "3",
+        "A little of the time": "4",
+        "None of the time": "5"
+      }
+    },
+    "sf36_mh4": {
+      "Variable / Field Name": "sf36_mh4",
+      "Form Name": "sf36",
+      "Field Label": "How much of the time during the past 4 weeks have you felt downhearted and depressed?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "All of the time",
+        "2": "Most of the time",
+        "3": "Some of the time",
+        "4": "A little of the time",
+        "5": "None of the time"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "All of the time": "True|False",
+        "Most of the time": "True|False",
+        "Some of the time": "True|False",
+        "A little of the time": "True|False",
+        "None of the time": "True|False"
+      },
+      "codes": {
+        "All of the time": "1",
+        "Most of the time": "2",
+        "Some of the time": "3",
+        "A little of the time": "4",
+        "None of the time": "5"
+      }
+    },
+    "sf36_vt3": {
+      "Variable / Field Name": "sf36_vt3",
+      "Form Name": "sf36",
+      "Field Label": "How much of the time during the past 4 weeks did you feel worn out?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "All of the time",
+        "2": "Most of the time",
+        "3": "Some of the time",
+        "4": "A little of the time",
+        "5": "None of the time"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "All of the time": "True|False",
+        "Most of the time": "True|False",
+        "Some of the time": "True|False",
+        "A little of the time": "True|False",
+        "None of the time": "True|False"
+      },
+      "codes": {
+        "All of the time": "1",
+        "Most of the time": "2",
+        "Some of the time": "3",
+        "A little of the time": "4",
+        "None of the time": "5"
+      }
+    },
+    "sf36_mh5": {
+      "Variable / Field Name": "sf36_mh5",
+      "Form Name": "sf36",
+      "Field Label": "How much of the time during the past 4 weeks have you been happy?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "All of the time",
+        "2": "Most of the time",
+        "3": "Some of the time",
+        "4": "A little of the time",
+        "5": "None of the time"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "All of the time": "True|False",
+        "Most of the time": "True|False",
+        "Some of the time": "True|False",
+        "A little of the time": "True|False",
+        "None of the time": "True|False"
+      },
+      "codes": {
+        "All of the time": "1",
+        "Most of the time": "2",
+        "Some of the time": "3",
+        "A little of the time": "4",
+        "None of the time": "5"
+      }
+    },
+    "sf36_vt4": {
+      "Variable / Field Name": "sf36_vt4",
+      "Form Name": "sf36",
+      "Field Label": "How much of the time during the past 4 weeks did you feel tired?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "All of the time",
+        "2": "Most of the time",
+        "3": "Some of the time",
+        "4": "A little of the time",
+        "5": "None of the time"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "All of the time": "True|False",
+        "Most of the time": "True|False",
+        "Some of the time": "True|False",
+        "A little of the time": "True|False",
+        "None of the time": "True|False"
+      },
+      "codes": {
+        "All of the time": "1",
+        "Most of the time": "2",
+        "Some of the time": "3",
+        "A little of the time": "4",
+        "None of the time": "5"
+      }
+    },
+    "sf36_sf2": {
+      "Variable / Field Name": "sf36_sf2",
+      "Form Name": "sf36",
+      "Field Label": "During the past 4 weeks, how much of the time has your physical health or emotional problems interfered with your social activities (like visiting with friends, relatives, etc.)?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "All of the time",
+        "2": "Most of the time",
+        "3": "Some of the time",
+        "4": "A little of the time",
+        "5": "None of the time"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "All of the time": "True|False",
+        "Most of the time": "True|False",
+        "Some of the time": "True|False",
+        "A little of the time": "True|False",
+        "None of the time": "True|False"
+      },
+      "codes": {
+        "All of the time": "1",
+        "Most of the time": "2",
+        "Some of the time": "3",
+        "A little of the time": "4",
+        "None of the time": "5"
+      }
+    },
+    "sf36_gh2": {
+      "Variable / Field Name": "sf36_gh2",
+      "Form Name": "sf36",
+      "Field Label": "I seem to get sick a little easier than other people.",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Definitely true",
+        "2": "Mostly true",
+        "3": "Don't know",
+        "4": "Mostly false",
+        "5": "Definitely false"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Definitely true": "True|False",
+        "Mostly true": "True|False",
+        "Don't know": "True|False",
+        "Mostly false": "True|False",
+        "Definitely false": "True|False"
+      },
+      "codes": {
+        "Definitely true": "1",
+        "Mostly true": "2",
+        "Don't know": "3",
+        "Mostly false": "4",
+        "Definitely false": "5"
+      }
+    },
+    "sf36_gh3": {
+      "Variable / Field Name": "sf36_gh3",
+      "Form Name": "sf36",
+      "Field Label": "I am as healthy as anybody I know.",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Definitely true",
+        "2": "Mostly true",
+        "3": "Don't know",
+        "4": "Mostly false",
+        "5": "Definitely false"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Definitely true": "True|False",
+        "Mostly true": "True|False",
+        "Don't know": "True|False",
+        "Mostly false": "True|False",
+        "Definitely false": "True|False"
+      },
+      "codes": {
+        "Definitely true": "1",
+        "Mostly true": "2",
+        "Don't know": "3",
+        "Mostly false": "4",
+        "Definitely false": "5"
+      }
+    },
+    "sf36_gh4": {
+      "Variable / Field Name": "sf36_gh4",
+      "Form Name": "sf36",
+      "Field Label": "I expect my health to get worse.",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Definitely true",
+        "2": "Mostly true",
+        "3": "Don't know",
+        "4": "Mostly false",
+        "5": "Definitely false"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Definitely true": "True|False",
+        "Mostly true": "True|False",
+        "Don't know": "True|False",
+        "Mostly false": "True|False",
+        "Definitely false": "True|False"
+      },
+      "codes": {
+        "Definitely true": "1",
+        "Mostly true": "2",
+        "Don't know": "3",
+        "Mostly false": "4",
+        "Definitely false": "5"
+      }
+    },
+    "sf36_gh5": {
+      "Variable / Field Name": "sf36_gh5",
+      "Form Name": "sf36",
+      "Field Label": "My health is excellent.",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Definitely true",
+        "2": "Mostly true",
+        "3": "Don't know",
+        "4": "Mostly false",
+        "5": "Definitely false"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Definitely true": "True|False",
+        "Mostly true": "True|False",
+        "Don't know": "True|False",
+        "Mostly false": "True|False",
+        "Definitely false": "True|False"
+      },
+      "codes": {
+        "Definitely true": "1",
+        "Mostly true": "2",
+        "Don't know": "3",
+        "Mostly false": "4",
+        "Definitely false": "5"
+      }
+    },
+    "sf_36v2_health_survey_1992": {
+      "Variable / Field Name": "sf_36v2_health_survey_1992",
+      "Form Name": "sf36",
+      "Field Label": "SF-36v2™ Health Survey © 1992, 2000, 2009 QualityMetric Incorporated, LLC.",
+      "Field Type": "descriptive",
+      "answer_type": "display_only",
+      "answer_template": null
+    },
+    "profile_ab_notes": {
+      "Variable / Field Name": "profile_ab_notes",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    }
+  }
+}

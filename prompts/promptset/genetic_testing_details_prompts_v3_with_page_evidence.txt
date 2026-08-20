@@ -1,0 +1,553 @@
+#### PROMPT_SET: genetic_testing_details
+---RAG---
+REDCap form: genetic_testing_details
+Retrieve document text needed to answer this form.
+Prefer labeled fields/tables; ignore repetitive footers/headers.
+Additional cues: demographics/face sheet, problem list, assessment & plan, discharge summary, lab results/flowsheets, medication list, imaging/pathology reports.
+Key terms: Sequence, number, Date, genetic, test, Name, lab, Type, performed, results, Abstractor, Notes
+
+---USER---
+You are a clinical information extractor.
+Given a clinical note (or EHR text), extract answers for the REDCap form: eligibility_and_patient_profile.
+
+Instructions:
+- Fill in the JSON TEMPLATE below using ONLY evidence explicitly present in the text. Do not guess.
+- Keep the same JSON keys and nesting.
+- For choice questions: replace 'True|False' with true or false.
+  * Single-choice (radio/dropdown/yes-no): set exactly one option to true if supported.
+  * Multi-choice (checkbox): set all supported options to true.
+- For 'String'/'Number'/'Integer'/'Date' placeholders: replace with the extracted value (or null if not found).
+- Only populate 'Nested Fields' (e.g., 'please specify') when the parent condition is met AND evidence supports it.
+- Output ONLY the filled JSON (no extra commentary).
+
+EVIDENCE / PAGE CITATION RULE (for auditability):
+- The retrieved Context snippets may include headers like [<source> p<page>] or [<source> p<start>-<end>].
+- For every non-null extracted field (any field whose answer is not null and/or any option you set to true), add an evidence line into profile_ab_notes.
+- Evidence line format (one per field): <VariableName>: <EvidenceTag> — <verbatim short phrase>.
+  * Example: profile_elig1: [patient.pdf p3] — "clinically suspected HLH"
+- Use the EvidenceTag exactly as shown in the Context header (including page number).
+- If no page header is present, cite the source header only (e.g., [note]) and still provide a short verbatim phrase.
+- Do NOT add new JSON keys for evidence; record all citations ONLY inside profile_ab_notes.
+
+OUTPUT FORMAT OVERRIDE (CRITICAL):
+- The JSON TEMPLATE below is REFERENCE ONLY (schema/choices/branching). Do NOT output it.
+- Output ONLY an ANSWERS JSON object, where EACH variable is formatted as:
+  "<variable_name>": { "answer": <value> }
+- Do NOT output "Form Name", "Questions", "Variable / Field Name", "Field Label", "Field Type",
+  "Possible Values", "answer_type", "answer_template", or "codes".
+- Keep the same variable names (e.g., record_id, profile_brthyr, profile_cntry, profile_usregn).
+- Output ONLY valid JSON (no commentary, no markdown, no extra keys).
+
+ANSWERS JSON TEMPLATE (THIS IS THE ONLY THING YOU SHOULD OUTPUT):
+{
+  "genetic_seq": {
+    "answer": null
+  },
+  "genetic_agendat": {
+    "answer": null
+  },
+  "genetic_agenlab": {
+    "answer": {
+      "CCHMC": false,
+      "Invitae genetics": false,
+      "Blueprint genetics": false,
+      "Machaon diagnostics": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "genetic_agenlabo": {
+      "answer": null
+    },
+    "genetic_agentypo": {
+      "answer": null
+    }
+  },
+  "genetic_agentyp": {
+    "answer": {
+      "Targeted single gene": false,
+      "Targeted panel": false,
+      "Whole exome sequencing": false,
+      "Whole genome sequencing": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "genetic_agenpnl": {
+      "answer": {
+        "Hemophagocytic  lymphohistiocytosis": false,
+        "Primary deficiency": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "genetic_agenpnlo": {
+      "answer": null
+    },
+    "genetic_agennm": {
+      "answer": null
+    },
+    "genetic_agennmuk": {
+      "answer": {
+        "Unknown": false
+      }
+    }
+  },
+  "genetic_agtr": {
+    "answer": {
+      "Negative": false,
+      "Genetic findings present": false,
+      "Unknown": false
+    },
+    "genetic_ahelp": {
+      "answer": null
+    },
+    "genetic_agenn1": {
+      "answer": null
+    },
+    "genetic_agena1": {
+      "answer": {
+        "Allele 1": false,
+        "Allele 2": false,
+        "Unknown": false
+      }
+    },
+    "genetic_ageng1": {
+      "answer": null
+    },
+    "genetic_agenp1": {
+      "answer": null
+    },
+    "genetic_agenc1": {
+      "answer": {
+        "Pathogenic": false,
+        "Likely pathogenic": false,
+        "Unknown": false
+      }
+    },
+    "genetic_agenn2": {
+      "answer": null
+    },
+    "genetic_agena2": {
+      "answer": {
+        "Allele 1": false,
+        "Allele 2": false,
+        "Unknown": false
+      }
+    },
+    "genetic_ageng2": {
+      "answer": null
+    },
+    "genetic_agenp2": {
+      "answer": null
+    },
+    "genetic_agenc2": {
+      "answer": {
+        "Pathogenic": false,
+        "Likely pathogenic": false,
+        "Unknown": false
+      }
+    }
+  },
+  "genetic_notesb": {
+    "answer": null
+  },
+  "profile_ab_notes": {
+    "answer": null
+  }
+}
+
+GENERAL "OTHER" FALLBACK RULE (applies to ALL fields):
+- For any radio/dropdown/checkbox field:
+  1) First try to map the evidence to one of the allowed option labels (or clear synonyms).
+  2) If the evidence clearly provides a value but it does NOT match any allowed option label/code:
+     - If the field has an "Other" option AND has a nested/branching "Other specify" text field:
+       * Select/check the "Other" option (use its REDCap code)
+       * Put the exact unmatched value phrase from the evidence into the "Other specify" field
+     - If the field has "Other" option but no specify field:
+       * Select/check "Other" and do not invent text
+     - If the field does not have an "Other" option:
+       * Output null and add the variable name to not_found
+- Do NOT use "Other" when the value matches a valid option label or a clear synonym of a valid option.
+
+JSON TEMPLATE (schema + answer placeholders):
+{
+  "Form Name": "genetic_testing_details",
+  "Questions": {
+    "genetic_seq": {
+      "Variable / Field Name": "genetic_seq",
+      "Form Name": "genetic_testing_details",
+      "Field Label": "Sequence number",
+      "Field Type": "text",
+      "Field Note": "Ex: 1",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "genetic_agendat": {
+      "Variable / Field Name": "genetic_agendat",
+      "Form Name": "genetic_testing_details",
+      "Field Label": "Date of genetic test",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "genetic_agenlab": {
+      "Variable / Field Name": "genetic_agenlab",
+      "Form Name": "genetic_testing_details",
+      "Field Label": "Name of lab",
+      "Field Type": "dropdown",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "CCHMC",
+        "2": "Invitae genetics",
+        "3": "Blueprint genetics",
+        "4": "Machaon diagnostics",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "CCHMC": "True|False",
+        "Invitae genetics": "True|False",
+        "Blueprint genetics": "True|False",
+        "Machaon diagnostics": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "CCHMC": "1",
+        "Invitae genetics": "2",
+        "Blueprint genetics": "3",
+        "Machaon diagnostics": "4",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "genetic_agenlabo": {
+          "Variable / Field Name": "genetic_agenlabo",
+          "Form Name": "genetic_testing_details",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[genetic_agenlab] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "genetic_agentypo": {
+          "Variable / Field Name": "genetic_agentypo",
+          "Form Name": "genetic_testing_details",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[genetic_agenlab] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "genetic_agentyp": {
+      "Variable / Field Name": "genetic_agentyp",
+      "Form Name": "genetic_testing_details",
+      "Field Label": "Type of genetic test performed",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Targeted single gene",
+        "2": "Targeted panel",
+        "3": "Whole exome sequencing",
+        "4": "Whole genome sequencing",
+        "98": "Other",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Targeted single gene": "True|False",
+        "Targeted panel": "True|False",
+        "Whole exome sequencing": "True|False",
+        "Whole genome sequencing": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Targeted single gene": "1",
+        "Targeted panel": "2",
+        "Whole exome sequencing": "3",
+        "Whole genome sequencing": "4",
+        "Other": "98",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "genetic_agenpnl": {
+          "Variable / Field Name": "genetic_agenpnl",
+          "Form Name": "genetic_testing_details",
+          "Field Label": "Name of gene panel",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[genetic_agentyp] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Hemophagocytic  lymphohistiocytosis",
+            "2": "Primary deficiency",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Hemophagocytic  lymphohistiocytosis": "True|False",
+            "Primary deficiency": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Hemophagocytic  lymphohistiocytosis": "1",
+            "Primary deficiency": "2",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "genetic_agenpnlo": {
+          "Variable / Field Name": "genetic_agenpnlo",
+          "Form Name": "genetic_testing_details",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[genetic_agentyp] = '2' and [genetic_agenpnl] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "genetic_agennm": {
+          "Variable / Field Name": "genetic_agennm",
+          "Form Name": "genetic_testing_details",
+          "Field Label": "Number of genes",
+          "Field Type": "text",
+          "Branching Logic": "[genetic_agentyp] = '2'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "genetic_agennmuk": {
+          "Variable / Field Name": "genetic_agennmuk",
+          "Form Name": "genetic_testing_details",
+          "Field Label": "Number of genes unknown",
+          "Field Type": "radio",
+          "Branching Logic": "[genetic_agentyp] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Unknown": "1"
+          }
+        }
+      }
+    },
+    "genetic_agtr": {
+      "Variable / Field Name": "genetic_agtr",
+      "Form Name": "genetic_testing_details",
+      "Field Label": "Genetic test results",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Negative",
+        "2": "Genetic findings present",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Negative": "True|False",
+        "Genetic findings present": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Negative": "1",
+        "Genetic findings present": "2",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "genetic_ahelp": {
+          "Variable / Field Name": "genetic_ahelp",
+          "Form Name": "genetic_testing_details",
+          "Field Label": "SPECIFY DETAILS BELOW FOR EACH ABDNORMAL GENE IDENTIFIED",
+          "Field Type": "descriptive",
+          "Branching Logic": "[genetic_agtr] = '2'",
+          "answer_type": "display_only",
+          "answer_template": null
+        },
+        "genetic_agenn1": {
+          "Variable / Field Name": "genetic_agenn1",
+          "Form Name": "genetic_testing_details",
+          "Field Label": "Additional Gene name 1",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[genetic_agtr] = '2'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "genetic_agena1": {
+          "Variable / Field Name": "genetic_agena1",
+          "Form Name": "genetic_testing_details",
+          "Field Label": "Additional Allele 1",
+          "Field Type": "dropdown",
+          "Required Field?": "y",
+          "Branching Logic": "[genetic_agtr] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Allele 1",
+            "2": "Allele 2",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Allele 1": "True|False",
+            "Allele 2": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Allele 1": "1",
+            "Allele 2": "2",
+            "Unknown": "98"
+          }
+        },
+        "genetic_ageng1": {
+          "Variable / Field Name": "genetic_ageng1",
+          "Form Name": "genetic_testing_details",
+          "Field Label": "Additional Gene Sequence variant/ Deletion or Duplication 1",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[genetic_agtr] = '2'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "genetic_agenp1": {
+          "Variable / Field Name": "genetic_agenp1",
+          "Form Name": "genetic_testing_details",
+          "Field Label": "Additional Protein Sequence Variant 1",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[genetic_agtr] = '2'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "genetic_agenc1": {
+          "Variable / Field Name": "genetic_agenc1",
+          "Form Name": "genetic_testing_details",
+          "Field Label": "Additional Please specify the assessment about variant classification 1",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[genetic_agtr] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Pathogenic",
+            "2": "Likely pathogenic",
+            "99": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Pathogenic": "True|False",
+            "Likely pathogenic": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Pathogenic": "1",
+            "Likely pathogenic": "2",
+            "Unknown": "99"
+          }
+        },
+        "genetic_agenn2": {
+          "Variable / Field Name": "genetic_agenn2",
+          "Form Name": "genetic_testing_details",
+          "Field Label": "Additional Gene name 2",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[genetic_agtr] = '2'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "genetic_agena2": {
+          "Variable / Field Name": "genetic_agena2",
+          "Form Name": "genetic_testing_details",
+          "Field Label": "Additional Allele 2",
+          "Field Type": "dropdown",
+          "Required Field?": "y",
+          "Branching Logic": "[genetic_agtr] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Allele 1",
+            "2": "Allele 2",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Allele 1": "True|False",
+            "Allele 2": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Allele 1": "1",
+            "Allele 2": "2",
+            "Unknown": "98"
+          }
+        },
+        "genetic_ageng2": {
+          "Variable / Field Name": "genetic_ageng2",
+          "Form Name": "genetic_testing_details",
+          "Field Label": "Additional Gene Sequence variant/ Deletion or Duplication 2",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[genetic_agtr] = '2'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "genetic_agenp2": {
+          "Variable / Field Name": "genetic_agenp2",
+          "Form Name": "genetic_testing_details",
+          "Field Label": "Additional Protein Sequence Variant 2",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[genetic_agtr] = '2'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "genetic_agenc2": {
+          "Variable / Field Name": "genetic_agenc2",
+          "Form Name": "genetic_testing_details",
+          "Field Label": "Additional Please specify the assessment about variant classification 2",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[genetic_agtr] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Pathogenic",
+            "2": "Likely pathogenic",
+            "99": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Pathogenic": "True|False",
+            "Likely pathogenic": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Pathogenic": "1",
+            "Likely pathogenic": "2",
+            "Unknown": "99"
+          }
+        }
+      }
+    },
+    "genetic_notesb": {
+      "Variable / Field Name": "genetic_notesb",
+      "Form Name": "genetic_testing_details",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    },
+    "profile_ab_notes": {
+      "Variable / Field Name": "profile_ab_notes",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    }
+  }
+}

@@ -1,0 +1,3073 @@
+#### PROMPT_SET: rheumatologic_therapy_regimens
+---RAG---
+REDCap form: rheumatologic_therapy_regimens
+Retrieve document text needed to answer this form.
+Prefer labeled fields/tables; ignore repetitive footers/headers.
+Additional cues: demographics/face sheet, problem list, assessment & plan, discharge summary, lab results/flowsheets, medication list, imaging/pathology reports.
+Key terms: Sequence, number, Therapeutic, regimen, Were, any, drugs, Date, was, first, administered, last, day, treatment, administration, indicate, exact, agents, Abstractor, Notes
+
+---USER---
+You are a clinical information extractor.
+Given a clinical note (or EHR text), extract answers for the REDCap form: eligibility_and_patient_profile.
+
+Instructions:
+- Fill in the JSON TEMPLATE below using ONLY evidence explicitly present in the text. Do not guess.
+- Keep the same JSON keys and nesting.
+- For choice questions: replace 'True|False' with true or false.
+  * Single-choice (radio/dropdown/yes-no): set exactly one option to true if supported.
+  * Multi-choice (checkbox): set all supported options to true.
+- For 'String'/'Number'/'Integer'/'Date' placeholders: replace with the extracted value (or null if not found).
+- Only populate 'Nested Fields' (e.g., 'please specify') when the parent condition is met AND evidence supports it.
+- Output ONLY the filled JSON (no extra commentary).
+
+EVIDENCE / PAGE CITATION RULE (for auditability):
+- The retrieved Context snippets may include headers like [<source> p<page>] or [<source> p<start>-<end>].
+- For every non-null extracted field (any field whose answer is not null and/or any option you set to true), add an evidence line into profile_ab_notes.
+- Evidence line format (one per field): <VariableName>: <EvidenceTag> — <verbatim short phrase>.
+  * Example: profile_elig1: [patient.pdf p3] — "clinically suspected HLH"
+- Use the EvidenceTag exactly as shown in the Context header (including page number).
+- If no page header is present, cite the source header only (e.g., [note]) and still provide a short verbatim phrase.
+- Do NOT add new JSON keys for evidence; record all citations ONLY inside profile_ab_notes.
+
+OUTPUT FORMAT OVERRIDE (CRITICAL):
+- The JSON TEMPLATE below is REFERENCE ONLY (schema/choices/branching). Do NOT output it.
+- Output ONLY an ANSWERS JSON object, where EACH variable is formatted as:
+  "<variable_name>": { "answer": <value> }
+- Do NOT output "Form Name", "Questions", "Variable / Field Name", "Field Label", "Field Type",
+  "Possible Values", "answer_type", "answer_template", or "codes".
+- Keep the same variable names (e.g., record_id, profile_brthyr, profile_cntry, profile_usregn).
+- Output ONLY valid JSON (no commentary, no markdown, no extra keys).
+
+ANSWERS JSON TEMPLATE (THIS IS THE ONLY THING YOU SHOULD OUTPUT):
+{
+  "rheu_regseq": {
+    "answer": null
+  },
+  "rheu_regmn": {
+    "answer": null
+  },
+  "rheu_regmas": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "rheu_regdrgnm": {
+      "answer": null
+    },
+    "rheu_drgnmu": {
+      "answer": {
+        "Unknown": false
+      }
+    },
+    "rheu_trtnm1": {
+      "answer": {
+        "Methothrexate": false,
+        "Prednisone": false,
+        "Prednisolone": false,
+        "Dexamethasone": false,
+        "Methylprednisone": false,
+        "Hydroxychloroquine": false,
+        "Sulfasalazine": false,
+        "Leflunomide": false,
+        "Infliximab": false,
+        "Adalimumab": false,
+        "Etanercept": false,
+        "Golimumab": false,
+        "Certolizumab": false,
+        "Abatacept": false,
+        "Tocilizumab": false,
+        "Rituximab": false,
+        "Anakinra": false,
+        "Cyclosporine": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "rheu_trtnmsp1": {
+      "answer": null
+    },
+    "rheu_trtstdt1": {
+      "answer": null
+    },
+    "rheu_trteddt1": {
+      "answer": null
+    },
+    "rheu_trtdos1": {
+      "answer": null
+    },
+    "rheu_trtdosu1": {
+      "answer": {
+        "Unknown": false
+      }
+    },
+    "rheu_trtfrq1": {
+      "answer": null
+    },
+    "rheu_trtfrqu1": {
+      "answer": {
+        "Unknown": false
+      }
+    },
+    "rheu_route1": {
+      "answer": {
+        "Oral": false,
+        "IV": false,
+        "Subcutaneous": false,
+        "Intrathecal": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "rheu_routeo1": {
+      "answer": null
+    },
+    "rheu_indct1": {
+      "answer": {
+        "The underlying rheumatologic disease": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "rheu_indcto1": {
+      "answer": null
+    },
+    "rheu_trtnm2": {
+      "answer": {
+        "Methothrexate": false,
+        "Prednisone": false,
+        "Prednisolone": false,
+        "Dexamethasone": false,
+        "Methylprednisone": false,
+        "Hydroxychloroquine": false,
+        "Sulfasalazine": false,
+        "Leflunomide": false,
+        "Infliximab": false,
+        "Adalimumab": false,
+        "Etanercept": false,
+        "Golimumab": false,
+        "Certolizumab": false,
+        "Abatacept": false,
+        "Tocilizumab": false,
+        "Rituximab": false,
+        "Anakinra": false,
+        "Cyclosporine": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "rheu_trtnmsp2": {
+      "answer": null
+    },
+    "rheu_trtstdt2": {
+      "answer": null
+    },
+    "rheu_trteddt2": {
+      "answer": null
+    },
+    "rheu_trtdos2": {
+      "answer": null
+    },
+    "rheu_trtdosu2": {
+      "answer": {
+        "Unknown": false
+      }
+    },
+    "rheu_trtfrq2": {
+      "answer": null
+    },
+    "rheu_trtfrqu2": {
+      "answer": {
+        "Unknown": false
+      }
+    },
+    "rheu_route2": {
+      "answer": {
+        "Oral": false,
+        "IV": false,
+        "Subcutaneous": false,
+        "Intrathecal": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "rheu_routeo2": {
+      "answer": null
+    },
+    "rheu_indct2": {
+      "answer": {
+        "HLH syndrome": false,
+        "Graft protection": false,
+        "The underlying malignancy": false,
+        "The underlying rheumatologic disease": false,
+        "Infection treatment": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "rheu_indcto2": {
+      "answer": null
+    },
+    "rheu_trtnm3": {
+      "answer": {
+        "Methothrexate": false,
+        "Prednisone": false,
+        "Prednisolone": false,
+        "Dexamethasone": false,
+        "Methylprednisone": false,
+        "Hydroxychloroquine": false,
+        "Sulfasalazine": false,
+        "Leflunomide": false,
+        "Infliximab": false,
+        "Adalimumab": false,
+        "Etanercept": false,
+        "Golimumab": false,
+        "Certolizumab": false,
+        "Abatacept": false,
+        "Tocilizumab": false,
+        "Rituximab": false,
+        "Anakinra": false,
+        "Cyclosporine": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "rheu_trtnmsp3": {
+      "answer": null
+    },
+    "rheu_trtstdt3": {
+      "answer": null
+    },
+    "rheu_trteddt3": {
+      "answer": null
+    },
+    "rheu_trtdos3": {
+      "answer": null
+    },
+    "rheu_trtdosu3": {
+      "answer": {
+        "Unknown": false
+      }
+    },
+    "rheu_trtfrq3": {
+      "answer": null
+    },
+    "rheu_trtfrqu3": {
+      "answer": {
+        "Unknown": false
+      }
+    },
+    "rheu_route3": {
+      "answer": {
+        "Oral": false,
+        "IV": false,
+        "Subcutaneous": false,
+        "Intrathecal": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "rheu_routeo3": {
+      "answer": null
+    },
+    "rheu_indct3": {
+      "answer": {
+        "HLH syndrome": false,
+        "Graft protection": false,
+        "The underlying malignancy": false,
+        "The underlying rheumatologic disease": false,
+        "Infection treatment": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "rheu_indcto3": {
+      "answer": null
+    },
+    "rheu_trtnm4": {
+      "answer": {
+        "Methothrexate": false,
+        "Prednisone": false,
+        "Prednisolone": false,
+        "Dexamethasone": false,
+        "Methylprednisone": false,
+        "Hydroxychloroquine": false,
+        "Sulfasalazine": false,
+        "Leflunomide": false,
+        "Infliximab": false,
+        "Adalimumab": false,
+        "Etanercept": false,
+        "Golimumab": false,
+        "Certolizumab": false,
+        "Abatacept": false,
+        "Tocilizumab": false,
+        "Rituximab": false,
+        "Anakinra": false,
+        "Cyclosporine": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "rheu_trtnmsp4": {
+      "answer": null
+    },
+    "rheu_trtstdt4": {
+      "answer": null
+    },
+    "rheu_trteddt4": {
+      "answer": null
+    },
+    "rheu_trtdos4": {
+      "answer": null
+    },
+    "rheu_trtdosu4": {
+      "answer": {
+        "Unknown": false
+      }
+    },
+    "rheu_trtfrq4": {
+      "answer": null
+    },
+    "rheu_trtfrqu4": {
+      "answer": {
+        "Unknown": false
+      }
+    },
+    "rheu_route4": {
+      "answer": {
+        "Oral": false,
+        "IV": false,
+        "Subcutaneous": false,
+        "Intrathecal": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "rheu_routeo4": {
+      "answer": null
+    },
+    "rheu_indct4": {
+      "answer": {
+        "HLH syndrome": false,
+        "Graft protection": false,
+        "The underlying malignancy": false,
+        "The underlying rheumatologic disease": false,
+        "Infection treatment": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "rheu_indcto4": {
+      "answer": null
+    },
+    "rheu_trtnm5": {
+      "answer": {
+        "Methothrexate": false,
+        "Prednisone": false,
+        "Prednisolone": false,
+        "Dexamethasone": false,
+        "Methylprednisone": false,
+        "Hydroxychloroquine": false,
+        "Sulfasalazine": false,
+        "Leflunomide": false,
+        "Infliximab": false,
+        "Adalimumab": false,
+        "Etanercept": false,
+        "Golimumab": false,
+        "Certolizumab": false,
+        "Abatacept": false,
+        "Tocilizumab": false,
+        "Rituximab": false,
+        "Anakinra": false,
+        "Cyclosporine": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "rheu_trtnmsp5": {
+      "answer": null
+    },
+    "rheu_trtstdt5": {
+      "answer": null
+    },
+    "rheu_trteddt5": {
+      "answer": null
+    },
+    "rheu_trtdos5": {
+      "answer": null
+    },
+    "rheu_trtdosu5": {
+      "answer": {
+        "Unknown": false
+      }
+    },
+    "rheu_trtfrq5": {
+      "answer": null
+    },
+    "rheu_trtfrqu5": {
+      "answer": {
+        "Unknown": false
+      }
+    },
+    "rheu_route5": {
+      "answer": {
+        "Oral": false,
+        "IV": false,
+        "Subcutaneous": false,
+        "Intrathecal": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "rheu_routeo5": {
+      "answer": null
+    },
+    "rheu_indct5": {
+      "answer": {
+        "HLH syndrome": false,
+        "Graft protection": false,
+        "The underlying malignancy": false,
+        "The underlying rheumatologic disease": false,
+        "Infection treatment": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "rheu_indcto5": {
+      "answer": null
+    },
+    "rheu_trtnm6": {
+      "answer": {
+        "Methothrexate": false,
+        "Prednisone": false,
+        "Prednisolone": false,
+        "Dexamethasone": false,
+        "Methylprednisone": false,
+        "Hydroxychloroquine": false,
+        "Sulfasalazine": false,
+        "Leflunomide": false,
+        "Infliximab": false,
+        "Adalimumab": false,
+        "Etanercept": false,
+        "Golimumab": false,
+        "Certolizumab": false,
+        "Abatacept": false,
+        "Tocilizumab": false,
+        "Rituximab": false,
+        "Anakinra": false,
+        "Cyclosporine": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "rheu_trtnmsp6": {
+      "answer": null
+    },
+    "rheu_trtstdt6": {
+      "answer": null
+    },
+    "rheu_trteddt6": {
+      "answer": null
+    },
+    "rheu_trtdos6": {
+      "answer": null
+    },
+    "rheu_trtdosu6": {
+      "answer": {
+        "Unknown": false
+      }
+    },
+    "rheu_trtfrq6": {
+      "answer": null
+    },
+    "rheu_trtfrqu6": {
+      "answer": {
+        "Unknown": false
+      }
+    },
+    "rheu_route6": {
+      "answer": {
+        "Oral": false,
+        "IV": false,
+        "Subcutaneous": false,
+        "Intrathecal": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "rheu_routeo6": {
+      "answer": null
+    },
+    "rheu_indct6": {
+      "answer": {
+        "HLH syndrome": false,
+        "Graft protection": false,
+        "The underlying malignancy": false,
+        "The underlying rheumatologic disease": false,
+        "Infection treatment": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "rheu_indcto6": {
+      "answer": null
+    },
+    "rheu_trtnm7": {
+      "answer": {
+        "Methothrexate": false,
+        "Prednisone": false,
+        "Prednisolone": false,
+        "Dexamethasone": false,
+        "Methylprednisone": false,
+        "Hydroxychloroquine": false,
+        "Sulfasalazine": false,
+        "Leflunomide": false,
+        "Infliximab": false,
+        "Adalimumab": false,
+        "Etanercept": false,
+        "Golimumab": false,
+        "Certolizumab": false,
+        "Abatacept": false,
+        "Tocilizumab": false,
+        "Rituximab": false,
+        "Anakinra": false,
+        "Cyclosporine": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "rheu_trtnmsp7": {
+      "answer": null
+    },
+    "rheu_trtstdt7": {
+      "answer": null
+    },
+    "rheu_trteddt7": {
+      "answer": null
+    },
+    "rheu_trtdos7": {
+      "answer": null
+    },
+    "rheu_trtdosu7": {
+      "answer": {
+        "Unknown": false
+      }
+    },
+    "rheu_trtfrq7": {
+      "answer": null
+    },
+    "rheu_trtfrqu7": {
+      "answer": {
+        "Unknown": false
+      }
+    },
+    "rheu_route7": {
+      "answer": {
+        "Oral": false,
+        "IV": false,
+        "Subcutaneous": false,
+        "Intrathecal": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "rheu_routeo7": {
+      "answer": null
+    },
+    "rheu_indct7": {
+      "answer": {
+        "HLH syndrome": false,
+        "Graft protection": false,
+        "The underlying malignancy": false,
+        "The underlying rheumatologic disease": false,
+        "Infection treatment": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "rheu_indcto7": {
+      "answer": null
+    },
+    "rheu_trtnm8": {
+      "answer": {
+        "Methothrexate": false,
+        "Prednisone": false,
+        "Prednisolone": false,
+        "Dexamethasone": false,
+        "Methylprednisone": false,
+        "Hydroxychloroquine": false,
+        "Sulfasalazine": false,
+        "Leflunomide": false,
+        "Infliximab": false,
+        "Adalimumab": false,
+        "Etanercept": false,
+        "Golimumab": false,
+        "Certolizumab": false,
+        "Abatacept": false,
+        "Tocilizumab": false,
+        "Rituximab": false,
+        "Anakinra": false,
+        "Cyclosporine": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "rheu_trtnmsp8": {
+      "answer": null
+    },
+    "rheu_trtstdt8": {
+      "answer": null
+    },
+    "rheu_trteddt8": {
+      "answer": null
+    },
+    "rheu_trtdos8": {
+      "answer": null
+    },
+    "rheu_trtdosu8": {
+      "answer": {
+        "Unknown": false
+      }
+    },
+    "rheu_trtfrq8": {
+      "answer": null
+    },
+    "rheu_trtfrqu8": {
+      "answer": {
+        "Unknown": false
+      }
+    },
+    "rheu_route8": {
+      "answer": {
+        "Oral": false,
+        "IV": false,
+        "Subcutaneous": false,
+        "Intrathecal": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "rheu_routeo8": {
+      "answer": null
+    },
+    "rheu_indct8": {
+      "answer": {
+        "HLH syndrome": false,
+        "Graft protection": false,
+        "The underlying malignancy": false,
+        "The underlying rheumatologic disease": false,
+        "Infection treatment": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "rheu_indcto8": {
+      "answer": null
+    },
+    "rheu_trtnm9": {
+      "answer": {
+        "Methothrexate": false,
+        "Prednisone": false,
+        "Prednisolone": false,
+        "Dexamethasone": false,
+        "Methylprednisone": false,
+        "Hydroxychloroquine": false,
+        "Sulfasalazine": false,
+        "Leflunomide": false,
+        "Infliximab": false,
+        "Adalimumab": false,
+        "Etanercept": false,
+        "Golimumab": false,
+        "Certolizumab": false,
+        "Abatacept": false,
+        "Tocilizumab": false,
+        "Rituximab": false,
+        "Anakinra": false,
+        "Cyclosporine": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "rheu_trtnmsp9": {
+      "answer": null
+    },
+    "rheu_trtstdt9": {
+      "answer": null
+    },
+    "rheu_trteddt9": {
+      "answer": null
+    },
+    "rheu_trtdos9": {
+      "answer": null
+    },
+    "rheu_trtdosu9": {
+      "answer": {
+        "Unknown": false
+      }
+    },
+    "rheu_trtfrq9": {
+      "answer": null
+    },
+    "rheu_trtfrqu9": {
+      "answer": {
+        "Unknown": false
+      }
+    },
+    "rheu_route9": {
+      "answer": {
+        "Oral": false,
+        "IV": false,
+        "Subcutaneous": false,
+        "Intrathecal": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "rheu_routeo9": {
+      "answer": null
+    },
+    "rheu_indct9": {
+      "answer": {
+        "HLH syndrome": false,
+        "Graft protection": false,
+        "The underlying malignancy": false,
+        "The underlying rheumatologic disease": false,
+        "Infection treatment": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "rheu_indcto9": {
+      "answer": null
+    }
+  },
+  "rheu_regmnsdt": {
+    "answer": null
+  },
+  "rheu_regmnedt": {
+    "answer": null
+  },
+  "please_indicate_the_exact": {
+    "answer": null
+  },
+  "rheu_notesb": {
+    "answer": null
+  },
+  "profile_ab_notes": {
+    "answer": null
+  }
+}
+
+GENERAL "OTHER" FALLBACK RULE (applies to ALL fields):
+- For any radio/dropdown/checkbox field:
+  1) First try to map the evidence to one of the allowed option labels (or clear synonyms).
+  2) If the evidence clearly provides a value but it does NOT match any allowed option label/code:
+     - If the field has an "Other" option AND has a nested/branching "Other specify" text field:
+       * Select/check the "Other" option (use its REDCap code)
+       * Put the exact unmatched value phrase from the evidence into the "Other specify" field
+     - If the field has "Other" option but no specify field:
+       * Select/check "Other" and do not invent text
+     - If the field does not have an "Other" option:
+       * Output null and add the variable name to not_found
+- Do NOT use "Other" when the value matches a valid option label or a clear synonym of a valid option.
+
+JSON TEMPLATE (schema + answer placeholders):
+{
+  "Form Name": "rheumatologic_therapy_regimens",
+  "Questions": {
+    "rheu_regseq": {
+      "Variable / Field Name": "rheu_regseq",
+      "Form Name": "rheumatologic_therapy_regimens",
+      "Field Label": "Sequence number",
+      "Field Type": "text",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "rheu_regmn": {
+      "Variable / Field Name": "rheu_regmn",
+      "Form Name": "rheumatologic_therapy_regimens",
+      "Field Label": "Therapeutic regimen",
+      "Field Type": "text",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "rheu_regmas": {
+      "Variable / Field Name": "rheu_regmas",
+      "Form Name": "rheumatologic_therapy_regimens",
+      "Field Label": "Were any of the drugs for this regimen received in the 6 weeks before MAS onset?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "rheu_regdrgnm": {
+          "Variable / Field Name": "rheu_regdrgnm",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Number of drugs in this regimen",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_drgnmu": {
+          "Variable / Field Name": "rheu_drgnmu",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Number of drugs in this regimen unknown",
+          "Field Type": "radio",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Unknown": "1"
+          }
+        },
+        "rheu_trtnm1": {
+          "Variable / Field Name": "rheu_trtnm1",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Drug name",
+          "Field Type": "dropdown",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Methothrexate",
+            "2": "Prednisone",
+            "17": "Prednisolone",
+            "18": "Dexamethasone",
+            "19": "Methylprednisone",
+            "3": "Hydroxychloroquine",
+            "4": "Sulfasalazine",
+            "5": "Leflunomide",
+            "6": "Infliximab",
+            "11": "Adalimumab",
+            "12": "Etanercept",
+            "13": "Golimumab",
+            "14": "Certolizumab",
+            "7": "Abatacept",
+            "8": "Tocilizumab",
+            "9": "Rituximab",
+            "10": "Anakinra",
+            "15": "Cyclosporine",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Methothrexate": "True|False",
+            "Prednisone": "True|False",
+            "Prednisolone": "True|False",
+            "Dexamethasone": "True|False",
+            "Methylprednisone": "True|False",
+            "Hydroxychloroquine": "True|False",
+            "Sulfasalazine": "True|False",
+            "Leflunomide": "True|False",
+            "Infliximab": "True|False",
+            "Adalimumab": "True|False",
+            "Etanercept": "True|False",
+            "Golimumab": "True|False",
+            "Certolizumab": "True|False",
+            "Abatacept": "True|False",
+            "Tocilizumab": "True|False",
+            "Rituximab": "True|False",
+            "Anakinra": "True|False",
+            "Cyclosporine": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Methothrexate": "1",
+            "Prednisone": "2",
+            "Prednisolone": "17",
+            "Dexamethasone": "18",
+            "Methylprednisone": "19",
+            "Hydroxychloroquine": "3",
+            "Sulfasalazine": "4",
+            "Leflunomide": "5",
+            "Infliximab": "6",
+            "Adalimumab": "11",
+            "Etanercept": "12",
+            "Golimumab": "13",
+            "Certolizumab": "14",
+            "Abatacept": "7",
+            "Tocilizumab": "8",
+            "Rituximab": "9",
+            "Anakinra": "10",
+            "Cyclosporine": "15",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "rheu_trtnmsp1": {
+          "Variable / Field Name": "rheu_trtnmsp1",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_regmas] = '1' and [rheu_trtnm1] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtstdt1": {
+          "Variable / Field Name": "rheu_trtstdt1",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose Start Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trteddt1": {
+          "Variable / Field Name": "rheu_trteddt1",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose End Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtdos1": {
+          "Variable / Field Name": "rheu_trtdos1",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose",
+          "Field Type": "text",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtdosu1": {
+          "Variable / Field Name": "rheu_trtdosu1",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose Unknown",
+          "Field Type": "radio",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Unknown": "1"
+          }
+        },
+        "rheu_trtfrq1": {
+          "Variable / Field Name": "rheu_trtfrq1",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Frequency per day",
+          "Field Type": "text",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtfrqu1": {
+          "Variable / Field Name": "rheu_trtfrqu1",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Frequency per day Unknown",
+          "Field Type": "radio",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Unknown": "1"
+          }
+        },
+        "rheu_route1": {
+          "Variable / Field Name": "rheu_route1",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Route",
+          "Field Type": "dropdown",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Oral",
+            "2": "IV",
+            "3": "Subcutaneous",
+            "4": "Intrathecal",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Oral": "True|False",
+            "IV": "True|False",
+            "Subcutaneous": "True|False",
+            "Intrathecal": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Oral": "1",
+            "IV": "2",
+            "Subcutaneous": "3",
+            "Intrathecal": "4",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "rheu_routeo1": {
+          "Variable / Field Name": "rheu_routeo1",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_regmas] = '1' and [rheu_route1] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_indct1": {
+          "Variable / Field Name": "rheu_indct1",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Indication",
+          "Field Type": "dropdown",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "4": "The underlying rheumatologic disease",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "The underlying rheumatologic disease": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "The underlying rheumatologic disease": "4",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "rheu_indcto1": {
+          "Variable / Field Name": "rheu_indcto1",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_regmas] = '1' and [rheu_indct1] = '98'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtnm2": {
+          "Variable / Field Name": "rheu_trtnm2",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Drug name",
+          "Field Type": "dropdown",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Methothrexate",
+            "2": "Prednisone",
+            "17": "Prednisolone",
+            "18": "Dexamethasone",
+            "19": "Methylprednisone",
+            "3": "Hydroxychloroquine",
+            "4": "Sulfasalazine",
+            "5": "Leflunomide",
+            "6": "Infliximab",
+            "11": "Adalimumab",
+            "12": "Etanercept",
+            "13": "Golimumab",
+            "14": "Certolizumab",
+            "7": "Abatacept",
+            "8": "Tocilizumab",
+            "9": "Rituximab",
+            "10": "Anakinra",
+            "15": "Cyclosporine",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Methothrexate": "True|False",
+            "Prednisone": "True|False",
+            "Prednisolone": "True|False",
+            "Dexamethasone": "True|False",
+            "Methylprednisone": "True|False",
+            "Hydroxychloroquine": "True|False",
+            "Sulfasalazine": "True|False",
+            "Leflunomide": "True|False",
+            "Infliximab": "True|False",
+            "Adalimumab": "True|False",
+            "Etanercept": "True|False",
+            "Golimumab": "True|False",
+            "Certolizumab": "True|False",
+            "Abatacept": "True|False",
+            "Tocilizumab": "True|False",
+            "Rituximab": "True|False",
+            "Anakinra": "True|False",
+            "Cyclosporine": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Methothrexate": "1",
+            "Prednisone": "2",
+            "Prednisolone": "17",
+            "Dexamethasone": "18",
+            "Methylprednisone": "19",
+            "Hydroxychloroquine": "3",
+            "Sulfasalazine": "4",
+            "Leflunomide": "5",
+            "Infliximab": "6",
+            "Adalimumab": "11",
+            "Etanercept": "12",
+            "Golimumab": "13",
+            "Certolizumab": "14",
+            "Abatacept": "7",
+            "Tocilizumab": "8",
+            "Rituximab": "9",
+            "Anakinra": "10",
+            "Cyclosporine": "15",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "rheu_trtnmsp2": {
+          "Variable / Field Name": "rheu_trtnmsp2",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_regmas] = '1' and [rheu_trtnm2] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtstdt2": {
+          "Variable / Field Name": "rheu_trtstdt2",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose Start Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trteddt2": {
+          "Variable / Field Name": "rheu_trteddt2",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose End Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtdos2": {
+          "Variable / Field Name": "rheu_trtdos2",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose",
+          "Field Type": "text",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtdosu2": {
+          "Variable / Field Name": "rheu_trtdosu2",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose Unknown",
+          "Field Type": "radio",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Unknown": "1"
+          }
+        },
+        "rheu_trtfrq2": {
+          "Variable / Field Name": "rheu_trtfrq2",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Frequency per day",
+          "Field Type": "text",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtfrqu2": {
+          "Variable / Field Name": "rheu_trtfrqu2",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Frequency per day Unknown",
+          "Field Type": "radio",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Unknown": "1"
+          }
+        },
+        "rheu_route2": {
+          "Variable / Field Name": "rheu_route2",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Route",
+          "Field Type": "dropdown",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Oral",
+            "2": "IV",
+            "3": "Subcutaneous",
+            "4": "Intrathecal",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Oral": "True|False",
+            "IV": "True|False",
+            "Subcutaneous": "True|False",
+            "Intrathecal": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Oral": "1",
+            "IV": "2",
+            "Subcutaneous": "3",
+            "Intrathecal": "4",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "rheu_routeo2": {
+          "Variable / Field Name": "rheu_routeo2",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_regmas] = '1' and [rheu_route2] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_indct2": {
+          "Variable / Field Name": "rheu_indct2",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Indication",
+          "Field Type": "dropdown",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "HLH syndrome",
+            "2": "Graft protection",
+            "3": "The underlying malignancy",
+            "4": "The underlying rheumatologic disease",
+            "5": "Infection treatment",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "HLH syndrome": "True|False",
+            "Graft protection": "True|False",
+            "The underlying malignancy": "True|False",
+            "The underlying rheumatologic disease": "True|False",
+            "Infection treatment": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "HLH syndrome": "1",
+            "Graft protection": "2",
+            "The underlying malignancy": "3",
+            "The underlying rheumatologic disease": "4",
+            "Infection treatment": "5",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "rheu_indcto2": {
+          "Variable / Field Name": "rheu_indcto2",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_regmas] = '1' and [rheu_indct1] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtnm3": {
+          "Variable / Field Name": "rheu_trtnm3",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Drug name",
+          "Field Type": "dropdown",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Methothrexate",
+            "2": "Prednisone",
+            "17": "Prednisolone",
+            "18": "Dexamethasone",
+            "19": "Methylprednisone",
+            "3": "Hydroxychloroquine",
+            "4": "Sulfasalazine",
+            "5": "Leflunomide",
+            "6": "Infliximab",
+            "11": "Adalimumab",
+            "12": "Etanercept",
+            "13": "Golimumab",
+            "14": "Certolizumab",
+            "7": "Abatacept",
+            "8": "Tocilizumab",
+            "9": "Rituximab",
+            "10": "Anakinra",
+            "15": "Cyclosporine",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Methothrexate": "True|False",
+            "Prednisone": "True|False",
+            "Prednisolone": "True|False",
+            "Dexamethasone": "True|False",
+            "Methylprednisone": "True|False",
+            "Hydroxychloroquine": "True|False",
+            "Sulfasalazine": "True|False",
+            "Leflunomide": "True|False",
+            "Infliximab": "True|False",
+            "Adalimumab": "True|False",
+            "Etanercept": "True|False",
+            "Golimumab": "True|False",
+            "Certolizumab": "True|False",
+            "Abatacept": "True|False",
+            "Tocilizumab": "True|False",
+            "Rituximab": "True|False",
+            "Anakinra": "True|False",
+            "Cyclosporine": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Methothrexate": "1",
+            "Prednisone": "2",
+            "Prednisolone": "17",
+            "Dexamethasone": "18",
+            "Methylprednisone": "19",
+            "Hydroxychloroquine": "3",
+            "Sulfasalazine": "4",
+            "Leflunomide": "5",
+            "Infliximab": "6",
+            "Adalimumab": "11",
+            "Etanercept": "12",
+            "Golimumab": "13",
+            "Certolizumab": "14",
+            "Abatacept": "7",
+            "Tocilizumab": "8",
+            "Rituximab": "9",
+            "Anakinra": "10",
+            "Cyclosporine": "15",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "rheu_trtnmsp3": {
+          "Variable / Field Name": "rheu_trtnmsp3",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_regmas] = '1' and [rheu_trtnm3] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtstdt3": {
+          "Variable / Field Name": "rheu_trtstdt3",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose Start Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trteddt3": {
+          "Variable / Field Name": "rheu_trteddt3",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose End Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtdos3": {
+          "Variable / Field Name": "rheu_trtdos3",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose",
+          "Field Type": "text",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtdosu3": {
+          "Variable / Field Name": "rheu_trtdosu3",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose Unknown",
+          "Field Type": "radio",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Unknown": "1"
+          }
+        },
+        "rheu_trtfrq3": {
+          "Variable / Field Name": "rheu_trtfrq3",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Frequency per day",
+          "Field Type": "text",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtfrqu3": {
+          "Variable / Field Name": "rheu_trtfrqu3",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Frequency per day Unknown",
+          "Field Type": "radio",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Unknown": "1"
+          }
+        },
+        "rheu_route3": {
+          "Variable / Field Name": "rheu_route3",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Route",
+          "Field Type": "dropdown",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Oral",
+            "2": "IV",
+            "3": "Subcutaneous",
+            "4": "Intrathecal",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Oral": "True|False",
+            "IV": "True|False",
+            "Subcutaneous": "True|False",
+            "Intrathecal": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Oral": "1",
+            "IV": "2",
+            "Subcutaneous": "3",
+            "Intrathecal": "4",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "rheu_routeo3": {
+          "Variable / Field Name": "rheu_routeo3",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_regmas] = '1' and [rheu_route3] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_indct3": {
+          "Variable / Field Name": "rheu_indct3",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Indication",
+          "Field Type": "dropdown",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "HLH syndrome",
+            "2": "Graft protection",
+            "3": "The underlying malignancy",
+            "4": "The underlying rheumatologic disease",
+            "5": "Infection treatment",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "HLH syndrome": "True|False",
+            "Graft protection": "True|False",
+            "The underlying malignancy": "True|False",
+            "The underlying rheumatologic disease": "True|False",
+            "Infection treatment": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "HLH syndrome": "1",
+            "Graft protection": "2",
+            "The underlying malignancy": "3",
+            "The underlying rheumatologic disease": "4",
+            "Infection treatment": "5",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "rheu_indcto3": {
+          "Variable / Field Name": "rheu_indcto3",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_regmas] = '1' and [rheu_indct3] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtnm4": {
+          "Variable / Field Name": "rheu_trtnm4",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Drug name",
+          "Field Type": "dropdown",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Methothrexate",
+            "2": "Prednisone",
+            "17": "Prednisolone",
+            "18": "Dexamethasone",
+            "19": "Methylprednisone",
+            "3": "Hydroxychloroquine",
+            "4": "Sulfasalazine",
+            "5": "Leflunomide",
+            "6": "Infliximab",
+            "11": "Adalimumab",
+            "12": "Etanercept",
+            "13": "Golimumab",
+            "14": "Certolizumab",
+            "7": "Abatacept",
+            "8": "Tocilizumab",
+            "9": "Rituximab",
+            "10": "Anakinra",
+            "15": "Cyclosporine",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Methothrexate": "True|False",
+            "Prednisone": "True|False",
+            "Prednisolone": "True|False",
+            "Dexamethasone": "True|False",
+            "Methylprednisone": "True|False",
+            "Hydroxychloroquine": "True|False",
+            "Sulfasalazine": "True|False",
+            "Leflunomide": "True|False",
+            "Infliximab": "True|False",
+            "Adalimumab": "True|False",
+            "Etanercept": "True|False",
+            "Golimumab": "True|False",
+            "Certolizumab": "True|False",
+            "Abatacept": "True|False",
+            "Tocilizumab": "True|False",
+            "Rituximab": "True|False",
+            "Anakinra": "True|False",
+            "Cyclosporine": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Methothrexate": "1",
+            "Prednisone": "2",
+            "Prednisolone": "17",
+            "Dexamethasone": "18",
+            "Methylprednisone": "19",
+            "Hydroxychloroquine": "3",
+            "Sulfasalazine": "4",
+            "Leflunomide": "5",
+            "Infliximab": "6",
+            "Adalimumab": "11",
+            "Etanercept": "12",
+            "Golimumab": "13",
+            "Certolizumab": "14",
+            "Abatacept": "7",
+            "Tocilizumab": "8",
+            "Rituximab": "9",
+            "Anakinra": "10",
+            "Cyclosporine": "15",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "rheu_trtnmsp4": {
+          "Variable / Field Name": "rheu_trtnmsp4",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_regmas] = '1' and [rheu_trtnm4] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtstdt4": {
+          "Variable / Field Name": "rheu_trtstdt4",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose Start Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trteddt4": {
+          "Variable / Field Name": "rheu_trteddt4",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose End Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtdos4": {
+          "Variable / Field Name": "rheu_trtdos4",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose",
+          "Field Type": "text",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtdosu4": {
+          "Variable / Field Name": "rheu_trtdosu4",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose Unknown",
+          "Field Type": "radio",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Unknown": "1"
+          }
+        },
+        "rheu_trtfrq4": {
+          "Variable / Field Name": "rheu_trtfrq4",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Frequency per day",
+          "Field Type": "text",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtfrqu4": {
+          "Variable / Field Name": "rheu_trtfrqu4",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Frequency per day Unknown",
+          "Field Type": "radio",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Unknown": "1"
+          }
+        },
+        "rheu_route4": {
+          "Variable / Field Name": "rheu_route4",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Route",
+          "Field Type": "dropdown",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Oral",
+            "2": "IV",
+            "3": "Subcutaneous",
+            "4": "Intrathecal",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Oral": "True|False",
+            "IV": "True|False",
+            "Subcutaneous": "True|False",
+            "Intrathecal": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Oral": "1",
+            "IV": "2",
+            "Subcutaneous": "3",
+            "Intrathecal": "4",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "rheu_routeo4": {
+          "Variable / Field Name": "rheu_routeo4",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_regmas] = '1' and [rheu_route4] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_indct4": {
+          "Variable / Field Name": "rheu_indct4",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Indication",
+          "Field Type": "dropdown",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "HLH syndrome",
+            "2": "Graft protection",
+            "3": "The underlying malignancy",
+            "4": "The underlying rheumatologic disease",
+            "5": "Infection treatment",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "HLH syndrome": "True|False",
+            "Graft protection": "True|False",
+            "The underlying malignancy": "True|False",
+            "The underlying rheumatologic disease": "True|False",
+            "Infection treatment": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "HLH syndrome": "1",
+            "Graft protection": "2",
+            "The underlying malignancy": "3",
+            "The underlying rheumatologic disease": "4",
+            "Infection treatment": "5",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "rheu_indcto4": {
+          "Variable / Field Name": "rheu_indcto4",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_regmas] = '1' and [rheu_indct4] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtnm5": {
+          "Variable / Field Name": "rheu_trtnm5",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Drug name",
+          "Field Type": "dropdown",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Methothrexate",
+            "2": "Prednisone",
+            "17": "Prednisolone",
+            "18": "Dexamethasone",
+            "19": "Methylprednisone",
+            "3": "Hydroxychloroquine",
+            "4": "Sulfasalazine",
+            "5": "Leflunomide",
+            "6": "Infliximab",
+            "11": "Adalimumab",
+            "12": "Etanercept",
+            "13": "Golimumab",
+            "14": "Certolizumab",
+            "7": "Abatacept",
+            "8": "Tocilizumab",
+            "9": "Rituximab",
+            "10": "Anakinra",
+            "15": "Cyclosporine",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Methothrexate": "True|False",
+            "Prednisone": "True|False",
+            "Prednisolone": "True|False",
+            "Dexamethasone": "True|False",
+            "Methylprednisone": "True|False",
+            "Hydroxychloroquine": "True|False",
+            "Sulfasalazine": "True|False",
+            "Leflunomide": "True|False",
+            "Infliximab": "True|False",
+            "Adalimumab": "True|False",
+            "Etanercept": "True|False",
+            "Golimumab": "True|False",
+            "Certolizumab": "True|False",
+            "Abatacept": "True|False",
+            "Tocilizumab": "True|False",
+            "Rituximab": "True|False",
+            "Anakinra": "True|False",
+            "Cyclosporine": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Methothrexate": "1",
+            "Prednisone": "2",
+            "Prednisolone": "17",
+            "Dexamethasone": "18",
+            "Methylprednisone": "19",
+            "Hydroxychloroquine": "3",
+            "Sulfasalazine": "4",
+            "Leflunomide": "5",
+            "Infliximab": "6",
+            "Adalimumab": "11",
+            "Etanercept": "12",
+            "Golimumab": "13",
+            "Certolizumab": "14",
+            "Abatacept": "7",
+            "Tocilizumab": "8",
+            "Rituximab": "9",
+            "Anakinra": "10",
+            "Cyclosporine": "15",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "rheu_trtnmsp5": {
+          "Variable / Field Name": "rheu_trtnmsp5",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_regmas] = '1' and [rheu_trtnm5] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtstdt5": {
+          "Variable / Field Name": "rheu_trtstdt5",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose Start Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trteddt5": {
+          "Variable / Field Name": "rheu_trteddt5",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose End Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtdos5": {
+          "Variable / Field Name": "rheu_trtdos5",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose",
+          "Field Type": "text",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtdosu5": {
+          "Variable / Field Name": "rheu_trtdosu5",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose Unknown",
+          "Field Type": "radio",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Unknown": "1"
+          }
+        },
+        "rheu_trtfrq5": {
+          "Variable / Field Name": "rheu_trtfrq5",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Frequency per day",
+          "Field Type": "text",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtfrqu5": {
+          "Variable / Field Name": "rheu_trtfrqu5",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Frequency per day Unknown",
+          "Field Type": "radio",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Unknown": "1"
+          }
+        },
+        "rheu_route5": {
+          "Variable / Field Name": "rheu_route5",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Route",
+          "Field Type": "dropdown",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Oral",
+            "2": "IV",
+            "3": "Subcutaneous",
+            "4": "Intrathecal",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Oral": "True|False",
+            "IV": "True|False",
+            "Subcutaneous": "True|False",
+            "Intrathecal": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Oral": "1",
+            "IV": "2",
+            "Subcutaneous": "3",
+            "Intrathecal": "4",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "rheu_routeo5": {
+          "Variable / Field Name": "rheu_routeo5",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_regmas] = '1' and [rheu_route5] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_indct5": {
+          "Variable / Field Name": "rheu_indct5",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Indication",
+          "Field Type": "dropdown",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "HLH syndrome",
+            "2": "Graft protection",
+            "3": "The underlying malignancy",
+            "4": "The underlying rheumatologic disease",
+            "5": "Infection treatment",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "HLH syndrome": "True|False",
+            "Graft protection": "True|False",
+            "The underlying malignancy": "True|False",
+            "The underlying rheumatologic disease": "True|False",
+            "Infection treatment": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "HLH syndrome": "1",
+            "Graft protection": "2",
+            "The underlying malignancy": "3",
+            "The underlying rheumatologic disease": "4",
+            "Infection treatment": "5",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "rheu_indcto5": {
+          "Variable / Field Name": "rheu_indcto5",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_regmas] = '1' and [rheu_indct5] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtnm6": {
+          "Variable / Field Name": "rheu_trtnm6",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Drug name",
+          "Field Type": "dropdown",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Methothrexate",
+            "2": "Prednisone",
+            "17": "Prednisolone",
+            "18": "Dexamethasone",
+            "19": "Methylprednisone",
+            "3": "Hydroxychloroquine",
+            "4": "Sulfasalazine",
+            "5": "Leflunomide",
+            "6": "Infliximab",
+            "11": "Adalimumab",
+            "12": "Etanercept",
+            "13": "Golimumab",
+            "14": "Certolizumab",
+            "7": "Abatacept",
+            "8": "Tocilizumab",
+            "9": "Rituximab",
+            "10": "Anakinra",
+            "15": "Cyclosporine",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Methothrexate": "True|False",
+            "Prednisone": "True|False",
+            "Prednisolone": "True|False",
+            "Dexamethasone": "True|False",
+            "Methylprednisone": "True|False",
+            "Hydroxychloroquine": "True|False",
+            "Sulfasalazine": "True|False",
+            "Leflunomide": "True|False",
+            "Infliximab": "True|False",
+            "Adalimumab": "True|False",
+            "Etanercept": "True|False",
+            "Golimumab": "True|False",
+            "Certolizumab": "True|False",
+            "Abatacept": "True|False",
+            "Tocilizumab": "True|False",
+            "Rituximab": "True|False",
+            "Anakinra": "True|False",
+            "Cyclosporine": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Methothrexate": "1",
+            "Prednisone": "2",
+            "Prednisolone": "17",
+            "Dexamethasone": "18",
+            "Methylprednisone": "19",
+            "Hydroxychloroquine": "3",
+            "Sulfasalazine": "4",
+            "Leflunomide": "5",
+            "Infliximab": "6",
+            "Adalimumab": "11",
+            "Etanercept": "12",
+            "Golimumab": "13",
+            "Certolizumab": "14",
+            "Abatacept": "7",
+            "Tocilizumab": "8",
+            "Rituximab": "9",
+            "Anakinra": "10",
+            "Cyclosporine": "15",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "rheu_trtnmsp6": {
+          "Variable / Field Name": "rheu_trtnmsp6",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_regmas] = '1' and [rheu_trtnm6] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtstdt6": {
+          "Variable / Field Name": "rheu_trtstdt6",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose Start Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trteddt6": {
+          "Variable / Field Name": "rheu_trteddt6",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose End Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtdos6": {
+          "Variable / Field Name": "rheu_trtdos6",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose",
+          "Field Type": "text",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtdosu6": {
+          "Variable / Field Name": "rheu_trtdosu6",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose Unknown",
+          "Field Type": "radio",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Unknown": "1"
+          }
+        },
+        "rheu_trtfrq6": {
+          "Variable / Field Name": "rheu_trtfrq6",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Frequency per day",
+          "Field Type": "text",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtfrqu6": {
+          "Variable / Field Name": "rheu_trtfrqu6",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Frequency per day Unknown",
+          "Field Type": "radio",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Unknown": "1"
+          }
+        },
+        "rheu_route6": {
+          "Variable / Field Name": "rheu_route6",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Route",
+          "Field Type": "dropdown",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Oral",
+            "2": "IV",
+            "3": "Subcutaneous",
+            "4": "Intrathecal",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Oral": "True|False",
+            "IV": "True|False",
+            "Subcutaneous": "True|False",
+            "Intrathecal": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Oral": "1",
+            "IV": "2",
+            "Subcutaneous": "3",
+            "Intrathecal": "4",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "rheu_routeo6": {
+          "Variable / Field Name": "rheu_routeo6",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_regmas] = '1' and [rheu_route6] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_indct6": {
+          "Variable / Field Name": "rheu_indct6",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Indication",
+          "Field Type": "dropdown",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "HLH syndrome",
+            "2": "Graft protection",
+            "3": "The underlying malignancy",
+            "4": "The underlying rheumatologic disease",
+            "5": "Infection treatment",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "HLH syndrome": "True|False",
+            "Graft protection": "True|False",
+            "The underlying malignancy": "True|False",
+            "The underlying rheumatologic disease": "True|False",
+            "Infection treatment": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "HLH syndrome": "1",
+            "Graft protection": "2",
+            "The underlying malignancy": "3",
+            "The underlying rheumatologic disease": "4",
+            "Infection treatment": "5",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "rheu_indcto6": {
+          "Variable / Field Name": "rheu_indcto6",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_regmas] = '1' and [rheu_indct6] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtnm7": {
+          "Variable / Field Name": "rheu_trtnm7",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Drug name",
+          "Field Type": "dropdown",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Methothrexate",
+            "2": "Prednisone",
+            "17": "Prednisolone",
+            "18": "Dexamethasone",
+            "19": "Methylprednisone",
+            "3": "Hydroxychloroquine",
+            "4": "Sulfasalazine",
+            "5": "Leflunomide",
+            "6": "Infliximab",
+            "11": "Adalimumab",
+            "12": "Etanercept",
+            "13": "Golimumab",
+            "14": "Certolizumab",
+            "7": "Abatacept",
+            "8": "Tocilizumab",
+            "9": "Rituximab",
+            "10": "Anakinra",
+            "15": "Cyclosporine",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Methothrexate": "True|False",
+            "Prednisone": "True|False",
+            "Prednisolone": "True|False",
+            "Dexamethasone": "True|False",
+            "Methylprednisone": "True|False",
+            "Hydroxychloroquine": "True|False",
+            "Sulfasalazine": "True|False",
+            "Leflunomide": "True|False",
+            "Infliximab": "True|False",
+            "Adalimumab": "True|False",
+            "Etanercept": "True|False",
+            "Golimumab": "True|False",
+            "Certolizumab": "True|False",
+            "Abatacept": "True|False",
+            "Tocilizumab": "True|False",
+            "Rituximab": "True|False",
+            "Anakinra": "True|False",
+            "Cyclosporine": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Methothrexate": "1",
+            "Prednisone": "2",
+            "Prednisolone": "17",
+            "Dexamethasone": "18",
+            "Methylprednisone": "19",
+            "Hydroxychloroquine": "3",
+            "Sulfasalazine": "4",
+            "Leflunomide": "5",
+            "Infliximab": "6",
+            "Adalimumab": "11",
+            "Etanercept": "12",
+            "Golimumab": "13",
+            "Certolizumab": "14",
+            "Abatacept": "7",
+            "Tocilizumab": "8",
+            "Rituximab": "9",
+            "Anakinra": "10",
+            "Cyclosporine": "15",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "rheu_trtnmsp7": {
+          "Variable / Field Name": "rheu_trtnmsp7",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_regmas] = '1' and [rheu_trtnm7] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtstdt7": {
+          "Variable / Field Name": "rheu_trtstdt7",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose Start Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trteddt7": {
+          "Variable / Field Name": "rheu_trteddt7",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose End Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtdos7": {
+          "Variable / Field Name": "rheu_trtdos7",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose",
+          "Field Type": "text",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtdosu7": {
+          "Variable / Field Name": "rheu_trtdosu7",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose Unknown",
+          "Field Type": "radio",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Unknown": "1"
+          }
+        },
+        "rheu_trtfrq7": {
+          "Variable / Field Name": "rheu_trtfrq7",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Frequency per day",
+          "Field Type": "text",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtfrqu7": {
+          "Variable / Field Name": "rheu_trtfrqu7",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Frequency per day Unknown",
+          "Field Type": "radio",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Unknown": "1"
+          }
+        },
+        "rheu_route7": {
+          "Variable / Field Name": "rheu_route7",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Route",
+          "Field Type": "dropdown",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Oral",
+            "2": "IV",
+            "3": "Subcutaneous",
+            "4": "Intrathecal",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Oral": "True|False",
+            "IV": "True|False",
+            "Subcutaneous": "True|False",
+            "Intrathecal": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Oral": "1",
+            "IV": "2",
+            "Subcutaneous": "3",
+            "Intrathecal": "4",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "rheu_routeo7": {
+          "Variable / Field Name": "rheu_routeo7",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_regmas] = '1' and [rheu_route7] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_indct7": {
+          "Variable / Field Name": "rheu_indct7",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Indication",
+          "Field Type": "dropdown",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "HLH syndrome",
+            "2": "Graft protection",
+            "3": "The underlying malignancy",
+            "4": "The underlying rheumatologic disease",
+            "5": "Infection treatment",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "HLH syndrome": "True|False",
+            "Graft protection": "True|False",
+            "The underlying malignancy": "True|False",
+            "The underlying rheumatologic disease": "True|False",
+            "Infection treatment": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "HLH syndrome": "1",
+            "Graft protection": "2",
+            "The underlying malignancy": "3",
+            "The underlying rheumatologic disease": "4",
+            "Infection treatment": "5",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "rheu_indcto7": {
+          "Variable / Field Name": "rheu_indcto7",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_regmas] = '1' and [rheu_indct7] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtnm8": {
+          "Variable / Field Name": "rheu_trtnm8",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Drug name",
+          "Field Type": "dropdown",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Methothrexate",
+            "2": "Prednisone",
+            "17": "Prednisolone",
+            "18": "Dexamethasone",
+            "19": "Methylprednisone",
+            "3": "Hydroxychloroquine",
+            "4": "Sulfasalazine",
+            "5": "Leflunomide",
+            "6": "Infliximab",
+            "11": "Adalimumab",
+            "12": "Etanercept",
+            "13": "Golimumab",
+            "14": "Certolizumab",
+            "7": "Abatacept",
+            "8": "Tocilizumab",
+            "9": "Rituximab",
+            "10": "Anakinra",
+            "15": "Cyclosporine",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Methothrexate": "True|False",
+            "Prednisone": "True|False",
+            "Prednisolone": "True|False",
+            "Dexamethasone": "True|False",
+            "Methylprednisone": "True|False",
+            "Hydroxychloroquine": "True|False",
+            "Sulfasalazine": "True|False",
+            "Leflunomide": "True|False",
+            "Infliximab": "True|False",
+            "Adalimumab": "True|False",
+            "Etanercept": "True|False",
+            "Golimumab": "True|False",
+            "Certolizumab": "True|False",
+            "Abatacept": "True|False",
+            "Tocilizumab": "True|False",
+            "Rituximab": "True|False",
+            "Anakinra": "True|False",
+            "Cyclosporine": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Methothrexate": "1",
+            "Prednisone": "2",
+            "Prednisolone": "17",
+            "Dexamethasone": "18",
+            "Methylprednisone": "19",
+            "Hydroxychloroquine": "3",
+            "Sulfasalazine": "4",
+            "Leflunomide": "5",
+            "Infliximab": "6",
+            "Adalimumab": "11",
+            "Etanercept": "12",
+            "Golimumab": "13",
+            "Certolizumab": "14",
+            "Abatacept": "7",
+            "Tocilizumab": "8",
+            "Rituximab": "9",
+            "Anakinra": "10",
+            "Cyclosporine": "15",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "rheu_trtnmsp8": {
+          "Variable / Field Name": "rheu_trtnmsp8",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_regmas] = '1' and [rheu_trtnm8] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtstdt8": {
+          "Variable / Field Name": "rheu_trtstdt8",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose Start Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trteddt8": {
+          "Variable / Field Name": "rheu_trteddt8",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose End Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtdos8": {
+          "Variable / Field Name": "rheu_trtdos8",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose",
+          "Field Type": "text",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtdosu8": {
+          "Variable / Field Name": "rheu_trtdosu8",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose Unknown",
+          "Field Type": "radio",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Unknown": "1"
+          }
+        },
+        "rheu_trtfrq8": {
+          "Variable / Field Name": "rheu_trtfrq8",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Frequency per day",
+          "Field Type": "text",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtfrqu8": {
+          "Variable / Field Name": "rheu_trtfrqu8",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Frequency per day Unknown",
+          "Field Type": "radio",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Unknown": "1"
+          }
+        },
+        "rheu_route8": {
+          "Variable / Field Name": "rheu_route8",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Route",
+          "Field Type": "dropdown",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Oral",
+            "2": "IV",
+            "3": "Subcutaneous",
+            "4": "Intrathecal",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Oral": "True|False",
+            "IV": "True|False",
+            "Subcutaneous": "True|False",
+            "Intrathecal": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Oral": "1",
+            "IV": "2",
+            "Subcutaneous": "3",
+            "Intrathecal": "4",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "rheu_routeo8": {
+          "Variable / Field Name": "rheu_routeo8",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_regmas] = '1' and [rheu_route8] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_indct8": {
+          "Variable / Field Name": "rheu_indct8",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Indication",
+          "Field Type": "dropdown",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "HLH syndrome",
+            "2": "Graft protection",
+            "3": "The underlying malignancy",
+            "4": "The underlying rheumatologic disease",
+            "5": "Infection treatment",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "HLH syndrome": "True|False",
+            "Graft protection": "True|False",
+            "The underlying malignancy": "True|False",
+            "The underlying rheumatologic disease": "True|False",
+            "Infection treatment": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "HLH syndrome": "1",
+            "Graft protection": "2",
+            "The underlying malignancy": "3",
+            "The underlying rheumatologic disease": "4",
+            "Infection treatment": "5",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "rheu_indcto8": {
+          "Variable / Field Name": "rheu_indcto8",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_regmas] = '1' and [rheu_indct8] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtnm9": {
+          "Variable / Field Name": "rheu_trtnm9",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Drug name",
+          "Field Type": "dropdown",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Methothrexate",
+            "2": "Prednisone",
+            "17": "Prednisolone",
+            "18": "Dexamethasone",
+            "19": "Methylprednisone",
+            "3": "Hydroxychloroquine",
+            "4": "Sulfasalazine",
+            "5": "Leflunomide",
+            "6": "Infliximab",
+            "11": "Adalimumab",
+            "12": "Etanercept",
+            "13": "Golimumab",
+            "14": "Certolizumab",
+            "7": "Abatacept",
+            "8": "Tocilizumab",
+            "9": "Rituximab",
+            "10": "Anakinra",
+            "15": "Cyclosporine",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Methothrexate": "True|False",
+            "Prednisone": "True|False",
+            "Prednisolone": "True|False",
+            "Dexamethasone": "True|False",
+            "Methylprednisone": "True|False",
+            "Hydroxychloroquine": "True|False",
+            "Sulfasalazine": "True|False",
+            "Leflunomide": "True|False",
+            "Infliximab": "True|False",
+            "Adalimumab": "True|False",
+            "Etanercept": "True|False",
+            "Golimumab": "True|False",
+            "Certolizumab": "True|False",
+            "Abatacept": "True|False",
+            "Tocilizumab": "True|False",
+            "Rituximab": "True|False",
+            "Anakinra": "True|False",
+            "Cyclosporine": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Methothrexate": "1",
+            "Prednisone": "2",
+            "Prednisolone": "17",
+            "Dexamethasone": "18",
+            "Methylprednisone": "19",
+            "Hydroxychloroquine": "3",
+            "Sulfasalazine": "4",
+            "Leflunomide": "5",
+            "Infliximab": "6",
+            "Adalimumab": "11",
+            "Etanercept": "12",
+            "Golimumab": "13",
+            "Certolizumab": "14",
+            "Abatacept": "7",
+            "Tocilizumab": "8",
+            "Rituximab": "9",
+            "Anakinra": "10",
+            "Cyclosporine": "15",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "rheu_trtnmsp9": {
+          "Variable / Field Name": "rheu_trtnmsp9",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_regmas] = '1' and [rheu_trtnm9] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtstdt9": {
+          "Variable / Field Name": "rheu_trtstdt9",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose Start Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trteddt9": {
+          "Variable / Field Name": "rheu_trteddt9",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose End Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtdos9": {
+          "Variable / Field Name": "rheu_trtdos9",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose",
+          "Field Type": "text",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtdosu9": {
+          "Variable / Field Name": "rheu_trtdosu9",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Dose Unknown",
+          "Field Type": "radio",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Unknown": "1"
+          }
+        },
+        "rheu_trtfrq9": {
+          "Variable / Field Name": "rheu_trtfrq9",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Frequency per day",
+          "Field Type": "text",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_trtfrqu9": {
+          "Variable / Field Name": "rheu_trtfrqu9",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Frequency per day Unknown",
+          "Field Type": "radio",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Unknown": "1"
+          }
+        },
+        "rheu_route9": {
+          "Variable / Field Name": "rheu_route9",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Route",
+          "Field Type": "dropdown",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Oral",
+            "2": "IV",
+            "3": "Subcutaneous",
+            "4": "Intrathecal",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Oral": "True|False",
+            "IV": "True|False",
+            "Subcutaneous": "True|False",
+            "Intrathecal": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Oral": "1",
+            "IV": "2",
+            "Subcutaneous": "3",
+            "Intrathecal": "4",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "rheu_routeo9": {
+          "Variable / Field Name": "rheu_routeo9",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_regmas] = '1' and [rheu_route9] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_indct9": {
+          "Variable / Field Name": "rheu_indct9",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Indication",
+          "Field Type": "dropdown",
+          "Branching Logic": "[rheu_regmas] = '1'",
+          "Possible Values (code->label)": {
+            "1": "HLH syndrome",
+            "2": "Graft protection",
+            "3": "The underlying malignancy",
+            "4": "The underlying rheumatologic disease",
+            "5": "Infection treatment",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "HLH syndrome": "True|False",
+            "Graft protection": "True|False",
+            "The underlying malignancy": "True|False",
+            "The underlying rheumatologic disease": "True|False",
+            "Infection treatment": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "HLH syndrome": "1",
+            "Graft protection": "2",
+            "The underlying malignancy": "3",
+            "The underlying rheumatologic disease": "4",
+            "Infection treatment": "5",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "rheu_indcto9": {
+          "Variable / Field Name": "rheu_indcto9",
+          "Form Name": "rheumatologic_therapy_regimens",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_regmas] = '1' and [rheu_indct9] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "rheu_regmnsdt": {
+      "Variable / Field Name": "rheu_regmnsdt",
+      "Form Name": "rheumatologic_therapy_regimens",
+      "Field Label": "Date the regimen was first administered",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "rheu_regmnedt": {
+      "Variable / Field Name": "rheu_regmnedt",
+      "Form Name": "rheumatologic_therapy_regimens",
+      "Field Label": "The last day of treatment administration",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "please_indicate_the_exact": {
+      "Variable / Field Name": "please_indicate_the_exact",
+      "Form Name": "rheumatologic_therapy_regimens",
+      "Field Label": "Please indicate the exact therapeutic agents and dose the patient received in the 6 weeks before MAS onset:",
+      "Field Type": "descriptive",
+      "answer_type": "display_only",
+      "answer_template": null
+    },
+    "rheu_notesb": {
+      "Variable / Field Name": "rheu_notesb",
+      "Form Name": "rheumatologic_therapy_regimens",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    },
+    "profile_ab_notes": {
+      "Variable / Field Name": "profile_ab_notes",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    }
+  }
+}

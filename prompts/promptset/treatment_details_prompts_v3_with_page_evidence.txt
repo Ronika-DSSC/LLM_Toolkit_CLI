@@ -1,0 +1,661 @@
+#### PROMPT_SET: treatment_details
+---RAG---
+REDCap form: treatment_details
+Retrieve document text needed to answer this form.
+Prefer labeled fields/tables; ignore repetitive footers/headers.
+Additional cues: demographics/face sheet, problem list, assessment & plan, discharge summary, lab results/flowsheets, medication list, imaging/pathology reports.
+Key terms: Sequence, number, Method, administration, Abstractor, Notes
+
+---USER---
+You are a clinical information extractor.
+Given a clinical note (or EHR text), extract answers for the REDCap form: eligibility_and_patient_profile.
+
+Instructions:
+- Fill in the JSON TEMPLATE below using ONLY evidence explicitly present in the text. Do not guess.
+- Keep the same JSON keys and nesting.
+- For choice questions: replace 'True|False' with true or false.
+  * Single-choice (radio/dropdown/yes-no): set exactly one option to true if supported.
+  * Multi-choice (checkbox): set all supported options to true.
+- For 'String'/'Number'/'Integer'/'Date' placeholders: replace with the extracted value (or null if not found).
+- Only populate 'Nested Fields' (e.g., 'please specify') when the parent condition is met AND evidence supports it.
+- Output ONLY the filled JSON (no extra commentary).
+
+EVIDENCE / PAGE CITATION RULE (for auditability):
+- The retrieved Context snippets may include headers like [<source> p<page>] or [<source> p<start>-<end>].
+- For every non-null extracted field (any field whose answer is not null and/or any option you set to true), add an evidence line into profile_ab_notes.
+- Evidence line format (one per field): <VariableName>: <EvidenceTag> — <verbatim short phrase>.
+  * Example: profile_elig1: [patient.pdf p3] — "clinically suspected HLH"
+- Use the EvidenceTag exactly as shown in the Context header (including page number).
+- If no page header is present, cite the source header only (e.g., [note]) and still provide a short verbatim phrase.
+- Do NOT add new JSON keys for evidence; record all citations ONLY inside profile_ab_notes.
+
+OUTPUT FORMAT OVERRIDE (CRITICAL):
+- The JSON TEMPLATE below is REFERENCE ONLY (schema/choices/branching). Do NOT output it.
+- Output ONLY an ANSWERS JSON object, where EACH variable is formatted as:
+  "<variable_name>": { "answer": <value> }
+- Do NOT output "Form Name", "Questions", "Variable / Field Name", "Field Label", "Field Type",
+  "Possible Values", "answer_type", "answer_template", or "codes".
+- Keep the same variable names (e.g., record_id, profile_brthyr, profile_cntry, profile_usregn).
+- Output ONLY valid JSON (no commentary, no markdown, no extra keys).
+
+ANSWERS JSON TEMPLATE (THIS IS THE ONLY THING YOU SHOULD OUTPUT):
+{
+  "trtptrn_seq": {
+    "answer": null
+  },
+  "trtptrn_mthd": {
+    "answer": {
+      "Intermittent administration": false,
+      "Daily administration": false,
+      "Blood product": false
+    },
+    "trtptrn_imtmed": {
+      "answer": {
+        "Etoposide": false,
+        "Emapalumab": false,
+        "Anakinra": false,
+        "Alemtuzumab": false,
+        "Thymoglobulin (Rabbit)": false,
+        "Anti-Thymocyte Globulin (ATG) (Horse)": false,
+        "Tocilizumab": false,
+        "Infliximab": false,
+        "Adalimumab": false,
+        "Canakinumab": false,
+        "Tadekinig-alfa": false,
+        "Nivolumab": false,
+        "Pembrolizumab": false,
+        "Rituximab": false,
+        "Cyclophosphamide": false,
+        "Vincristine": false,
+        "Daunorubicin": false,
+        "Vinblastine": false,
+        "Doxorubicin": false,
+        "Bleomycin": false,
+        "Cytarabine": false,
+        "Other": false,
+        "Unknown": false
+      },
+      "trtptrn_mednameo": {
+        "answer": null
+      }
+    },
+    "trtptrn_qdmed": {
+      "answer": {
+        "Dexamethasone": false,
+        "Prednisolone": false,
+        "Prednisone": false,
+        "Methylprednisolone": false,
+        "Cyclosporine": false,
+        "Ruxolitinib": false,
+        "Sirolimus": false,
+        "Tofacitinib": false,
+        "Anakinra": false,
+        "Granulocyte conolony-stimulating factor (GCSF)": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "trtptrn_bldmed": {
+      "answer": {
+        "Cryoprecipitate": false,
+        "Fresh frozen plasma": false,
+        "Intravenous immunoglobulin": false,
+        "Platelets": false,
+        "Red blood cells": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "trtptrn_bldmedrt": {
+      "answer": {
+        "IV": false,
+        "Unknown": false
+      }
+    },
+    "trtptrn_route": {
+      "answer": {
+        "Oral": false,
+        "IV": false,
+        "Subcutaneous": false,
+        "Intrathecal": false,
+        "Other": false,
+        "Unknown": false
+      },
+      "trtptrn_routeo": {
+        "answer": null
+      }
+    },
+    "trtptrn_indctn": {
+      "answer": {
+        "HLH/MAS syndrome": false,
+        "Other": false,
+        "Unknown": false
+      },
+      "trtptrn_indctno": {
+        "answer": null
+      }
+    },
+    "trtptrn_stdt": {
+      "answer": null
+    },
+    "trtptrn_imtdosu": {
+      "answer": null
+    },
+    "trtptrn_imtdunk": {
+      "answer": {
+        "Absolute dose administered unknown": false
+      }
+    },
+    "trtptrn_qdstdt": {
+      "answer": null
+    },
+    "trtptrn_qdeddt": {
+      "answer": null
+    },
+    "trtptrn_qddos": {
+      "answer": null
+    },
+    "trtptrn_qddunk": {
+      "answer": {
+        "Daily dose unknown": false
+      }
+    },
+    "trtptrn_unit": {
+      "answer": {
+        "mg": false,
+        "mg/kg": false,
+        "mg/m2": false,
+        "Other": false
+      },
+      "trtptrn_unitoth": {
+        "answer": null
+      }
+    }
+  },
+  "trtptrn_notesb": {
+    "answer": null
+  },
+  "profile_ab_notes": {
+    "answer": null
+  }
+}
+
+GENERAL "OTHER" FALLBACK RULE (applies to ALL fields):
+- For any radio/dropdown/checkbox field:
+  1) First try to map the evidence to one of the allowed option labels (or clear synonyms).
+  2) If the evidence clearly provides a value but it does NOT match any allowed option label/code:
+     - If the field has an "Other" option AND has a nested/branching "Other specify" text field:
+       * Select/check the "Other" option (use its REDCap code)
+       * Put the exact unmatched value phrase from the evidence into the "Other specify" field
+     - If the field has "Other" option but no specify field:
+       * Select/check "Other" and do not invent text
+     - If the field does not have an "Other" option:
+       * Output null and add the variable name to not_found
+- Do NOT use "Other" when the value matches a valid option label or a clear synonym of a valid option.
+
+JSON TEMPLATE (schema + answer placeholders):
+{
+  "Form Name": "treatment_details",
+  "Questions": {
+    "trtptrn_seq": {
+      "Variable / Field Name": "trtptrn_seq",
+      "Form Name": "treatment_details",
+      "Field Label": "Sequence number",
+      "Field Type": "text",
+      "Field Note": "Ex: 1",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "trtptrn_mthd": {
+      "Variable / Field Name": "trtptrn_mthd",
+      "Form Name": "treatment_details",
+      "Field Label": "Method of administration",
+      "Field Type": "dropdown",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Intermittent administration",
+        "2": "Daily administration",
+        "3": "Blood product"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Intermittent administration": "True|False",
+        "Daily administration": "True|False",
+        "Blood product": "True|False"
+      },
+      "codes": {
+        "Intermittent administration": "1",
+        "Daily administration": "2",
+        "Blood product": "3"
+      },
+      "Nested Fields": {
+        "trtptrn_imtmed": {
+          "Variable / Field Name": "trtptrn_imtmed",
+          "Form Name": "treatment_details",
+          "Field Label": "Medication name",
+          "Field Type": "dropdown",
+          "Required Field?": "y",
+          "Branching Logic": "[trtptrn_mthd] = '1'",
+          "Possible Values (code->label)": {
+            "9": "Etoposide",
+            "10": "Emapalumab",
+            "11": "Anakinra",
+            "12": "Alemtuzumab",
+            "13": "Thymoglobulin (Rabbit)",
+            "14": "Anti-Thymocyte Globulin (ATG) (Horse)",
+            "15": "Tocilizumab",
+            "16": "Infliximab",
+            "17": "Adalimumab",
+            "18": "Canakinumab",
+            "19": "Tadekinig-alfa",
+            "20": "Nivolumab",
+            "21": "Pembrolizumab",
+            "1": "Rituximab",
+            "2": "Cyclophosphamide",
+            "3": "Vincristine",
+            "4": "Daunorubicin",
+            "5": "Vinblastine",
+            "6": "Doxorubicin",
+            "7": "Bleomycin",
+            "8": "Cytarabine",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Etoposide": "True|False",
+            "Emapalumab": "True|False",
+            "Anakinra": "True|False",
+            "Alemtuzumab": "True|False",
+            "Thymoglobulin (Rabbit)": "True|False",
+            "Anti-Thymocyte Globulin (ATG) (Horse)": "True|False",
+            "Tocilizumab": "True|False",
+            "Infliximab": "True|False",
+            "Adalimumab": "True|False",
+            "Canakinumab": "True|False",
+            "Tadekinig-alfa": "True|False",
+            "Nivolumab": "True|False",
+            "Pembrolizumab": "True|False",
+            "Rituximab": "True|False",
+            "Cyclophosphamide": "True|False",
+            "Vincristine": "True|False",
+            "Daunorubicin": "True|False",
+            "Vinblastine": "True|False",
+            "Doxorubicin": "True|False",
+            "Bleomycin": "True|False",
+            "Cytarabine": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Etoposide": "9",
+            "Emapalumab": "10",
+            "Anakinra": "11",
+            "Alemtuzumab": "12",
+            "Thymoglobulin (Rabbit)": "13",
+            "Anti-Thymocyte Globulin (ATG) (Horse)": "14",
+            "Tocilizumab": "15",
+            "Infliximab": "16",
+            "Adalimumab": "17",
+            "Canakinumab": "18",
+            "Tadekinig-alfa": "19",
+            "Nivolumab": "20",
+            "Pembrolizumab": "21",
+            "Rituximab": "1",
+            "Cyclophosphamide": "2",
+            "Vincristine": "3",
+            "Daunorubicin": "4",
+            "Vinblastine": "5",
+            "Doxorubicin": "6",
+            "Bleomycin": "7",
+            "Cytarabine": "8",
+            "Other": "99",
+            "Unknown": "98"
+          },
+          "Nested Fields": {
+            "trtptrn_mednameo": {
+              "Variable / Field Name": "trtptrn_mednameo",
+              "Form Name": "treatment_details",
+              "Field Label": "Other, please specify",
+              "Field Type": "text",
+              "Required Field?": "y",
+              "Branching Logic": "[trtptrn_imtmed] = '99' or [trtptrn_qdmed] = '99'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "trtptrn_qdmed": {
+          "Variable / Field Name": "trtptrn_qdmed",
+          "Form Name": "treatment_details",
+          "Field Label": "Medication name",
+          "Field Type": "dropdown",
+          "Required Field?": "y",
+          "Branching Logic": "[trtptrn_mthd] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Dexamethasone",
+            "2": "Prednisolone",
+            "3": "Prednisone",
+            "4": "Methylprednisolone",
+            "5": "Cyclosporine",
+            "6": "Ruxolitinib",
+            "7": "Sirolimus",
+            "9": "Tofacitinib",
+            "10": "Anakinra",
+            "11": "Granulocyte conolony-stimulating factor (GCSF)",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Dexamethasone": "True|False",
+            "Prednisolone": "True|False",
+            "Prednisone": "True|False",
+            "Methylprednisolone": "True|False",
+            "Cyclosporine": "True|False",
+            "Ruxolitinib": "True|False",
+            "Sirolimus": "True|False",
+            "Tofacitinib": "True|False",
+            "Anakinra": "True|False",
+            "Granulocyte conolony-stimulating factor (GCSF)": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Dexamethasone": "1",
+            "Prednisolone": "2",
+            "Prednisone": "3",
+            "Methylprednisolone": "4",
+            "Cyclosporine": "5",
+            "Ruxolitinib": "6",
+            "Sirolimus": "7",
+            "Tofacitinib": "9",
+            "Anakinra": "10",
+            "Granulocyte conolony-stimulating factor (GCSF)": "11",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "trtptrn_bldmed": {
+          "Variable / Field Name": "trtptrn_bldmed",
+          "Form Name": "treatment_details",
+          "Field Label": "Blood product",
+          "Field Type": "dropdown",
+          "Required Field?": "y",
+          "Branching Logic": "[trtptrn_mthd] = '3'",
+          "Possible Values (code->label)": {
+            "1": "Cryoprecipitate",
+            "2": "Fresh frozen plasma",
+            "3": "Intravenous immunoglobulin",
+            "4": "Platelets",
+            "5": "Red blood cells",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Cryoprecipitate": "True|False",
+            "Fresh frozen plasma": "True|False",
+            "Intravenous immunoglobulin": "True|False",
+            "Platelets": "True|False",
+            "Red blood cells": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Cryoprecipitate": "1",
+            "Fresh frozen plasma": "2",
+            "Intravenous immunoglobulin": "3",
+            "Platelets": "4",
+            "Red blood cells": "5",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "trtptrn_bldmedrt": {
+          "Variable / Field Name": "trtptrn_bldmedrt",
+          "Form Name": "treatment_details",
+          "Field Label": "Route of administration",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[trtptrn_mthd] = '3'",
+          "Possible Values (code->label)": {
+            "1": "IV",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "IV": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "IV": "1",
+            "Unknown": "98"
+          }
+        },
+        "trtptrn_route": {
+          "Variable / Field Name": "trtptrn_route",
+          "Form Name": "treatment_details",
+          "Field Label": "Route of administration",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[trtptrn_mthd] = '1' or [trtptrn_mthd] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Oral",
+            "2": "IV",
+            "3": "Subcutaneous",
+            "4": "Intrathecal",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Oral": "True|False",
+            "IV": "True|False",
+            "Subcutaneous": "True|False",
+            "Intrathecal": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Oral": "1",
+            "IV": "2",
+            "Subcutaneous": "3",
+            "Intrathecal": "4",
+            "Other": "99",
+            "Unknown": "98"
+          },
+          "Nested Fields": {
+            "trtptrn_routeo": {
+              "Variable / Field Name": "trtptrn_routeo",
+              "Form Name": "treatment_details",
+              "Field Label": "Other, please specify",
+              "Field Type": "text",
+              "Required Field?": "y",
+              "Branching Logic": "[trtptrn_route] = '99'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "trtptrn_indctn": {
+          "Variable / Field Name": "trtptrn_indctn",
+          "Form Name": "treatment_details",
+          "Field Label": "What was the indication?",
+          "Field Type": "dropdown",
+          "Required Field?": "y",
+          "Branching Logic": "[trtptrn_mthd] = '1' or [trtptrn_mthd] = '2' or [trtptrn_mthd] = '3'",
+          "Possible Values (code->label)": {
+            "1": "HLH/MAS syndrome",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "HLH/MAS syndrome": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "HLH/MAS syndrome": "1",
+            "Other": "99",
+            "Unknown": "98"
+          },
+          "Nested Fields": {
+            "trtptrn_indctno": {
+              "Variable / Field Name": "trtptrn_indctno",
+              "Form Name": "treatment_details",
+              "Field Label": "Other, please specify",
+              "Field Type": "text",
+              "Required Field?": "y",
+              "Branching Logic": "[trtptrn_indctn] = '99'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "trtptrn_stdt": {
+          "Variable / Field Name": "trtptrn_stdt",
+          "Form Name": "treatment_details",
+          "Field Label": "Date of administration",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[trtptrn_mthd] = '1' or [trtptrn_mthd] = '3'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "trtptrn_imtdosu": {
+          "Variable / Field Name": "trtptrn_imtdosu",
+          "Form Name": "treatment_details",
+          "Field Label": "The absolute dose administered",
+          "Field Type": "text",
+          "Branching Logic": "[trtptrn_mthd] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "trtptrn_imtdunk": {
+          "Variable / Field Name": "trtptrn_imtdunk",
+          "Form Name": "treatment_details",
+          "Field Label": "The absolute dose administered unknown",
+          "Field Type": "checkbox",
+          "Branching Logic": "[trtptrn_mthd] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Absolute dose administered unknown"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Absolute dose administered unknown": "True|False"
+          },
+          "codes": {
+            "Absolute dose administered unknown": "1"
+          }
+        },
+        "trtptrn_qdstdt": {
+          "Variable / Field Name": "trtptrn_qdstdt",
+          "Form Name": "treatment_details",
+          "Field Label": "Start date for the dose",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[trtptrn_mthd] = '2'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "trtptrn_qdeddt": {
+          "Variable / Field Name": "trtptrn_qdeddt",
+          "Form Name": "treatment_details",
+          "Field Label": "End date for the dose",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[trtptrn_mthd] = '2'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "trtptrn_qddos": {
+          "Variable / Field Name": "trtptrn_qddos",
+          "Form Name": "treatment_details",
+          "Field Label": "Daily dose",
+          "Field Type": "text",
+          "Branching Logic": "[trtptrn_mthd] = '2'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "trtptrn_qddunk": {
+          "Variable / Field Name": "trtptrn_qddunk",
+          "Form Name": "treatment_details",
+          "Field Label": "Daily dose unknown",
+          "Field Type": "checkbox",
+          "Branching Logic": "[trtptrn_mthd] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Daily dose unknown"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Daily dose unknown": "True|False"
+          },
+          "codes": {
+            "Daily dose unknown": "1"
+          }
+        },
+        "trtptrn_unit": {
+          "Variable / Field Name": "trtptrn_unit",
+          "Form Name": "treatment_details",
+          "Field Label": "Unit",
+          "Field Type": "dropdown",
+          "Required Field?": "y",
+          "Branching Logic": "[trtptrn_mthd] = '1' or [trtptrn_mthd] = '2'",
+          "Possible Values (code->label)": {
+            "3": "mg",
+            "1": "mg/kg",
+            "2": "mg/m2",
+            "99": "Other"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "mg": "True|False",
+            "mg/kg": "True|False",
+            "mg/m2": "True|False",
+            "Other": "True|False"
+          },
+          "codes": {
+            "mg": "3",
+            "mg/kg": "1",
+            "mg/m2": "2",
+            "Other": "99"
+          },
+          "Nested Fields": {
+            "trtptrn_unitoth": {
+              "Variable / Field Name": "trtptrn_unitoth",
+              "Form Name": "treatment_details",
+              "Field Label": "Unit other, please specify",
+              "Field Type": "text",
+              "Required Field?": "y",
+              "Branching Logic": "[trtptrn_unit] = '99'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        }
+      }
+    },
+    "trtptrn_notesb": {
+      "Variable / Field Name": "trtptrn_notesb",
+      "Form Name": "treatment_details",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    },
+    "profile_ab_notes": {
+      "Variable / Field Name": "profile_ab_notes",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    }
+  }
+}

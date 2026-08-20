@@ -1,0 +1,2777 @@
+#### PROMPT_SET: short_and_longterm_complications
+---RAG---
+REDCap form: short_and_longterm_complications
+Retrieve document text needed to answer this form.
+Prefer labeled fields/tables; ignore repetitive footers/headers.
+Additional cues: demographics/face sheet, problem list, assessment & plan, discharge summary, lab results/flowsheets, medication list, imaging/pathology reports.
+Key terms: Did, have, any, major, Kidney, failure, Liver, Heart, Lung, Marrow, Other, impaired, growth, cognitive, neurological, deficits, end-stage, renal, transplant, abnormality, Abstractor, Notes
+
+---USER---
+You are a clinical information extractor.
+Given a clinical note (or EHR text), extract answers for the REDCap form: eligibility_and_patient_profile.
+
+Instructions:
+- Fill in the JSON TEMPLATE below using ONLY evidence explicitly present in the text. Do not guess.
+- Keep the same JSON keys and nesting.
+- For choice questions: replace 'True|False' with true or false.
+  * Single-choice (radio/dropdown/yes-no): set exactly one option to true if supported.
+  * Multi-choice (checkbox): set all supported options to true.
+- For 'String'/'Number'/'Integer'/'Date' placeholders: replace with the extracted value (or null if not found).
+- Only populate 'Nested Fields' (e.g., 'please specify') when the parent condition is met AND evidence supports it.
+- Output ONLY the filled JSON (no extra commentary).
+
+EVIDENCE / PAGE CITATION RULE (for auditability):
+- The retrieved Context snippets may include headers like [<source> p<page>] or [<source> p<start>-<end>].
+- For every non-null extracted field (any field whose answer is not null and/or any option you set to true), add an evidence line into profile_ab_notes.
+- Evidence line format (one per field): <VariableName>: <EvidenceTag> — <verbatim short phrase>.
+  * Example: profile_elig1: [patient.pdf p3] — "clinically suspected HLH"
+- Use the EvidenceTag exactly as shown in the Context header (including page number).
+- If no page header is present, cite the source header only (e.g., [note]) and still provide a short verbatim phrase.
+- Do NOT add new JSON keys for evidence; record all citations ONLY inside profile_ab_notes.
+
+OUTPUT FORMAT OVERRIDE (CRITICAL):
+- The JSON TEMPLATE below is REFERENCE ONLY (schema/choices/branching). Do NOT output it.
+- Output ONLY an ANSWERS JSON object, where EACH variable is formatted as:
+  "<variable_name>": { "answer": <value> }
+- Do NOT output "Form Name", "Questions", "Variable / Field Name", "Field Label", "Field Type",
+  "Possible Values", "answer_type", "answer_template", or "codes".
+- Keep the same variable names (e.g., record_id, profile_brthyr, profile_cntry, profile_usregn).
+- Output ONLY valid JSON (no commentary, no markdown, no extra keys).
+
+ANSWERS JSON TEMPLATE (THIS IS THE ONLY THING YOU SHOULD OUTPUT):
+{
+  "cmplctn_drcyn": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "cmplctn_dlys": {
+      "answer": {
+        "Yes": false,
+        "No": false,
+        "Unknown": false
+      },
+      "cmplctn_dlysftdt": {
+        "answer": null
+      },
+      "cmplctn_dlysltdt": {
+        "answer": null
+      },
+      "cmplctn_dlysltna": {
+        "answer": {
+          "Date of last documentation not applicable": false
+        }
+      }
+    },
+    "cmplctn_oxyg": {
+      "answer": {
+        "Yes": false,
+        "No": false,
+        "Unknown": false
+      },
+      "cmplctn_oxygftdt": {
+        "answer": null
+      },
+      "cmplctn_oxygltdt": {
+        "answer": null
+      },
+      "cmplctn_oxygltna": {
+        "answer": {
+          "Date of last documentation not applicable": false
+        }
+      }
+    },
+    "cmplctn_nvnt": {
+      "answer": {
+        "Yes": false,
+        "No": false,
+        "Unknown": false
+      },
+      "cmplctn_nvntftdt": {
+        "answer": null
+      },
+      "cmplctn_nvntltdt": {
+        "answer": null
+      },
+      "cmplctn_nvntltna": {
+        "answer": {
+          "Date of last documentation not applicable": false
+        }
+      }
+    },
+    "cmplctn_mvnt": {
+      "answer": {
+        "Yes": false,
+        "No": false,
+        "Unknown": false
+      },
+      "cmplctn_mvntftdt": {
+        "answer": null
+      },
+      "cmplctn_mvntltdt": {
+        "answer": null
+      },
+      "cmplctn_mvntltna": {
+        "answer": {
+          "Date of last documentation not applicable": false
+        }
+      }
+    },
+    "cmplctn_pap": {
+      "answer": {
+        "No": false,
+        "New": false,
+        "Chronic- stable": false,
+        "Chronic- worsened": false,
+        "Unknown": false
+      },
+      "cmplctn_papftdt": {
+        "answer": null
+      },
+      "cmplctn_papexdt": {
+        "answer": null
+      },
+      "cmplctn_papltdt": {
+        "answer": null
+      },
+      "cmplctn_papltna": {
+        "answer": {
+          "Date of last documentation not applicable": false
+        }
+      }
+    },
+    "cmplctn_vaso": {
+      "answer": {
+        "Yes": false,
+        "No": false,
+        "Unknown": false
+      },
+      "cmplctn_vasoftdt": {
+        "answer": null
+      },
+      "cmplctn_vasoltdt": {
+        "answer": null
+      },
+      "cmplctn_vasoltna": {
+        "answer": {
+          "Date of last documentation not applicable": false
+        }
+      }
+    },
+    "cmplctn_ecmo": {
+      "answer": {
+        "Yes": false,
+        "No": false,
+        "Unknown": false
+      },
+      "cmplctn_ecmoftdt": {
+        "answer": null
+      },
+      "cmplctn_ecmoltdt": {
+        "answer": null
+      },
+      "cmplctn_ecmoltna": {
+        "answer": {
+          "Date of last documentation not applicable": false
+        }
+      }
+    },
+    "cmplctn_cpresus": {
+      "answer": {
+        "Yes": false,
+        "No": false,
+        "Unknown": false
+      },
+      "cmplctn_cpresus0": {
+        "answer": null
+      },
+      "cmplctn_cpresus1": {
+        "answer": null
+      },
+      "cmplctn_cpresus2": {
+        "answer": null
+      },
+      "cmplctn_cpresus3": {
+        "answer": null
+      },
+      "cmplctn_cpresus4": {
+        "answer": null
+      },
+      "cmplctn_cpresus5": {
+        "answer": null
+      },
+      "cmplctn_cpresus6": {
+        "answer": null
+      },
+      "cmplctn_cpresus7": {
+        "answer": null
+      },
+      "cmplctn_cpresus8": {
+        "answer": null
+      },
+      "cmplctn_cpresus9": {
+        "answer": null
+      }
+    },
+    "cmplctn_ldls": {
+      "answer": {
+        "Yes": false,
+        "No": false,
+        "Unknown": false
+      },
+      "cmplctn_ldlsftdt": {
+        "answer": null
+      },
+      "cmplctn_ldlsltdt": {
+        "answer": null
+      },
+      "cmplctn_ldlsltna": {
+        "answer": {
+          "Date of last documentation not applicable": false
+        }
+      }
+    },
+    "cmplctn_bld": {
+      "answer": {
+        "Yes": false,
+        "No": false,
+        "Unknown": false
+      },
+      "cmplctn_bldftdt": {
+        "answer": null
+      },
+      "cmplctn_bldltdt": {
+        "answer": null
+      },
+      "cmplctn_bldltna": {
+        "answer": {
+          "Date of last documentation not applicable": false
+        }
+      },
+      "cmplctn_bldcns": {
+        "answer": {
+          "Yes": false
+        }
+      },
+      "cmplctn_bldgi": {
+        "answer": {
+          "Yes": false
+        }
+      },
+      "cmplctn_bldplmry": {
+        "answer": {
+          "Yes": false
+        }
+      },
+      "cmplctn_bldoth": {
+        "answer": {
+          "Yes": false
+        },
+        "cmplctn_bldpths": {
+          "answer": null
+        }
+      },
+      "cmplctn_locunk": {
+        "answer": null
+      }
+    },
+    "cmplctn_tmap": {
+      "answer": {
+        "Yes": false,
+        "No": false,
+        "Unknown": false
+      },
+      "cmplctn_tmapftdt": {
+        "answer": null
+      },
+      "cmplctn_tmapltdt": {
+        "answer": null
+      },
+      "cmplctn_tmapltna": {
+        "answer": {
+          "Date of last documentation not applicable": false
+        }
+      },
+      "cmplctn_tmapcns": {
+        "answer": {
+          "Yes": false
+        }
+      },
+      "cmplctn_tmapgi": {
+        "answer": {
+          "Yes": false
+        }
+      },
+      "cmplctn_tmaplng": {
+        "answer": {
+          "Yes": false
+        }
+      },
+      "cmplctn_tmapext": {
+        "answer": {
+          "Yes": false
+        }
+      },
+      "cmplctn_tmapoth": {
+        "answer": {
+          "Yes": false
+        },
+        "cmplctn_tmapoths": {
+          "answer": null
+        }
+      },
+      "cmplctn_tmapunk": {
+        "answer": {
+          "Yes": false
+        }
+      }
+    },
+    "cmplctn_adinynu": {
+      "answer": {
+        "Yes": false,
+        "No": false,
+        "Unknown": false
+      },
+      "cmplctn_adinftdt": {
+        "answer": null
+      },
+      "cmplctn_adinltdt": {
+        "answer": null
+      },
+      "cmplctn_adinltna": {
+        "answer": {
+          "Date of last documentation not applicable": false
+        }
+      }
+    },
+    "cmplctn_fracynu": {
+      "answer": {
+        "Yes": false,
+        "No": false,
+        "Unknown": false
+      },
+      "cmplctn_bonetxt": {
+        "answer": null
+      },
+      "cmplctn_fracftdt": {
+        "answer": null
+      },
+      "cmplctn_fracltna": {
+        "answer": {
+          "Date of first documentation unknown": false
+        }
+      }
+    }
+  },
+  "cmplctn_kdnyfl": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "cmplctn_kdnyfdt": {
+      "answer": null
+    }
+  },
+  "cmplctn_lvrfl": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "cmplctn_lvrfdt": {
+      "answer": null
+    }
+  },
+  "cmplctn_hrtfl": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "cmplctn_hrtfdt": {
+      "answer": null
+    }
+  },
+  "cmplctn_lngfl": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "cmplctn_lngfdt": {
+      "answer": null
+    }
+  },
+  "cmplctn_mrrwfl": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "cmplctn_mrrwfdt": {
+      "answer": null
+    }
+  },
+  "cmplctn_othfl": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "cmplctn_othsfl": {
+      "answer": null
+    },
+    "cmplctn_othfdt": {
+      "answer": null
+    }
+  },
+  "cmplctn_grwthyn": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "cmplctn_ftt": {
+      "answer": {
+        "Yes": false
+      },
+      "cmplctn_fttdt": {
+        "answer": null
+      }
+    },
+    "cmplctn_smll": {
+      "answer": {
+        "Yes": false
+      },
+      "cmplctn_smlldt": {
+        "answer": null
+      }
+    },
+    "cmplctn_prcpbty": {
+      "answer": {
+        "Yes": false
+      },
+      "cmplctn_prcpbdt": {
+        "answer": null
+      }
+    },
+    "cmplctn_dlypbty": {
+      "answer": {
+        "Yes": false
+      },
+      "cmplctn_dlypbdt": {
+        "answer": null
+      }
+    },
+    "cmplctn_grthfl": {
+      "answer": {
+        "Yes": false
+      },
+      "cmplctn_grthfldt": {
+        "answer": null
+      }
+    },
+    "cmplctn_grthoth": {
+      "answer": {
+        "Yes": false
+      },
+      "cmplctn_grwthsp": {
+        "answer": null
+      },
+      "cmplctn_grwthdt": {
+        "answer": null
+      }
+    },
+    "cmplctn_grthunk": {
+      "answer": {
+        "Yes": false
+      }
+    }
+  },
+  "cmplctn_cogyn": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "cmplctn_coglrn": {
+      "answer": {
+        "Yes": false
+      },
+      "cmplctn_coglrndt": {
+        "answer": null
+      }
+    },
+    "cmplctn_cogpdd": {
+      "answer": {
+        "Yes": false
+      },
+      "cmplctn_cogpdddt": {
+        "answer": null
+      }
+    },
+    "cmplctn_cogadd": {
+      "answer": {
+        "Yes": false
+      },
+      "cmplctn_cogadddt": {
+        "answer": null
+      }
+    },
+    "cmplctn_cogoth": {
+      "answer": {
+        "Yes": false
+      },
+      "cmplctn_cogsp": {
+        "answer": null
+      },
+      "cmplctn_cogdt": {
+        "answer": null
+      }
+    },
+    "cmplctn_cogunk": {
+      "answer": {
+        "Yes": false
+      }
+    }
+  },
+  "cmplctn_neuroyn": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "cmplctn_nrszur": {
+      "answer": {
+        "Yes": false
+      },
+      "cmplctn_nrszurdt": {
+        "answer": null
+      }
+    },
+    "cmplctn_nrgbl": {
+      "answer": {
+        "Yes": false
+      },
+      "cmplctn_nrgbldt": {
+        "answer": null
+      }
+    },
+    "cmplctn_nrprly": {
+      "answer": {
+        "Yes": false
+      },
+      "cmplctn_nrprlysy": {
+        "answer": null
+      }
+    },
+    "cmplctn_nroth": {
+      "answer": {
+        "Yes": false
+      },
+      "cmplctn_neurosp": {
+        "answer": null
+      },
+      "cmplctn_neurodt": {
+        "answer": null
+      }
+    },
+    "cmplctn_neurounk": {
+      "answer": {
+        "Yes": false
+      }
+    }
+  },
+  "cmplctn_esrd": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "cmplctn_esrdftdt": {
+      "answer": null
+    },
+    "cmplctn_esrdtdt": {
+      "answer": null
+    },
+    "cmplctn_esrdltna": {
+      "answer": {
+        "Yes": false
+      }
+    }
+  },
+  "cmplctn_tnpt": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "cmplctn_tnptftdt": {
+      "answer": null
+    },
+    "cmplctn_tnptltdt": {
+      "answer": null
+    },
+    "cmplctn_tnptltna": {
+      "answer": {
+        "Date of last documentation not applicable": false
+      }
+    }
+  },
+  "cmplctn_teethynu": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "cmplctn_teethfdt": {
+      "answer": null
+    }
+  },
+  "cmplctn_notes": {
+    "answer": null
+  },
+  "profile_ab_notes": {
+    "answer": null
+  }
+}
+
+GENERAL "OTHER" FALLBACK RULE (applies to ALL fields):
+- For any radio/dropdown/checkbox field:
+  1) First try to map the evidence to one of the allowed option labels (or clear synonyms).
+  2) If the evidence clearly provides a value but it does NOT match any allowed option label/code:
+     - If the field has an "Other" option AND has a nested/branching "Other specify" text field:
+       * Select/check the "Other" option (use its REDCap code)
+       * Put the exact unmatched value phrase from the evidence into the "Other specify" field
+     - If the field has "Other" option but no specify field:
+       * Select/check "Other" and do not invent text
+     - If the field does not have an "Other" option:
+       * Output null and add the variable name to not_found
+- Do NOT use "Other" when the value matches a valid option label or a clear synonym of a valid option.
+
+JSON TEMPLATE (schema + answer placeholders):
+{
+  "Form Name": "short_and_longterm_complications",
+  "Questions": {
+    "cmplctn_drcyn": {
+      "Variable / Field Name": "cmplctn_drcyn",
+      "Form Name": "short_and_longterm_complications",
+      "Field Label": "Did the patient have any major organ dysfunction in the acute episode?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "cmplctn_dlys": {
+          "Variable / Field Name": "cmplctn_dlys",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Renal replacement therapy?",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[cmplctn_drcyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes",
+            "2": "No",
+            "99": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Yes": "True|False",
+            "No": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Yes": "1",
+            "No": "2",
+            "Unknown": "99"
+          },
+          "Nested Fields": {
+            "cmplctn_dlysftdt": {
+              "Variable / Field Name": "cmplctn_dlysftdt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of first documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Required Field?": "y",
+              "Branching Logic": "[cmplctn_dlys] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_dlysltdt": {
+              "Variable / Field Name": "cmplctn_dlysltdt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of last documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Branching Logic": "[cmplctn_dlys] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_dlysltna": {
+              "Variable / Field Name": "cmplctn_dlysltna",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of last documentation not applicable",
+              "Field Type": "checkbox",
+              "Branching Logic": "[cmplctn_dlys] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Date of last documentation not applicable"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Date of last documentation not applicable": "True|False"
+              },
+              "codes": {
+                "Date of last documentation not applicable": "1"
+              }
+            }
+          }
+        },
+        "cmplctn_oxyg": {
+          "Variable / Field Name": "cmplctn_oxyg",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Need of oxygen?",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[cmplctn_drcyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes",
+            "2": "No",
+            "99": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Yes": "True|False",
+            "No": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Yes": "1",
+            "No": "2",
+            "Unknown": "99"
+          },
+          "Nested Fields": {
+            "cmplctn_oxygftdt": {
+              "Variable / Field Name": "cmplctn_oxygftdt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of first documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Required Field?": "y",
+              "Branching Logic": "[cmplctn_oxyg] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_oxygltdt": {
+              "Variable / Field Name": "cmplctn_oxygltdt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of last documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Branching Logic": "[cmplctn_oxyg] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_oxygltna": {
+              "Variable / Field Name": "cmplctn_oxygltna",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of last documentation not applicable",
+              "Field Type": "checkbox",
+              "Branching Logic": "[cmplctn_oxyg] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Date of last documentation not applicable"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Date of last documentation not applicable": "True|False"
+              },
+              "codes": {
+                "Date of last documentation not applicable": "1"
+              }
+            }
+          }
+        },
+        "cmplctn_nvnt": {
+          "Variable / Field Name": "cmplctn_nvnt",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Noninvasive ventilation?",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[cmplctn_drcyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes",
+            "2": "No",
+            "99": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Yes": "True|False",
+            "No": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Yes": "1",
+            "No": "2",
+            "Unknown": "99"
+          },
+          "Nested Fields": {
+            "cmplctn_nvntftdt": {
+              "Variable / Field Name": "cmplctn_nvntftdt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of first documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Required Field?": "y",
+              "Branching Logic": "[cmplctn_nvnt] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_nvntltdt": {
+              "Variable / Field Name": "cmplctn_nvntltdt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of last documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Branching Logic": "[cmplctn_nvnt] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_nvntltna": {
+              "Variable / Field Name": "cmplctn_nvntltna",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of last documentation not applicable",
+              "Field Type": "checkbox",
+              "Branching Logic": "[cmplctn_nvnt] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Date of last documentation not applicable"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Date of last documentation not applicable": "True|False"
+              },
+              "codes": {
+                "Date of last documentation not applicable": "1"
+              }
+            }
+          }
+        },
+        "cmplctn_mvnt": {
+          "Variable / Field Name": "cmplctn_mvnt",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Mechanical ventilation?",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[cmplctn_drcyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes",
+            "2": "No",
+            "99": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Yes": "True|False",
+            "No": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Yes": "1",
+            "No": "2",
+            "Unknown": "99"
+          },
+          "Nested Fields": {
+            "cmplctn_mvntftdt": {
+              "Variable / Field Name": "cmplctn_mvntftdt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of first documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Required Field?": "y",
+              "Branching Logic": "[cmplctn_mvnt] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_mvntltdt": {
+              "Variable / Field Name": "cmplctn_mvntltdt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of last documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Branching Logic": "[cmplctn_mvnt] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_mvntltna": {
+              "Variable / Field Name": "cmplctn_mvntltna",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of last documentation not applicable",
+              "Field Type": "checkbox",
+              "Branching Logic": "[cmplctn_mvnt] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Date of last documentation not applicable"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Date of last documentation not applicable": "True|False"
+              },
+              "codes": {
+                "Date of last documentation not applicable": "1"
+              }
+            }
+          }
+        },
+        "cmplctn_pap": {
+          "Variable / Field Name": "cmplctn_pap",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "PAP-like parenchymal disease",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[cmplctn_drcyn] = '1'",
+          "Possible Values (code->label)": {
+            "4": "No",
+            "1": "New",
+            "2": "Chronic- stable",
+            "3": "Chronic- worsened",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "No": "True|False",
+            "New": "True|False",
+            "Chronic- stable": "True|False",
+            "Chronic- worsened": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "No": "4",
+            "New": "1",
+            "Chronic- stable": "2",
+            "Chronic- worsened": "3",
+            "Unknown": "98"
+          },
+          "Nested Fields": {
+            "cmplctn_papftdt": {
+              "Variable / Field Name": "cmplctn_papftdt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of first documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Required Field?": "y",
+              "Branching Logic": "[cmplctn_pap] = '1' or [cmplctn_pap] = '2' or [cmplctn_pap] = '3'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_papexdt": {
+              "Variable / Field Name": "cmplctn_papexdt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of exacerbation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Required Field?": "y",
+              "Branching Logic": "[cmplctn_pap] = '3'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_papltdt": {
+              "Variable / Field Name": "cmplctn_papltdt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of last documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Branching Logic": "[cmplctn_pap] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_papltna": {
+              "Variable / Field Name": "cmplctn_papltna",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of last documentation not applicable",
+              "Field Type": "checkbox",
+              "Branching Logic": "[cmplctn_pap] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Date of last documentation not applicable"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Date of last documentation not applicable": "True|False"
+              },
+              "codes": {
+                "Date of last documentation not applicable": "1"
+              }
+            }
+          }
+        },
+        "cmplctn_vaso": {
+          "Variable / Field Name": "cmplctn_vaso",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Need of vasopressors (e.g., adrenaline, noradrenaline, dopamine)",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[cmplctn_drcyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes",
+            "2": "No",
+            "99": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Yes": "True|False",
+            "No": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Yes": "1",
+            "No": "2",
+            "Unknown": "99"
+          },
+          "Nested Fields": {
+            "cmplctn_vasoftdt": {
+              "Variable / Field Name": "cmplctn_vasoftdt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of first documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Required Field?": "y",
+              "Branching Logic": "[cmplctn_vaso] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_vasoltdt": {
+              "Variable / Field Name": "cmplctn_vasoltdt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of last documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Branching Logic": "[cmplctn_vaso] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_vasoltna": {
+              "Variable / Field Name": "cmplctn_vasoltna",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of last documentation not applicable",
+              "Field Type": "checkbox",
+              "Branching Logic": "[cmplctn_vaso] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Date of last documentation not applicable"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Date of last documentation not applicable": "True|False"
+              },
+              "codes": {
+                "Date of last documentation not applicable": "1"
+              }
+            }
+          }
+        },
+        "cmplctn_ecmo": {
+          "Variable / Field Name": "cmplctn_ecmo",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Need of ECMO",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[cmplctn_drcyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes",
+            "2": "No",
+            "99": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Yes": "True|False",
+            "No": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Yes": "1",
+            "No": "2",
+            "Unknown": "99"
+          },
+          "Nested Fields": {
+            "cmplctn_ecmoftdt": {
+              "Variable / Field Name": "cmplctn_ecmoftdt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of first documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Required Field?": "y",
+              "Branching Logic": "[cmplctn_ecmo] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_ecmoltdt": {
+              "Variable / Field Name": "cmplctn_ecmoltdt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of last documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Branching Logic": "[cmplctn_ecmo] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_ecmoltna": {
+              "Variable / Field Name": "cmplctn_ecmoltna",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of last documentation not applicable",
+              "Field Type": "checkbox",
+              "Branching Logic": "[cmplctn_ecmo] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Date of last documentation not applicable"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Date of last documentation not applicable": "True|False"
+              },
+              "codes": {
+                "Date of last documentation not applicable": "1"
+              }
+            }
+          }
+        },
+        "cmplctn_cpresus": {
+          "Variable / Field Name": "cmplctn_cpresus",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Cardiopulmonary resuscitation",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[cmplctn_drcyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes",
+            "2": "No",
+            "99": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Yes": "True|False",
+            "No": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Yes": "1",
+            "No": "2",
+            "Unknown": "99"
+          },
+          "Nested Fields": {
+            "cmplctn_cpresus0": {
+              "Variable / Field Name": "cmplctn_cpresus0",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Required Field?": "y",
+              "Branching Logic": "[cmplctn_cpresus] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_cpresus1": {
+              "Variable / Field Name": "cmplctn_cpresus1",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Branching Logic": "[cmplctn_cpresus] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_cpresus2": {
+              "Variable / Field Name": "cmplctn_cpresus2",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Branching Logic": "[cmplctn_cpresus] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_cpresus3": {
+              "Variable / Field Name": "cmplctn_cpresus3",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Branching Logic": "[cmplctn_cpresus] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_cpresus4": {
+              "Variable / Field Name": "cmplctn_cpresus4",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Branching Logic": "[cmplctn_cpresus] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_cpresus5": {
+              "Variable / Field Name": "cmplctn_cpresus5",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Branching Logic": "[cmplctn_cpresus] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_cpresus6": {
+              "Variable / Field Name": "cmplctn_cpresus6",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Branching Logic": "[cmplctn_cpresus] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_cpresus7": {
+              "Variable / Field Name": "cmplctn_cpresus7",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Branching Logic": "[cmplctn_cpresus] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_cpresus8": {
+              "Variable / Field Name": "cmplctn_cpresus8",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Branching Logic": "[cmplctn_cpresus] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_cpresus9": {
+              "Variable / Field Name": "cmplctn_cpresus9",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Branching Logic": "[cmplctn_cpresus] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "cmplctn_ldls": {
+          "Variable / Field Name": "cmplctn_ldls",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Liver dialysis",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[cmplctn_drcyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes",
+            "2": "No",
+            "99": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Yes": "True|False",
+            "No": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Yes": "1",
+            "No": "2",
+            "Unknown": "99"
+          },
+          "Nested Fields": {
+            "cmplctn_ldlsftdt": {
+              "Variable / Field Name": "cmplctn_ldlsftdt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of first documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Required Field?": "y",
+              "Branching Logic": "[cmplctn_ldls] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_ldlsltdt": {
+              "Variable / Field Name": "cmplctn_ldlsltdt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of last documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Branching Logic": "[cmplctn_ldls] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_ldlsltna": {
+              "Variable / Field Name": "cmplctn_ldlsltna",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of last documentation not applicable",
+              "Field Type": "checkbox",
+              "Branching Logic": "[cmplctn_ldls] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Date of last documentation not applicable"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Date of last documentation not applicable": "True|False"
+              },
+              "codes": {
+                "Date of last documentation not applicable": "1"
+              }
+            }
+          }
+        },
+        "cmplctn_bld": {
+          "Variable / Field Name": "cmplctn_bld",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Bleeding",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[cmplctn_drcyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes",
+            "2": "No",
+            "99": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Yes": "True|False",
+            "No": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Yes": "1",
+            "No": "2",
+            "Unknown": "99"
+          },
+          "Nested Fields": {
+            "cmplctn_bldftdt": {
+              "Variable / Field Name": "cmplctn_bldftdt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of first documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Required Field?": "y",
+              "Branching Logic": "[cmplctn_bld] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_bldltdt": {
+              "Variable / Field Name": "cmplctn_bldltdt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of last documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Branching Logic": "[cmplctn_bld] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_bldltna": {
+              "Variable / Field Name": "cmplctn_bldltna",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of last documentation not applicable",
+              "Field Type": "checkbox",
+              "Branching Logic": "[cmplctn_bld] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Date of last documentation not applicable"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Date of last documentation not applicable": "True|False"
+              },
+              "codes": {
+                "Date of last documentation not applicable": "1"
+              }
+            },
+            "cmplctn_bldcns": {
+              "Variable / Field Name": "cmplctn_bldcns",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Location of bleeding: Central nervous system",
+              "Field Type": "checkbox",
+              "Branching Logic": "[cmplctn_bld] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Yes"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Yes": "True|False"
+              },
+              "codes": {
+                "Yes": "1"
+              }
+            },
+            "cmplctn_bldgi": {
+              "Variable / Field Name": "cmplctn_bldgi",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Location of bleeding: Gastrointestinal",
+              "Field Type": "checkbox",
+              "Branching Logic": "[cmplctn_bld] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Yes"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Yes": "True|False"
+              },
+              "codes": {
+                "Yes": "1"
+              }
+            },
+            "cmplctn_bldplmry": {
+              "Variable / Field Name": "cmplctn_bldplmry",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Location of bleeding: Pulmonary",
+              "Field Type": "checkbox",
+              "Branching Logic": "[cmplctn_bld] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Yes"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Yes": "True|False"
+              },
+              "codes": {
+                "Yes": "1"
+              }
+            },
+            "cmplctn_bldoth": {
+              "Variable / Field Name": "cmplctn_bldoth",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Location of bleeding: Other",
+              "Field Type": "checkbox",
+              "Branching Logic": "[cmplctn_bld] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Yes"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Yes": "True|False"
+              },
+              "codes": {
+                "Yes": "1"
+              },
+              "Nested Fields": {
+                "cmplctn_bldpths": {
+                  "Variable / Field Name": "cmplctn_bldpths",
+                  "Form Name": "short_and_longterm_complications",
+                  "Field Label": "Location of bleeding: Other, please specify",
+                  "Field Type": "text",
+                  "Required Field?": "y",
+                  "Branching Logic": "[cmplctn_bldoth(1)] = '1'",
+                  "answer_type": "string",
+                  "answer_template": "String"
+                }
+              }
+            },
+            "cmplctn_locunk": {
+              "Variable / Field Name": "cmplctn_locunk",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Location of bleeding: Unknown",
+              "Field Type": "text",
+              "Branching Logic": "[cmplctn_bld] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "cmplctn_tmap": {
+          "Variable / Field Name": "cmplctn_tmap",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Thrombotic Microangiopathy?",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[cmplctn_drcyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes",
+            "2": "No",
+            "99": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Yes": "True|False",
+            "No": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Yes": "1",
+            "No": "2",
+            "Unknown": "99"
+          },
+          "Nested Fields": {
+            "cmplctn_tmapftdt": {
+              "Variable / Field Name": "cmplctn_tmapftdt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of first documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Required Field?": "y",
+              "Branching Logic": "[cmplctn_tmap] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_tmapltdt": {
+              "Variable / Field Name": "cmplctn_tmapltdt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of last documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Branching Logic": "[cmplctn_tmap] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_tmapltna": {
+              "Variable / Field Name": "cmplctn_tmapltna",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of last documentation not applicable",
+              "Field Type": "checkbox",
+              "Branching Logic": "[cmplctn_tmap] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Date of last documentation not applicable"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Date of last documentation not applicable": "True|False"
+              },
+              "codes": {
+                "Date of last documentation not applicable": "1"
+              }
+            },
+            "cmplctn_tmapcns": {
+              "Variable / Field Name": "cmplctn_tmapcns",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Location: Central nervous system",
+              "Field Type": "checkbox",
+              "Branching Logic": "[cmplctn_tmap] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Yes"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Yes": "True|False"
+              },
+              "codes": {
+                "Yes": "1"
+              }
+            },
+            "cmplctn_tmapgi": {
+              "Variable / Field Name": "cmplctn_tmapgi",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Location: Gastrointestinal",
+              "Field Type": "checkbox",
+              "Branching Logic": "[cmplctn_tmap] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Yes"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Yes": "True|False"
+              },
+              "codes": {
+                "Yes": "1"
+              }
+            },
+            "cmplctn_tmaplng": {
+              "Variable / Field Name": "cmplctn_tmaplng",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Location: Lung",
+              "Field Type": "checkbox",
+              "Branching Logic": "[cmplctn_tmap] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Yes"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Yes": "True|False"
+              },
+              "codes": {
+                "Yes": "1"
+              }
+            },
+            "cmplctn_tmapext": {
+              "Variable / Field Name": "cmplctn_tmapext",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Location: Extremity",
+              "Field Type": "checkbox",
+              "Branching Logic": "[cmplctn_tmap] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Yes"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Yes": "True|False"
+              },
+              "codes": {
+                "Yes": "1"
+              }
+            },
+            "cmplctn_tmapoth": {
+              "Variable / Field Name": "cmplctn_tmapoth",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Location: Other",
+              "Field Type": "checkbox",
+              "Branching Logic": "[cmplctn_tmap] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Yes"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Yes": "True|False"
+              },
+              "codes": {
+                "Yes": "1"
+              },
+              "Nested Fields": {
+                "cmplctn_tmapoths": {
+                  "Variable / Field Name": "cmplctn_tmapoths",
+                  "Form Name": "short_and_longterm_complications",
+                  "Field Label": "Location: Other, please specify",
+                  "Field Type": "text",
+                  "Required Field?": "y",
+                  "Branching Logic": "[cmplctn_tmapoth(1)] = '1'",
+                  "answer_type": "string",
+                  "answer_template": "String"
+                }
+              }
+            },
+            "cmplctn_tmapunk": {
+              "Variable / Field Name": "cmplctn_tmapunk",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Location: Unknown",
+              "Field Type": "checkbox",
+              "Branching Logic": "[cmplctn_tmap] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Yes"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Yes": "True|False"
+              },
+              "codes": {
+                "Yes": "1"
+              }
+            }
+          }
+        },
+        "cmplctn_adinynu": {
+          "Variable / Field Name": "cmplctn_adinynu",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Adrenal insufficiency",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[cmplctn_drcyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes",
+            "2": "No",
+            "99": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Yes": "True|False",
+            "No": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Yes": "1",
+            "No": "2",
+            "Unknown": "99"
+          },
+          "Nested Fields": {
+            "cmplctn_adinftdt": {
+              "Variable / Field Name": "cmplctn_adinftdt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of first documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Required Field?": "y",
+              "Branching Logic": "[cmplctn_adinynu] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_adinltdt": {
+              "Variable / Field Name": "cmplctn_adinltdt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of last documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Branching Logic": "[cmplctn_adinynu] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_adinltna": {
+              "Variable / Field Name": "cmplctn_adinltna",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of last documentation not applicable",
+              "Field Type": "checkbox",
+              "Branching Logic": "[cmplctn_adinynu] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Date of last documentation not applicable"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Date of last documentation not applicable": "True|False"
+              },
+              "codes": {
+                "Date of last documentation not applicable": "1"
+              }
+            }
+          }
+        },
+        "cmplctn_fracynu": {
+          "Variable / Field Name": "cmplctn_fracynu",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Fracture",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[cmplctn_drcyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes",
+            "2": "No",
+            "99": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Yes": "True|False",
+            "No": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Yes": "1",
+            "No": "2",
+            "Unknown": "99"
+          },
+          "Nested Fields": {
+            "cmplctn_bonetxt": {
+              "Variable / Field Name": "cmplctn_bonetxt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Bone name",
+              "Field Type": "text",
+              "Branching Logic": "[cmplctn_fracynu] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_fracftdt": {
+              "Variable / Field Name": "cmplctn_fracftdt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of first documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Branching Logic": "[cmplctn_fracynu] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_fracltna": {
+              "Variable / Field Name": "cmplctn_fracltna",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of first documentation unknown",
+              "Field Type": "checkbox",
+              "Branching Logic": "[cmplctn_fracynu] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Date of first documentation unknown"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Date of first documentation unknown": "True|False"
+              },
+              "codes": {
+                "Date of first documentation unknown": "1"
+              }
+            }
+          }
+        }
+      }
+    },
+    "cmplctn_kdnyfl": {
+      "Variable / Field Name": "cmplctn_kdnyfl",
+      "Form Name": "short_and_longterm_complications",
+      "Field Label": "Kidney failure",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "cmplctn_kdnyfdt": {
+          "Variable / Field Name": "cmplctn_kdnyfdt",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Date of first documentation",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[cmplctn_kdnyfl] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "cmplctn_lvrfl": {
+      "Variable / Field Name": "cmplctn_lvrfl",
+      "Form Name": "short_and_longterm_complications",
+      "Field Label": "Liver failure",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "cmplctn_lvrfdt": {
+          "Variable / Field Name": "cmplctn_lvrfdt",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Date of first documentation",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[cmplctn_lvrfl] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "cmplctn_hrtfl": {
+      "Variable / Field Name": "cmplctn_hrtfl",
+      "Form Name": "short_and_longterm_complications",
+      "Field Label": "Heart failure",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "cmplctn_hrtfdt": {
+          "Variable / Field Name": "cmplctn_hrtfdt",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Date of first documentation",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[cmplctn_hrtfl] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "cmplctn_lngfl": {
+      "Variable / Field Name": "cmplctn_lngfl",
+      "Form Name": "short_and_longterm_complications",
+      "Field Label": "Lung failure",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "cmplctn_lngfdt": {
+          "Variable / Field Name": "cmplctn_lngfdt",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Date of first documentation",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[cmplctn_lngfl] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "cmplctn_mrrwfl": {
+      "Variable / Field Name": "cmplctn_mrrwfl",
+      "Form Name": "short_and_longterm_complications",
+      "Field Label": "Marrow failure",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "cmplctn_mrrwfdt": {
+          "Variable / Field Name": "cmplctn_mrrwfdt",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Date of first documentation",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[cmplctn_mrrwfl] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "cmplctn_othfl": {
+      "Variable / Field Name": "cmplctn_othfl",
+      "Form Name": "short_and_longterm_complications",
+      "Field Label": "Other failure",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "cmplctn_othsfl": {
+          "Variable / Field Name": "cmplctn_othsfl",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Other failure, please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[cmplctn_othfl] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "cmplctn_othfdt": {
+          "Variable / Field Name": "cmplctn_othfdt",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Date of first documentation",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[cmplctn_othfl] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "cmplctn_grwthyn": {
+      "Variable / Field Name": "cmplctn_grwthyn",
+      "Form Name": "short_and_longterm_complications",
+      "Field Label": "Did the patient have impaired growth?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "cmplctn_ftt": {
+          "Variable / Field Name": "cmplctn_ftt",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Failure to thrive (FTT)",
+          "Field Type": "checkbox",
+          "Branching Logic": "[cmplctn_grwthyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Yes": "True|False"
+          },
+          "codes": {
+            "Yes": "1"
+          },
+          "Nested Fields": {
+            "cmplctn_fttdt": {
+              "Variable / Field Name": "cmplctn_fttdt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of first documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Required Field?": "y",
+              "Branching Logic": "[cmplctn_ftt(1)] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "cmplctn_smll": {
+          "Variable / Field Name": "cmplctn_smll",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Small stature",
+          "Field Type": "checkbox",
+          "Branching Logic": "[cmplctn_grwthyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Yes": "True|False"
+          },
+          "codes": {
+            "Yes": "1"
+          },
+          "Nested Fields": {
+            "cmplctn_smlldt": {
+              "Variable / Field Name": "cmplctn_smlldt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of first documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Required Field?": "y",
+              "Branching Logic": "[cmplctn_smll(1)] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "cmplctn_prcpbty": {
+          "Variable / Field Name": "cmplctn_prcpbty",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Precocious puberty",
+          "Field Type": "checkbox",
+          "Branching Logic": "[cmplctn_grwthyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Yes": "True|False"
+          },
+          "codes": {
+            "Yes": "1"
+          },
+          "Nested Fields": {
+            "cmplctn_prcpbdt": {
+              "Variable / Field Name": "cmplctn_prcpbdt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of first documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Required Field?": "y",
+              "Branching Logic": "[cmplctn_prcpbty(1)] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "cmplctn_dlypbty": {
+          "Variable / Field Name": "cmplctn_dlypbty",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Delayed puberty",
+          "Field Type": "checkbox",
+          "Branching Logic": "[cmplctn_grwthyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Yes": "True|False"
+          },
+          "codes": {
+            "Yes": "1"
+          },
+          "Nested Fields": {
+            "cmplctn_dlypbdt": {
+              "Variable / Field Name": "cmplctn_dlypbdt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of first documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Required Field?": "y",
+              "Branching Logic": "[cmplctn_dlypbty(1)] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "cmplctn_grthfl": {
+          "Variable / Field Name": "cmplctn_grthfl",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Growth failure",
+          "Field Type": "checkbox",
+          "Branching Logic": "[cmplctn_grwthyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Yes": "True|False"
+          },
+          "codes": {
+            "Yes": "1"
+          },
+          "Nested Fields": {
+            "cmplctn_grthfldt": {
+              "Variable / Field Name": "cmplctn_grthfldt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of first documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Required Field?": "y",
+              "Branching Logic": "[cmplctn_grthfl(1)] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "cmplctn_grthoth": {
+          "Variable / Field Name": "cmplctn_grthoth",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Other growth problem",
+          "Field Type": "checkbox",
+          "Branching Logic": "[cmplctn_grwthyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Yes": "True|False"
+          },
+          "codes": {
+            "Yes": "1"
+          },
+          "Nested Fields": {
+            "cmplctn_grwthsp": {
+              "Variable / Field Name": "cmplctn_grwthsp",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Other growth problem, please specify",
+              "Field Type": "text",
+              "Required Field?": "y",
+              "Branching Logic": "[cmplctn_grthoth(1)] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_grwthdt": {
+              "Variable / Field Name": "cmplctn_grwthdt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of first documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Required Field?": "y",
+              "Branching Logic": "[cmplctn_grthoth(1)] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "cmplctn_grthunk": {
+          "Variable / Field Name": "cmplctn_grthunk",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Growth problem unknown",
+          "Field Type": "checkbox",
+          "Branching Logic": "[cmplctn_grwthyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Yes": "True|False"
+          },
+          "codes": {
+            "Yes": "1"
+          }
+        }
+      }
+    },
+    "cmplctn_cogyn": {
+      "Variable / Field Name": "cmplctn_cogyn",
+      "Form Name": "short_and_longterm_complications",
+      "Field Label": "Did the patient have impaired cognitive development?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "cmplctn_coglrn": {
+          "Variable / Field Name": "cmplctn_coglrn",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Learning disabilities",
+          "Field Type": "checkbox",
+          "Branching Logic": "[cmplctn_cogyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Yes": "True|False"
+          },
+          "codes": {
+            "Yes": "1"
+          },
+          "Nested Fields": {
+            "cmplctn_coglrndt": {
+              "Variable / Field Name": "cmplctn_coglrndt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of first documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Required Field?": "y",
+              "Branching Logic": "[cmplctn_coglrn(1)] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "cmplctn_cogpdd": {
+          "Variable / Field Name": "cmplctn_cogpdd",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Pervasive developmental disorder (PDD)",
+          "Field Type": "checkbox",
+          "Branching Logic": "[cmplctn_cogyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Yes": "True|False"
+          },
+          "codes": {
+            "Yes": "1"
+          },
+          "Nested Fields": {
+            "cmplctn_cogpdddt": {
+              "Variable / Field Name": "cmplctn_cogpdddt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of first documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Required Field?": "y",
+              "Branching Logic": "[cmplctn_cogpdd(1)] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "cmplctn_cogadd": {
+          "Variable / Field Name": "cmplctn_cogadd",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Attention- deficit/Hyperactivity Disorder (ADHD)",
+          "Field Type": "checkbox",
+          "Branching Logic": "[cmplctn_cogyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Yes": "True|False"
+          },
+          "codes": {
+            "Yes": "1"
+          },
+          "Nested Fields": {
+            "cmplctn_cogadddt": {
+              "Variable / Field Name": "cmplctn_cogadddt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of first documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Required Field?": "y",
+              "Branching Logic": "[cmplctn_cogadd(1)] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "cmplctn_cogoth": {
+          "Variable / Field Name": "cmplctn_cogoth",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Other cognitive problem",
+          "Field Type": "checkbox",
+          "Branching Logic": "[cmplctn_cogyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Yes": "True|False"
+          },
+          "codes": {
+            "Yes": "1"
+          },
+          "Nested Fields": {
+            "cmplctn_cogsp": {
+              "Variable / Field Name": "cmplctn_cogsp",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Other cognitive problem, please specify",
+              "Field Type": "text",
+              "Required Field?": "y",
+              "Branching Logic": "[cmplctn_cogoth(1)] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_cogdt": {
+              "Variable / Field Name": "cmplctn_cogdt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of first documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Required Field?": "y",
+              "Branching Logic": "[cmplctn_cogoth(1)] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "cmplctn_cogunk": {
+          "Variable / Field Name": "cmplctn_cogunk",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Cognitive problem unknown",
+          "Field Type": "checkbox",
+          "Branching Logic": "[cmplctn_cogyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Yes": "True|False"
+          },
+          "codes": {
+            "Yes": "1"
+          }
+        }
+      }
+    },
+    "cmplctn_neuroyn": {
+      "Variable / Field Name": "cmplctn_neuroyn",
+      "Form Name": "short_and_longterm_complications",
+      "Field Label": "Did the patient have neurological deficits?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "cmplctn_nrszur": {
+          "Variable / Field Name": "cmplctn_nrszur",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Seizures",
+          "Field Type": "checkbox",
+          "Branching Logic": "[cmplctn_neuroyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Yes": "True|False"
+          },
+          "codes": {
+            "Yes": "1"
+          },
+          "Nested Fields": {
+            "cmplctn_nrszurdt": {
+              "Variable / Field Name": "cmplctn_nrszurdt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of first documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Required Field?": "y",
+              "Branching Logic": "[cmplctn_nrszur(1)] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "cmplctn_nrgbl": {
+          "Variable / Field Name": "cmplctn_nrgbl",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Global deficits",
+          "Field Type": "checkbox",
+          "Branching Logic": "[cmplctn_neuroyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Yes": "True|False"
+          },
+          "codes": {
+            "Yes": "1"
+          },
+          "Nested Fields": {
+            "cmplctn_nrgbldt": {
+              "Variable / Field Name": "cmplctn_nrgbldt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of first documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Required Field?": "y",
+              "Branching Logic": "[cmplctn_nrgbl(1)] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "cmplctn_nrprly": {
+          "Variable / Field Name": "cmplctn_nrprly",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Paralysis",
+          "Field Type": "checkbox",
+          "Branching Logic": "[cmplctn_neuroyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Yes": "True|False"
+          },
+          "codes": {
+            "Yes": "1"
+          },
+          "Nested Fields": {
+            "cmplctn_nrprlysy": {
+              "Variable / Field Name": "cmplctn_nrprlysy",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of first documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Required Field?": "y",
+              "Branching Logic": "[cmplctn_nrprly(1)] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "cmplctn_nroth": {
+          "Variable / Field Name": "cmplctn_nroth",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Other neurological deficit",
+          "Field Type": "checkbox",
+          "Branching Logic": "[cmplctn_neuroyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Yes": "True|False"
+          },
+          "codes": {
+            "Yes": "1"
+          },
+          "Nested Fields": {
+            "cmplctn_neurosp": {
+              "Variable / Field Name": "cmplctn_neurosp",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Other neurological deficit, please specify",
+              "Field Type": "text",
+              "Required Field?": "y",
+              "Branching Logic": "[cmplctn_nroth(1)] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "cmplctn_neurodt": {
+              "Variable / Field Name": "cmplctn_neurodt",
+              "Form Name": "short_and_longterm_complications",
+              "Field Label": "Date of first documentation",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Required Field?": "y",
+              "Branching Logic": "[cmplctn_nroth(1)] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "cmplctn_neurounk": {
+          "Variable / Field Name": "cmplctn_neurounk",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Neurological deficit unknown",
+          "Field Type": "checkbox",
+          "Branching Logic": "[cmplctn_neuroyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Yes": "True|False"
+          },
+          "codes": {
+            "Yes": "1"
+          }
+        }
+      }
+    },
+    "cmplctn_esrd": {
+      "Variable / Field Name": "cmplctn_esrd",
+      "Form Name": "short_and_longterm_complications",
+      "Field Label": "Did the patient have end-stage renal disease?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "cmplctn_esrdftdt": {
+          "Variable / Field Name": "cmplctn_esrdftdt",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Date of first documentation",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[cmplctn_esrd] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "cmplctn_esrdtdt": {
+          "Variable / Field Name": "cmplctn_esrdtdt",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Date of last documentation",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Branching Logic": "[cmplctn_esrd] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "cmplctn_esrdltna": {
+          "Variable / Field Name": "cmplctn_esrdltna",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Date of last documentation not applicable",
+          "Field Type": "checkbox",
+          "Branching Logic": "[cmplctn_esrd] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Yes": "True|False"
+          },
+          "codes": {
+            "Yes": "1"
+          }
+        }
+      }
+    },
+    "cmplctn_tnpt": {
+      "Variable / Field Name": "cmplctn_tnpt",
+      "Form Name": "short_and_longterm_complications",
+      "Field Label": "Did the patient have a kidney transplant?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "cmplctn_tnptftdt": {
+          "Variable / Field Name": "cmplctn_tnptftdt",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Date of first documentation",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[cmplctn_tnpt] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "cmplctn_tnptltdt": {
+          "Variable / Field Name": "cmplctn_tnptltdt",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Date of last documentation",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Branching Logic": "[cmplctn_tnpt] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "cmplctn_tnptltna": {
+          "Variable / Field Name": "cmplctn_tnptltna",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Date of last documentation not applicable",
+          "Field Type": "checkbox",
+          "Branching Logic": "[cmplctn_tnpt] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Date of last documentation not applicable"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Date of last documentation not applicable": "True|False"
+          },
+          "codes": {
+            "Date of last documentation not applicable": "1"
+          }
+        }
+      }
+    },
+    "cmplctn_teethynu": {
+      "Variable / Field Name": "cmplctn_teethynu",
+      "Form Name": "short_and_longterm_complications",
+      "Field Label": "Did the patient have any abnormality of teeth formation or enamel?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "cmplctn_teethfdt": {
+          "Variable / Field Name": "cmplctn_teethfdt",
+          "Form Name": "short_and_longterm_complications",
+          "Field Label": "Date of first documentation",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[cmplctn_teethynu] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "cmplctn_notes": {
+      "Variable / Field Name": "cmplctn_notes",
+      "Form Name": "short_and_longterm_complications",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    },
+    "profile_ab_notes": {
+      "Variable / Field Name": "profile_ab_notes",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    }
+  }
+}

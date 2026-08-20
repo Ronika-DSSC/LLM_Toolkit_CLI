@@ -1,0 +1,424 @@
+#### PROMPT_SET: radiologypathology_report
+---RAG---
+REDCap form: radiologypathology_report
+Retrieve document text needed to answer this form.
+Prefer labeled fields/tables; ignore repetitive footers/headers.
+Additional cues: demographics/face sheet, problem list, assessment & plan, discharge summary, lab results/flowsheets, medication list, imaging/pathology reports.
+Key terms: Sequence, number, radiology, pathology, reports, this, Date, report, type, Abstractor, Notes
+
+---USER---
+You are a clinical information extractor.
+Given a clinical note (or EHR text), extract answers for the REDCap form: eligibility_and_patient_profile.
+
+Instructions:
+- Fill in the JSON TEMPLATE below using ONLY evidence explicitly present in the text. Do not guess.
+- Keep the same JSON keys and nesting.
+- For choice questions: replace 'True|False' with true or false.
+  * Single-choice (radio/dropdown/yes-no): set exactly one option to true if supported.
+  * Multi-choice (checkbox): set all supported options to true.
+- For 'String'/'Number'/'Integer'/'Date' placeholders: replace with the extracted value (or null if not found).
+- Only populate 'Nested Fields' (e.g., 'please specify') when the parent condition is met AND evidence supports it.
+- Output ONLY the filled JSON (no extra commentary).
+
+EVIDENCE / PAGE CITATION RULE (for auditability):
+- The retrieved Context snippets may include headers like [<source> p<page>] or [<source> p<start>-<end>].
+- For every non-null extracted field (any field whose answer is not null and/or any option you set to true), add an evidence line into profile_ab_notes.
+- Evidence line format (one per field): <VariableName>: <EvidenceTag> — <verbatim short phrase>.
+  * Example: profile_elig1: [patient.pdf p3] — "clinically suspected HLH"
+- Use the EvidenceTag exactly as shown in the Context header (including page number).
+- If no page header is present, cite the source header only (e.g., [note]) and still provide a short verbatim phrase.
+- Do NOT add new JSON keys for evidence; record all citations ONLY inside profile_ab_notes.
+
+OUTPUT FORMAT OVERRIDE (CRITICAL):
+- The JSON TEMPLATE below is REFERENCE ONLY (schema/choices/branching). Do NOT output it.
+- Output ONLY an ANSWERS JSON object, where EACH variable is formatted as:
+  "<variable_name>": { "answer": <value> }
+- Do NOT output "Form Name", "Questions", "Variable / Field Name", "Field Label", "Field Type",
+  "Possible Values", "answer_type", "answer_template", or "codes".
+- Keep the same variable names (e.g., record_id, profile_brthyr, profile_cntry, profile_usregn).
+- Output ONLY valid JSON (no commentary, no markdown, no extra keys).
+
+ANSWERS JSON TEMPLATE (THIS IS THE ONLY THING YOU SHOULD OUTPUT):
+{
+  "radio_radioseq": {
+    "answer": null
+  },
+  "radio_rprtnd": {
+    "answer": {
+      "No radiology/pathology reports for this subject": false
+    }
+  },
+  "radio_rprtdt": {
+    "answer": null
+  },
+  "radio_rprttyp": {
+    "answer": {
+      "Radiology": false,
+      "Pathology": false,
+      "Unknown": false
+    },
+    "radio_scantyp": {
+      "answer": {
+        "CT": false,
+        "MRI": false,
+        "US": false,
+        "ECHO": false,
+        "Unknown": false
+      }
+    },
+    "radio_biopyn": {
+      "answer": {
+        "Yes": false,
+        "No": false,
+        "Unknown": false
+      }
+    },
+    "radio_rsult": {
+      "answer": {
+        "Normal": false,
+        "Abnormal": false,
+        "Undetermined": false,
+        "Not available/Unknown": false
+      },
+      "radio_rsluts": {
+        "answer": null
+      }
+    },
+    "radio_hemo": {
+      "answer": {
+        "Yes": false,
+        "No": false,
+        "Unknown": false,
+        "Not Available": false
+      },
+      "radio_bmcyn": {
+        "answer": {
+          "Yes": false,
+          "No": false,
+          "Unknown": false,
+          "Not Available": false
+        },
+        "radio_bmcrng": {
+          "answer": null
+        },
+        "radio_bmcrngu": {
+          "answer": {
+            "Low range unknown": false
+          }
+        },
+        "radio_bmchrng": {
+          "answer": null
+        },
+        "radio_bmchrngu": {
+          "answer": {
+            "High range unknown": false
+          }
+        }
+      }
+    }
+  },
+  "radio_notes": {
+    "answer": null
+  },
+  "profile_ab_notes": {
+    "answer": null
+  }
+}
+
+GENERAL "OTHER" FALLBACK RULE (applies to ALL fields):
+- For any radio/dropdown/checkbox field:
+  1) First try to map the evidence to one of the allowed option labels (or clear synonyms).
+  2) If the evidence clearly provides a value but it does NOT match any allowed option label/code:
+     - If the field has an "Other" option AND has a nested/branching "Other specify" text field:
+       * Select/check the "Other" option (use its REDCap code)
+       * Put the exact unmatched value phrase from the evidence into the "Other specify" field
+     - If the field has "Other" option but no specify field:
+       * Select/check "Other" and do not invent text
+     - If the field does not have an "Other" option:
+       * Output null and add the variable name to not_found
+- Do NOT use "Other" when the value matches a valid option label or a clear synonym of a valid option.
+
+JSON TEMPLATE (schema + answer placeholders):
+{
+  "Form Name": "radiologypathology_report",
+  "Questions": {
+    "radio_radioseq": {
+      "Variable / Field Name": "radio_radioseq",
+      "Form Name": "radiologypathology_report",
+      "Field Label": "Sequence number",
+      "Field Type": "text",
+      "Field Note": "Ex: 1",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "radio_rprtnd": {
+      "Variable / Field Name": "radio_rprtnd",
+      "Form Name": "radiologypathology_report",
+      "Field Label": "No radiology/pathology reports for this subject",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "No radiology/pathology reports for this subject"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "No radiology/pathology reports for this subject": "True|False"
+      },
+      "codes": {
+        "No radiology/pathology reports for this subject": "1"
+      }
+    },
+    "radio_rprtdt": {
+      "Variable / Field Name": "radio_rprtdt",
+      "Form Name": "radiologypathology_report",
+      "Field Label": "Date of report",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "radio_rprttyp": {
+      "Variable / Field Name": "radio_rprttyp",
+      "Form Name": "radiologypathology_report",
+      "Field Label": "Report type",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Radiology",
+        "2": "Pathology",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Radiology": "True|False",
+        "Pathology": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Radiology": "1",
+        "Pathology": "2",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "radio_scantyp": {
+          "Variable / Field Name": "radio_scantyp",
+          "Form Name": "radiologypathology_report",
+          "Field Label": "Scan type",
+          "Field Type": "dropdown",
+          "Required Field?": "y",
+          "Branching Logic": "[radio_rprttyp] = '1'",
+          "Possible Values (code->label)": {
+            "1": "CT",
+            "2": "MRI",
+            "3": "US",
+            "4": "ECHO",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "CT": "True|False",
+            "MRI": "True|False",
+            "US": "True|False",
+            "ECHO": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "CT": "1",
+            "MRI": "2",
+            "US": "3",
+            "ECHO": "4",
+            "Unknown": "98"
+          }
+        },
+        "radio_biopyn": {
+          "Variable / Field Name": "radio_biopyn",
+          "Form Name": "radiologypathology_report",
+          "Field Label": "Any biopsy?",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[radio_rprttyp] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Yes",
+            "2": "No",
+            "99": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Yes": "True|False",
+            "No": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Yes": "1",
+            "No": "2",
+            "Unknown": "99"
+          }
+        },
+        "radio_rsult": {
+          "Variable / Field Name": "radio_rsult",
+          "Form Name": "radiologypathology_report",
+          "Field Label": "Results",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[radio_rprttyp] = '1' or [radio_rprttyp] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Normal",
+            "2": "Abnormal",
+            "3": "Undetermined",
+            "97": "Not available/Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Normal": "True|False",
+            "Abnormal": "True|False",
+            "Undetermined": "True|False",
+            "Not available/Unknown": "True|False"
+          },
+          "codes": {
+            "Normal": "1",
+            "Abnormal": "2",
+            "Undetermined": "3",
+            "Not available/Unknown": "97"
+          },
+          "Nested Fields": {
+            "radio_rsluts": {
+              "Variable / Field Name": "radio_rsluts",
+              "Form Name": "radiologypathology_report",
+              "Field Label": "If abnormal, please specify",
+              "Field Type": "notes",
+              "Required Field?": "y",
+              "Branching Logic": "[radio_rsult] = '2'",
+              "answer_type": "string",
+              "answer_template": "String (free text)"
+            }
+          }
+        },
+        "radio_hemo": {
+          "Variable / Field Name": "radio_hemo",
+          "Form Name": "radiologypathology_report",
+          "Field Label": "Hemophagocytosis in bone marrow or spleen or lymph nodes?",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[radio_rprttyp] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Yes",
+            "2": "No",
+            "99": "Unknown",
+            "98": "Not Available"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Yes": "True|False",
+            "No": "True|False",
+            "Unknown": "True|False",
+            "Not Available": "True|False"
+          },
+          "codes": {
+            "Yes": "1",
+            "No": "2",
+            "Unknown": "99",
+            "Not Available": "98"
+          },
+          "Nested Fields": {
+            "radio_bmcyn": {
+              "Variable / Field Name": "radio_bmcyn",
+              "Form Name": "radiologypathology_report",
+              "Field Label": "Was bone marrow cellularity evaluated?",
+              "Field Type": "radio",
+              "Required Field?": "y",
+              "Branching Logic": "[radio_hemo] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Yes",
+                "2": "No",
+                "99": "Unknown",
+                "98": "Not Available"
+              },
+              "answer_type": "single_choice",
+              "answer_template": {
+                "Yes": "True|False",
+                "No": "True|False",
+                "Unknown": "True|False",
+                "Not Available": "True|False"
+              },
+              "codes": {
+                "Yes": "1",
+                "No": "2",
+                "Unknown": "99",
+                "Not Available": "98"
+              },
+              "Nested Fields": {
+                "radio_bmcrng": {
+                  "Variable / Field Name": "radio_bmcrng",
+                  "Form Name": "radiologypathology_report",
+                  "Field Label": "Low range",
+                  "Field Type": "text",
+                  "Branching Logic": "[radio_bmcyn] = '1'",
+                  "answer_type": "string",
+                  "answer_template": "String"
+                },
+                "radio_bmcrngu": {
+                  "Variable / Field Name": "radio_bmcrngu",
+                  "Form Name": "radiologypathology_report",
+                  "Field Label": "Low range unknown",
+                  "Field Type": "checkbox",
+                  "Branching Logic": "[radio_bmcyn] = '1'",
+                  "Possible Values (code->label)": {
+                    "1": "Low range unknown"
+                  },
+                  "answer_type": "multi_choice",
+                  "answer_template": {
+                    "Low range unknown": "True|False"
+                  },
+                  "codes": {
+                    "Low range unknown": "1"
+                  }
+                },
+                "radio_bmchrng": {
+                  "Variable / Field Name": "radio_bmchrng",
+                  "Form Name": "radiologypathology_report",
+                  "Field Label": "High range",
+                  "Field Type": "text",
+                  "Branching Logic": "[radio_bmcyn] = '1'",
+                  "answer_type": "string",
+                  "answer_template": "String"
+                },
+                "radio_bmchrngu": {
+                  "Variable / Field Name": "radio_bmchrngu",
+                  "Form Name": "radiologypathology_report",
+                  "Field Label": "High range unknown",
+                  "Field Type": "checkbox",
+                  "Branching Logic": "[radio_bmcyn] = '1'",
+                  "Possible Values (code->label)": {
+                    "1": "High range unknown"
+                  },
+                  "answer_type": "multi_choice",
+                  "answer_template": {
+                    "High range unknown": "True|False"
+                  },
+                  "codes": {
+                    "High range unknown": "1"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "radio_notes": {
+      "Variable / Field Name": "radio_notes",
+      "Form Name": "radiologypathology_report",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    },
+    "profile_ab_notes": {
+      "Variable / Field Name": "profile_ab_notes",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    }
+  }
+}

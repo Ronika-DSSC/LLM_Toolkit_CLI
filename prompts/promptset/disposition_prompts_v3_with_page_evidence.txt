@@ -1,0 +1,172 @@
+#### PROMPT_SET: disposition
+---RAG---
+REDCap form: disposition
+Retrieve document text needed to answer this form.
+Prefer labeled fields/tables; ignore repetitive footers/headers.
+Additional cues: demographics/face sheet, problem list, assessment & plan, discharge summary, lab results/flowsheets, medication list, imaging/pathology reports.
+Key terms: Date, study, completion, discontinuation, What, was, primary, reason, data, abstraction, Abstractor, Notes
+
+---USER---
+You are a clinical information extractor.
+Given a clinical note (or EHR text), extract answers for the REDCap form: eligibility_and_patient_profile.
+
+Instructions:
+- Fill in the JSON TEMPLATE below using ONLY evidence explicitly present in the text. Do not guess.
+- Keep the same JSON keys and nesting.
+- For choice questions: replace 'True|False' with true or false.
+  * Single-choice (radio/dropdown/yes-no): set exactly one option to true if supported.
+  * Multi-choice (checkbox): set all supported options to true.
+- For 'String'/'Number'/'Integer'/'Date' placeholders: replace with the extracted value (or null if not found).
+- Only populate 'Nested Fields' (e.g., 'please specify') when the parent condition is met AND evidence supports it.
+- Output ONLY the filled JSON (no extra commentary).
+
+EVIDENCE / PAGE CITATION RULE (for auditability):
+- The retrieved Context snippets may include headers like [<source> p<page>] or [<source> p<start>-<end>].
+- For every non-null extracted field (any field whose answer is not null and/or any option you set to true), add an evidence line into profile_ab_notes.
+- Evidence line format (one per field): <VariableName>: <EvidenceTag> — <verbatim short phrase>.
+  * Example: profile_elig1: [patient.pdf p3] — "clinically suspected HLH"
+- Use the EvidenceTag exactly as shown in the Context header (including page number).
+- If no page header is present, cite the source header only (e.g., [note]) and still provide a short verbatim phrase.
+- Do NOT add new JSON keys for evidence; record all citations ONLY inside profile_ab_notes.
+
+OUTPUT FORMAT OVERRIDE (CRITICAL):
+- The JSON TEMPLATE below is REFERENCE ONLY (schema/choices/branching). Do NOT output it.
+- Output ONLY an ANSWERS JSON object, where EACH variable is formatted as:
+  "<variable_name>": { "answer": <value> }
+- Do NOT output "Form Name", "Questions", "Variable / Field Name", "Field Label", "Field Type",
+  "Possible Values", "answer_type", "answer_template", or "codes".
+- Keep the same variable names (e.g., record_id, profile_brthyr, profile_cntry, profile_usregn).
+- Output ONLY valid JSON (no commentary, no markdown, no extra keys).
+
+ANSWERS JSON TEMPLATE (THIS IS THE ONLY THING YOU SHOULD OUTPUT):
+{
+  "ds_dsstdt": {
+    "answer": null
+  },
+  "ds_dsdcodcd": {
+    "answer": {
+      "Completed": false,
+      "Death": false,
+      "Lost to follow up": false,
+      "Study terminated by sponsor": false,
+      "Patient withdrew consent": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "ds_dsotsp": {
+      "answer": null
+    }
+  },
+  "ds_abstend": {
+    "answer": null
+  },
+  "ds_notes": {
+    "answer": null
+  },
+  "profile_ab_notes": {
+    "answer": null
+  }
+}
+
+GENERAL "OTHER" FALLBACK RULE (applies to ALL fields):
+- For any radio/dropdown/checkbox field:
+  1) First try to map the evidence to one of the allowed option labels (or clear synonyms).
+  2) If the evidence clearly provides a value but it does NOT match any allowed option label/code:
+     - If the field has an "Other" option AND has a nested/branching "Other specify" text field:
+       * Select/check the "Other" option (use its REDCap code)
+       * Put the exact unmatched value phrase from the evidence into the "Other specify" field
+     - If the field has "Other" option but no specify field:
+       * Select/check "Other" and do not invent text
+     - If the field does not have an "Other" option:
+       * Output null and add the variable name to not_found
+- Do NOT use "Other" when the value matches a valid option label or a clear synonym of a valid option.
+
+JSON TEMPLATE (schema + answer placeholders):
+{
+  "Form Name": "disposition",
+  "Questions": {
+    "ds_dsstdt": {
+      "Variable / Field Name": "ds_dsstdt",
+      "Form Name": "disposition",
+      "Field Label": "Date of study completion or discontinuation",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "ds_dsdcodcd": {
+      "Variable / Field Name": "ds_dsdcodcd",
+      "Form Name": "disposition",
+      "Field Label": "What was the primary reason for discontinuation?",
+      "Field Type": "dropdown",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Completed",
+        "2": "Death",
+        "3": "Lost to follow up",
+        "4": "Study terminated by sponsor",
+        "5": "Patient withdrew consent",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Completed": "True|False",
+        "Death": "True|False",
+        "Lost to follow up": "True|False",
+        "Study terminated by sponsor": "True|False",
+        "Patient withdrew consent": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Completed": "1",
+        "Death": "2",
+        "Lost to follow up": "3",
+        "Study terminated by sponsor": "4",
+        "Patient withdrew consent": "5",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "ds_dsotsp": {
+          "Variable / Field Name": "ds_dsotsp",
+          "Form Name": "disposition",
+          "Field Label": "Other, please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[ds_dsdcodcd] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "ds_abstend": {
+      "Variable / Field Name": "ds_abstend",
+      "Form Name": "disposition",
+      "Field Label": "Date of data abstraction completion",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "ds_notes": {
+      "Variable / Field Name": "ds_notes",
+      "Form Name": "disposition",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    },
+    "profile_ab_notes": {
+      "Variable / Field Name": "profile_ab_notes",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    }
+  }
+}

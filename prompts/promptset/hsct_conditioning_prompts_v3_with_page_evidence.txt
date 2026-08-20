@@ -1,0 +1,1068 @@
+#### PROMPT_SET: hsct_conditioning
+---RAG---
+REDCap form: hsct_conditioning
+Retrieve document text needed to answer this form.
+Prefer labeled fields/tables; ignore repetitive footers/headers.
+Additional cues: demographics/face sheet, problem list, assessment & plan, discharge summary, lab results/flowsheets, medication list, imaging/pathology reports.
+Key terms: Sequence, number, Name, drug, Dose, duration, Start, date, End, Route, Indication, Administration, unknown, Units, Abstractor, Notes
+
+---USER---
+You are a clinical information extractor.
+Given a clinical note (or EHR text), extract answers for the REDCap form: eligibility_and_patient_profile.
+
+Instructions:
+- Fill in the JSON TEMPLATE below using ONLY evidence explicitly present in the text. Do not guess.
+- Keep the same JSON keys and nesting.
+- For choice questions: replace 'True|False' with true or false.
+  * Single-choice (radio/dropdown/yes-no): set exactly one option to true if supported.
+  * Multi-choice (checkbox): set all supported options to true.
+- For 'String'/'Number'/'Integer'/'Date' placeholders: replace with the extracted value (or null if not found).
+- Only populate 'Nested Fields' (e.g., 'please specify') when the parent condition is met AND evidence supports it.
+- Output ONLY the filled JSON (no extra commentary).
+
+EVIDENCE / PAGE CITATION RULE (for auditability):
+- The retrieved Context snippets may include headers like [<source> p<page>] or [<source> p<start>-<end>].
+- For every non-null extracted field (any field whose answer is not null and/or any option you set to true), add an evidence line into profile_ab_notes.
+- Evidence line format (one per field): <VariableName>: <EvidenceTag> — <verbatim short phrase>.
+  * Example: profile_elig1: [patient.pdf p3] — "clinically suspected HLH"
+- Use the EvidenceTag exactly as shown in the Context header (including page number).
+- If no page header is present, cite the source header only (e.g., [note]) and still provide a short verbatim phrase.
+- Do NOT add new JSON keys for evidence; record all citations ONLY inside profile_ab_notes.
+
+OUTPUT FORMAT OVERRIDE (CRITICAL):
+- The JSON TEMPLATE below is REFERENCE ONLY (schema/choices/branching). Do NOT output it.
+- Output ONLY an ANSWERS JSON object, where EACH variable is formatted as:
+  "<variable_name>": { "answer": <value> }
+- Do NOT output "Form Name", "Questions", "Variable / Field Name", "Field Label", "Field Type",
+  "Possible Values", "answer_type", "answer_template", or "codes".
+- Keep the same variable names (e.g., record_id, profile_brthyr, profile_cntry, profile_usregn).
+- Output ONLY valid JSON (no commentary, no markdown, no extra keys).
+
+ANSWERS JSON TEMPLATE (THIS IS THE ONLY THING YOU SHOULD OUTPUT):
+{
+  "ctrt_ctrtseq": {
+    "answer": null
+  },
+  "ctrt_drugnm": {
+    "answer": {
+      "Busulfan": false,
+      "Cyclophosphamide": false,
+      "Melphalan": false,
+      "Fludarabine": false,
+      "Treosulphan": false,
+      "Thiotepa": false,
+      "Rituximab": false,
+      "Alemtuzumab": false,
+      "ATG": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "ctrt_drugsp": {
+      "answer": null
+    }
+  },
+  "ctrt_admndt": {
+    "answer": null
+  },
+  "ctrt_admnedt": {
+    "answer": null
+  },
+  "ctrt_route": {
+    "answer": {
+      "Oral": false,
+      "IV": false,
+      "Subcutaneous": false,
+      "Intrathecal": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "ctrt_routeo": {
+      "answer": null
+    }
+  },
+  "ctrt_indctn": {
+    "answer": {
+      "BMT rep": false,
+      "GVHD prophylaxis": false,
+      "BMT Prep": false,
+      "Other": false,
+      "Unknown": false
+    }
+  },
+  "ctrt_admndt1": {
+    "answer": null
+  },
+  "ctrt_dose1": {
+    "answer": null
+  },
+  "ctrt_doseuk1": {
+    "answer": {
+      "Unknown": false
+    }
+  },
+  "ctrt_dose1u": {
+    "answer": {
+      "mg": false,
+      "per m²": false,
+      "per kg": false,
+      "Unknown": false
+    }
+  },
+  "ctrt_admndt2": {
+    "answer": null
+  },
+  "ctrt_dose2": {
+    "answer": null
+  },
+  "ctrt_doseuk2": {
+    "answer": {
+      "Unknown": false
+    }
+  },
+  "ctrt_dose2u": {
+    "answer": {
+      "mg": false,
+      "per m²": false,
+      "per kg": false,
+      "Unknown": false
+    }
+  },
+  "ctrt_admndt3": {
+    "answer": null
+  },
+  "ctrt_dose3": {
+    "answer": null
+  },
+  "ctrt_doseuk3": {
+    "answer": {
+      "Unknown": false
+    }
+  },
+  "ctrt_dose3u": {
+    "answer": {
+      "mg": false,
+      "per m²": false,
+      "per kg": false,
+      "Unknown": false
+    }
+  },
+  "ctrt_admndt4": {
+    "answer": null
+  },
+  "ctrt_dose4": {
+    "answer": null
+  },
+  "ctrt_doseuk4": {
+    "answer": {
+      "Unknown": false
+    }
+  },
+  "ctrt_dose4u": {
+    "answer": {
+      "mg": false,
+      "per m²": false,
+      "per kg": false,
+      "Unknown": false
+    }
+  },
+  "ctrt_admndt5": {
+    "answer": null
+  },
+  "ctrt_dose5": {
+    "answer": null
+  },
+  "ctrt_doseuk5": {
+    "answer": {
+      "Unknown": false
+    }
+  },
+  "ctrt_dose5u": {
+    "answer": {
+      "mg": false,
+      "per m²": false,
+      "per kg": false,
+      "Unknown": false
+    }
+  },
+  "ctrt_admndt6": {
+    "answer": null
+  },
+  "ctrt_absdse6": {
+    "answer": null
+  },
+  "ctrt_doseuk6": {
+    "answer": {
+      "Unknown": false
+    }
+  },
+  "ctrt_dose6u": {
+    "answer": {
+      "mg": false,
+      "per m²": false,
+      "per kg": false,
+      "Unknown": false
+    }
+  },
+  "ctrt_admndt7": {
+    "answer": null
+  },
+  "ctrt_dose7": {
+    "answer": null
+  },
+  "ctrt_doseuk7": {
+    "answer": {
+      "Unknown": false
+    }
+  },
+  "ctrt_dose7u": {
+    "answer": {
+      "mg": false,
+      "per m²": false,
+      "per kg": false,
+      "Unknown": false
+    }
+  },
+  "ctrt_admndt8": {
+    "answer": null
+  },
+  "ctrt_dose8": {
+    "answer": null
+  },
+  "ctrt_doseuk8": {
+    "answer": {
+      "Unknown": false
+    }
+  },
+  "ctrt_dose8u": {
+    "answer": {
+      "mg": false,
+      "per m²": false,
+      "per kg": false,
+      "Unknown": false
+    }
+  },
+  "ctrt_admndt9": {
+    "answer": null
+  },
+  "ctrt_dose9": {
+    "answer": null
+  },
+  "ctrt_doseuk9": {
+    "answer": {
+      "Unknown": false
+    }
+  },
+  "ctrt_dose9u": {
+    "answer": {
+      "mg": false,
+      "per m²": false,
+      "per kg": false,
+      "Unknown": false
+    }
+  },
+  "ctrt_admndt10": {
+    "answer": null
+  },
+  "ctrt_dose10": {
+    "answer": null
+  },
+  "ctrt_doseuk10": {
+    "answer": {
+      "Unknown": false
+    }
+  },
+  "ctrt_dose10u": {
+    "answer": {
+      "mg": false,
+      "per m²": false,
+      "per kg": false,
+      "Unknown": false
+    }
+  },
+  "ctrt_notes": {
+    "answer": null
+  },
+  "profile_ab_notes": {
+    "answer": null
+  }
+}
+
+GENERAL "OTHER" FALLBACK RULE (applies to ALL fields):
+- For any radio/dropdown/checkbox field:
+  1) First try to map the evidence to one of the allowed option labels (or clear synonyms).
+  2) If the evidence clearly provides a value but it does NOT match any allowed option label/code:
+     - If the field has an "Other" option AND has a nested/branching "Other specify" text field:
+       * Select/check the "Other" option (use its REDCap code)
+       * Put the exact unmatched value phrase from the evidence into the "Other specify" field
+     - If the field has "Other" option but no specify field:
+       * Select/check "Other" and do not invent text
+     - If the field does not have an "Other" option:
+       * Output null and add the variable name to not_found
+- Do NOT use "Other" when the value matches a valid option label or a clear synonym of a valid option.
+
+JSON TEMPLATE (schema + answer placeholders):
+{
+  "Form Name": "hsct_conditioning",
+  "Questions": {
+    "ctrt_ctrtseq": {
+      "Variable / Field Name": "ctrt_ctrtseq",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Sequence number",
+      "Field Type": "text",
+      "Field Note": "Ex: 1",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "ctrt_drugnm": {
+      "Variable / Field Name": "ctrt_drugnm",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Name of drug",
+      "Field Type": "dropdown",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Busulfan",
+        "2": "Cyclophosphamide",
+        "3": "Melphalan",
+        "4": "Fludarabine",
+        "5": "Treosulphan",
+        "6": "Thiotepa",
+        "7": "Rituximab",
+        "8": "Alemtuzumab",
+        "9": "ATG",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Busulfan": "True|False",
+        "Cyclophosphamide": "True|False",
+        "Melphalan": "True|False",
+        "Fludarabine": "True|False",
+        "Treosulphan": "True|False",
+        "Thiotepa": "True|False",
+        "Rituximab": "True|False",
+        "Alemtuzumab": "True|False",
+        "ATG": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Busulfan": "1",
+        "Cyclophosphamide": "2",
+        "Melphalan": "3",
+        "Fludarabine": "4",
+        "Treosulphan": "5",
+        "Thiotepa": "6",
+        "Rituximab": "7",
+        "Alemtuzumab": "8",
+        "ATG": "9",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "ctrt_drugsp": {
+          "Variable / Field Name": "ctrt_drugsp",
+          "Form Name": "hsct_conditioning",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[ctrt_drugnm] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "ctrt_admndt": {
+      "Variable / Field Name": "ctrt_admndt",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Dose duration - Start date",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "ctrt_admnedt": {
+      "Variable / Field Name": "ctrt_admnedt",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Dose duration - End date",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "ctrt_route": {
+      "Variable / Field Name": "ctrt_route",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Route",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Oral",
+        "2": "IV",
+        "3": "Subcutaneous",
+        "4": "Intrathecal",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Oral": "True|False",
+        "IV": "True|False",
+        "Subcutaneous": "True|False",
+        "Intrathecal": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Oral": "1",
+        "IV": "2",
+        "Subcutaneous": "3",
+        "Intrathecal": "4",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "ctrt_routeo": {
+          "Variable / Field Name": "ctrt_routeo",
+          "Form Name": "hsct_conditioning",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[ctrt_route] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "ctrt_indctn": {
+      "Variable / Field Name": "ctrt_indctn",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Indication",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "BMT rep",
+        "2": "GVHD prophylaxis",
+        "3": "BMT Prep",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "BMT rep": "True|False",
+        "GVHD prophylaxis": "True|False",
+        "BMT Prep": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "BMT rep": "1",
+        "GVHD prophylaxis": "2",
+        "BMT Prep": "3",
+        "Other": "99",
+        "Unknown": "98"
+      }
+    },
+    "ctrt_admndt1": {
+      "Variable / Field Name": "ctrt_admndt1",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Date of Administration 1",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "ctrt_dose1": {
+      "Variable / Field Name": "ctrt_dose1",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Dose",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "ctrt_doseuk1": {
+      "Variable / Field Name": "ctrt_doseuk1",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Dose unknown",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Unknown": "1"
+      }
+    },
+    "ctrt_dose1u": {
+      "Variable / Field Name": "ctrt_dose1u",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Units",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "3": "mg",
+        "1": "per m²",
+        "2": "per kg",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "mg": "True|False",
+        "per m²": "True|False",
+        "per kg": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "mg": "3",
+        "per m²": "1",
+        "per kg": "2",
+        "Unknown": "98"
+      }
+    },
+    "ctrt_admndt2": {
+      "Variable / Field Name": "ctrt_admndt2",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Date of Administration 2",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "ctrt_dose2": {
+      "Variable / Field Name": "ctrt_dose2",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Dose",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "ctrt_doseuk2": {
+      "Variable / Field Name": "ctrt_doseuk2",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Dose unknown",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Unknown": "1"
+      }
+    },
+    "ctrt_dose2u": {
+      "Variable / Field Name": "ctrt_dose2u",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Units",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "3": "mg",
+        "1": "per m²",
+        "2": "per kg",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "mg": "True|False",
+        "per m²": "True|False",
+        "per kg": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "mg": "3",
+        "per m²": "1",
+        "per kg": "2",
+        "Unknown": "98"
+      }
+    },
+    "ctrt_admndt3": {
+      "Variable / Field Name": "ctrt_admndt3",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Date of Administration 3",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "ctrt_dose3": {
+      "Variable / Field Name": "ctrt_dose3",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Dose",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "ctrt_doseuk3": {
+      "Variable / Field Name": "ctrt_doseuk3",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Dose unknown",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Unknown": "1"
+      }
+    },
+    "ctrt_dose3u": {
+      "Variable / Field Name": "ctrt_dose3u",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Units",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "3": "mg",
+        "1": "per m²",
+        "2": "per kg",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "mg": "True|False",
+        "per m²": "True|False",
+        "per kg": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "mg": "3",
+        "per m²": "1",
+        "per kg": "2",
+        "Unknown": "98"
+      }
+    },
+    "ctrt_admndt4": {
+      "Variable / Field Name": "ctrt_admndt4",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Date of Administration 4",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "ctrt_dose4": {
+      "Variable / Field Name": "ctrt_dose4",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Dose",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "ctrt_doseuk4": {
+      "Variable / Field Name": "ctrt_doseuk4",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Dose unknown",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Unknown": "1"
+      }
+    },
+    "ctrt_dose4u": {
+      "Variable / Field Name": "ctrt_dose4u",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Units",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "3": "mg",
+        "1": "per m²",
+        "2": "per kg",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "mg": "True|False",
+        "per m²": "True|False",
+        "per kg": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "mg": "3",
+        "per m²": "1",
+        "per kg": "2",
+        "Unknown": "98"
+      }
+    },
+    "ctrt_admndt5": {
+      "Variable / Field Name": "ctrt_admndt5",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Date of Administration 5",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "ctrt_dose5": {
+      "Variable / Field Name": "ctrt_dose5",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Dose",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "ctrt_doseuk5": {
+      "Variable / Field Name": "ctrt_doseuk5",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Dose unknown",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Unknown": "1"
+      }
+    },
+    "ctrt_dose5u": {
+      "Variable / Field Name": "ctrt_dose5u",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Units",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "3": "mg",
+        "1": "per m²",
+        "2": "per kg",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "mg": "True|False",
+        "per m²": "True|False",
+        "per kg": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "mg": "3",
+        "per m²": "1",
+        "per kg": "2",
+        "Unknown": "98"
+      }
+    },
+    "ctrt_admndt6": {
+      "Variable / Field Name": "ctrt_admndt6",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Date of Administration 6",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "ctrt_absdse6": {
+      "Variable / Field Name": "ctrt_absdse6",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Dose",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "ctrt_doseuk6": {
+      "Variable / Field Name": "ctrt_doseuk6",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Dose unknown",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Unknown": "1"
+      }
+    },
+    "ctrt_dose6u": {
+      "Variable / Field Name": "ctrt_dose6u",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Units",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "3": "mg",
+        "1": "per m²",
+        "2": "per kg",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "mg": "True|False",
+        "per m²": "True|False",
+        "per kg": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "mg": "3",
+        "per m²": "1",
+        "per kg": "2",
+        "Unknown": "98"
+      }
+    },
+    "ctrt_admndt7": {
+      "Variable / Field Name": "ctrt_admndt7",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Date of Administration 7",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "ctrt_dose7": {
+      "Variable / Field Name": "ctrt_dose7",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Dose",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "ctrt_doseuk7": {
+      "Variable / Field Name": "ctrt_doseuk7",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Dose unknown",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Unknown": "1"
+      }
+    },
+    "ctrt_dose7u": {
+      "Variable / Field Name": "ctrt_dose7u",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Units",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "3": "mg",
+        "1": "per m²",
+        "2": "per kg",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "mg": "True|False",
+        "per m²": "True|False",
+        "per kg": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "mg": "3",
+        "per m²": "1",
+        "per kg": "2",
+        "Unknown": "98"
+      }
+    },
+    "ctrt_admndt8": {
+      "Variable / Field Name": "ctrt_admndt8",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Date of Administration 8",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "ctrt_dose8": {
+      "Variable / Field Name": "ctrt_dose8",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Dose",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "ctrt_doseuk8": {
+      "Variable / Field Name": "ctrt_doseuk8",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Dose unknown",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Unknown": "1"
+      }
+    },
+    "ctrt_dose8u": {
+      "Variable / Field Name": "ctrt_dose8u",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Units",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "3": "mg",
+        "1": "per m²",
+        "2": "per kg",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "mg": "True|False",
+        "per m²": "True|False",
+        "per kg": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "mg": "3",
+        "per m²": "1",
+        "per kg": "2",
+        "Unknown": "98"
+      }
+    },
+    "ctrt_admndt9": {
+      "Variable / Field Name": "ctrt_admndt9",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Date of Administration 9",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "ctrt_dose9": {
+      "Variable / Field Name": "ctrt_dose9",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Dose",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "ctrt_doseuk9": {
+      "Variable / Field Name": "ctrt_doseuk9",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Dose unknown",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Unknown": "1"
+      }
+    },
+    "ctrt_dose9u": {
+      "Variable / Field Name": "ctrt_dose9u",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Units",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "3": "mg",
+        "1": "per m²",
+        "2": "per kg",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "mg": "True|False",
+        "per m²": "True|False",
+        "per kg": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "mg": "3",
+        "per m²": "1",
+        "per kg": "2",
+        "Unknown": "98"
+      }
+    },
+    "ctrt_admndt10": {
+      "Variable / Field Name": "ctrt_admndt10",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Date of Administration 10",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "ctrt_dose10": {
+      "Variable / Field Name": "ctrt_dose10",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Dose",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "ctrt_doseuk10": {
+      "Variable / Field Name": "ctrt_doseuk10",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Dose unknown",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Unknown": "1"
+      }
+    },
+    "ctrt_dose10u": {
+      "Variable / Field Name": "ctrt_dose10u",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Units",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "3": "mg",
+        "1": "per m²",
+        "2": "per kg",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "mg": "True|False",
+        "per m²": "True|False",
+        "per kg": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "mg": "3",
+        "per m²": "1",
+        "per kg": "2",
+        "Unknown": "98"
+      }
+    },
+    "ctrt_notes": {
+      "Variable / Field Name": "ctrt_notes",
+      "Form Name": "hsct_conditioning",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    },
+    "profile_ab_notes": {
+      "Variable / Field Name": "profile_ab_notes",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    }
+  }
+}

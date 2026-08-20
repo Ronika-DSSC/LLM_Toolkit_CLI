@@ -1,0 +1,1867 @@
+#### PROMPT_SET: clinical_characteristics_hlh_initial_presentation
+---RAG---
+REDCap form: clinical_characteristics_hlh_initial_presentation
+Retrieve document text needed to answer this form.
+Prefer labeled fields/tables; ignore repetitive footers/headers.
+Additional cues: demographics/face sheet, problem list, assessment & plan, discharge summary, lab results/flowsheets, medication list, imaging/pathology reports.
+Key terms: Fever, Rash, Arthralgia, Vomiting, Diarrhea, Tachypnea, Confusion, Hepatomegaly, Hepatosplenomegaly, Splenomegaly, Lymphadenopathy, Tachycardia, Hypoxemia, Neurological, symptoms, Other, Abstractor, Notes
+
+---USER---
+You are a clinical information extractor.
+Given a clinical note (or EHR text), extract answers for the REDCap form: eligibility_and_patient_profile.
+
+Instructions:
+- Fill in the JSON TEMPLATE below using ONLY evidence explicitly present in the text. Do not guess.
+- Keep the same JSON keys and nesting.
+- For choice questions: replace 'True|False' with true or false.
+  * Single-choice (radio/dropdown/yes-no): set exactly one option to true if supported.
+  * Multi-choice (checkbox): set all supported options to true.
+- For 'String'/'Number'/'Integer'/'Date' placeholders: replace with the extracted value (or null if not found).
+- Only populate 'Nested Fields' (e.g., 'please specify') when the parent condition is met AND evidence supports it.
+- Output ONLY the filled JSON (no extra commentary).
+
+EVIDENCE / PAGE CITATION RULE (for auditability):
+- The retrieved Context snippets may include headers like [<source> p<page>] or [<source> p<start>-<end>].
+- For every non-null extracted field (any field whose answer is not null and/or any option you set to true), add an evidence line into profile_ab_notes.
+- Evidence line format (one per field): <VariableName>: <EvidenceTag> — <verbatim short phrase>.
+  * Example: profile_elig1: [patient.pdf p3] — "clinically suspected HLH"
+- Use the EvidenceTag exactly as shown in the Context header (including page number).
+- If no page header is present, cite the source header only (e.g., [note]) and still provide a short verbatim phrase.
+- Do NOT add new JSON keys for evidence; record all citations ONLY inside profile_ab_notes.
+
+OUTPUT FORMAT OVERRIDE (CRITICAL):
+- The JSON TEMPLATE below is REFERENCE ONLY (schema/choices/branching). Do NOT output it.
+- Output ONLY an ANSWERS JSON object, where EACH variable is formatted as:
+  "<variable_name>": { "answer": <value> }
+- Do NOT output "Form Name", "Questions", "Variable / Field Name", "Field Label", "Field Type",
+  "Possible Values", "answer_type", "answer_template", or "codes".
+- Keep the same variable names (e.g., record_id, profile_brthyr, profile_cntry, profile_usregn).
+- Output ONLY valid JSON (no commentary, no markdown, no extra keys).
+
+ANSWERS JSON TEMPLATE (THIS IS THE ONLY THING YOU SHOULD OUTPUT):
+{
+  "clinip_fvr": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "clinip_tmax": {
+      "answer": null
+    },
+    "clinip_tmaxu": {
+      "answer": {
+        "Celsius": false,
+        "Farenheit": false,
+        "Unknown": false
+      }
+    },
+    "clinip_tmaxdt": {
+      "answer": null
+    },
+    "clinip_tmaxunk": {
+      "answer": {
+        "Tmax unknown": false
+      }
+    }
+  },
+  "clinip_rash": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "clinip_rashdt": {
+      "answer": null
+    },
+    "clinip_erythmts": {
+      "answer": {
+        "Yes": false
+      }
+    },
+    "clinip_papulr": {
+      "answer": {
+        "Yes": false
+      }
+    },
+    "clinip_maclr": {
+      "answer": {
+        "Yes": false
+      }
+    },
+    "clinip_macpaplr": {
+      "answer": {
+        "Yes": false
+      }
+    },
+    "clinip_ptchl": {
+      "answer": {
+        "Yes": false
+      }
+    },
+    "clinip_raised": {
+      "answer": {
+        "Yes": false
+      }
+    },
+    "clinip_flat": {
+      "answer": {
+        "Yes": false
+      }
+    },
+    "clinip_erymulti": {
+      "answer": {
+        "Yes": false
+      }
+    },
+    "clinip_folcltis": {
+      "answer": {
+        "Yes": false
+      }
+    },
+    "clinip_edema": {
+      "answer": {
+        "Yes": false
+      }
+    },
+    "clinip_cnflnt": {
+      "answer": {
+        "Yes": false
+      }
+    },
+    "clinip_rashunk": {
+      "answer": {
+        "Yes": false
+      }
+    },
+    "clinip_rashoth": {
+      "answer": {
+        "Yes": false
+      }
+    },
+    "clinip_rashoths": {
+      "answer": null
+    }
+  },
+  "clinip_arthlg": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "clinip_arthlgdt": {
+      "answer": null
+    }
+  },
+  "clinip_vomit": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "clinip_vomitdt": {
+      "answer": null
+    }
+  },
+  "clinip_drrha": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "clinip_drrhadt": {
+      "answer": null
+    }
+  },
+  "clinip_tchypn": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "clinip_tchypndt": {
+      "answer": null
+    }
+  },
+  "clinip_cnfsn": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "clinip_cnfsndt": {
+      "answer": null
+    }
+  },
+  "clinip_hpa": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "clinip_hpas": {
+      "answer": null
+    },
+    "clinip_hpaunk": {
+      "answer": {
+        "Size in centimeters below coastal margin Unknown": false
+      }
+    },
+    "clinip_hpam": {
+      "answer": {
+        "US": false,
+        "CT": false,
+        "Physician's subjective assessment": false,
+        "MRI": false,
+        "Unknown": false
+      }
+    },
+    "clinip_hpadt": {
+      "answer": null
+    }
+  },
+  "clinip_hptspl": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "clinip_hptsplm": {
+      "answer": {
+        "US": false,
+        "CT": false,
+        "Physician's subjective assessment": false,
+        "MRI": false,
+        "Unknown": false
+      }
+    },
+    "clinip_hptspldt": {
+      "answer": null
+    }
+  },
+  "clinip_spl": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "clinip_spls": {
+      "answer": null
+    },
+    "clinip_splsunk": {
+      "answer": {
+        "Unknown": false
+      }
+    },
+    "clinip_splm": {
+      "answer": {
+        "US": false,
+        "CT": false,
+        "Physician's subjective assessment": false,
+        "MRI": false,
+        "Unknown": false
+      }
+    },
+    "clinip_spldt": {
+      "answer": null
+    }
+  },
+  "clinip_lymph": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "clinip_lymphm": {
+      "answer": {
+        "US": false,
+        "CT": false,
+        "Physician's subjective assessment": false,
+        "MRI": false,
+        "Unknown": false
+      }
+    },
+    "clinip_lymphdt": {
+      "answer": null
+    }
+  },
+  "clinip_tchycr": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "clinip_tchycrdt": {
+      "answer": null
+    }
+  },
+  "clinip_hypxm": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "clinip_hypxmdt": {
+      "answer": null
+    }
+  },
+  "clinip_nur": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "clinip_nurszur": {
+      "answer": {
+        "Seizures": false
+      },
+      "clinip_szurdt": {
+        "answer": null
+      }
+    },
+    "clinip_nurfcld": {
+      "answer": {
+        "Focal deficit(s) present": false
+      },
+      "clinip_fclddt": {
+        "answer": null
+      },
+      "clinip_hmprs": {
+        "answer": {
+          "Yes": false
+        }
+      },
+      "clinip_prslmb": {
+        "answer": {
+          "Yes": false
+        }
+      },
+      "clinip_snsry": {
+        "answer": {
+          "Yes": false
+        }
+      },
+      "clinip_atxia": {
+        "answer": {
+          "Yes": false
+        }
+      },
+      "clinip_sxnrvp": {
+        "answer": {
+          "Yes": false
+        }
+      },
+      "clinip_ocrnply": {
+        "answer": {
+          "Yes": false
+        },
+        "clinip_ocrnplys": {
+          "answer": null
+        }
+      },
+      "clinip_fcldunk": {
+        "answer": {
+          "Yes": false
+        }
+      }
+    },
+    "clinip_nurglo": {
+      "answer": {
+        "Global issue(s) present": false
+      },
+      "clinip_glodt": {
+        "answer": null
+      },
+      "clinip_glsgow": {
+        "answer": {
+          "Yes": false
+        },
+        "clinip_glsgows": {
+          "answer": {
+            "3": false,
+            "4": false,
+            "5": false,
+            "6": false,
+            "7": false,
+            "8": false,
+            "9": false,
+            "10": false,
+            "11": false,
+            "12": false,
+            "13": false,
+            "14": false,
+            "15": false,
+            "Unknown": false
+          }
+        }
+      },
+      "clinip_irritb": {
+        "answer": {
+          "Yes": false
+        }
+      },
+      "clinip_disornt": {
+        "answer": {
+          "Yes": false
+        }
+      },
+      "clinip_glbunk": {
+        "answer": {
+          "Yes": false
+        }
+      }
+    },
+    "clinip_nuroth": {
+      "answer": {
+        "Yes": false
+      },
+      "clinip_nursp": {
+        "answer": null
+      }
+    },
+    "clinip_nurunk": {
+      "answer": {
+        "Yes": false
+      }
+    }
+  },
+  "clinip_othyn": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "clinip_oths": {
+      "answer": null
+    },
+    "clinip_othsdt": {
+      "answer": null
+    }
+  },
+  "clinip_notes": {
+    "answer": null
+  },
+  "profile_ab_notes": {
+    "answer": null
+  }
+}
+
+GENERAL "OTHER" FALLBACK RULE (applies to ALL fields):
+- For any radio/dropdown/checkbox field:
+  1) First try to map the evidence to one of the allowed option labels (or clear synonyms).
+  2) If the evidence clearly provides a value but it does NOT match any allowed option label/code:
+     - If the field has an "Other" option AND has a nested/branching "Other specify" text field:
+       * Select/check the "Other" option (use its REDCap code)
+       * Put the exact unmatched value phrase from the evidence into the "Other specify" field
+     - If the field has "Other" option but no specify field:
+       * Select/check "Other" and do not invent text
+     - If the field does not have an "Other" option:
+       * Output null and add the variable name to not_found
+- Do NOT use "Other" when the value matches a valid option label or a clear synonym of a valid option.
+
+JSON TEMPLATE (schema + answer placeholders):
+{
+  "Form Name": "clinical_characteristics_hlh_initial_presentation",
+  "Questions": {
+    "clinip_fvr": {
+      "Variable / Field Name": "clinip_fvr",
+      "Form Name": "clinical_characteristics_hlh_initial_presentation",
+      "Field Label": "Fever",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "clinip_tmax": {
+          "Variable / Field Name": "clinip_tmax",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Tmax",
+          "Field Type": "text",
+          "Branching Logic": "[clinip_fvr] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "clinip_tmaxu": {
+          "Variable / Field Name": "clinip_tmaxu",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Unit",
+          "Field Type": "dropdown",
+          "Branching Logic": "[clinip_fvr] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Celsius",
+            "2": "Farenheit",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Celsius": "True|False",
+            "Farenheit": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Celsius": "1",
+            "Farenheit": "2",
+            "Unknown": "98"
+          }
+        },
+        "clinip_tmaxdt": {
+          "Variable / Field Name": "clinip_tmaxdt",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[clinip_fvr] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "clinip_tmaxunk": {
+          "Variable / Field Name": "clinip_tmaxunk",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Tmax unknown",
+          "Field Type": "checkbox",
+          "Branching Logic": "[clinip_fvr] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Tmax unknown"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Tmax unknown": "True|False"
+          },
+          "codes": {
+            "Tmax unknown": "1"
+          }
+        }
+      }
+    },
+    "clinip_rash": {
+      "Variable / Field Name": "clinip_rash",
+      "Form Name": "clinical_characteristics_hlh_initial_presentation",
+      "Field Label": "Rash",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "clinip_rashdt": {
+          "Variable / Field Name": "clinip_rashdt",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[clinip_rash] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "clinip_erythmts": {
+          "Variable / Field Name": "clinip_erythmts",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Erythematous",
+          "Field Type": "checkbox",
+          "Branching Logic": "[clinip_rash] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Yes": "True|False"
+          },
+          "codes": {
+            "Yes": "1"
+          }
+        },
+        "clinip_papulr": {
+          "Variable / Field Name": "clinip_papulr",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Papular",
+          "Field Type": "checkbox",
+          "Branching Logic": "[clinip_rash] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Yes": "True|False"
+          },
+          "codes": {
+            "Yes": "1"
+          }
+        },
+        "clinip_maclr": {
+          "Variable / Field Name": "clinip_maclr",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Macular",
+          "Field Type": "checkbox",
+          "Branching Logic": "[clinip_rash] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Yes": "True|False"
+          },
+          "codes": {
+            "Yes": "1"
+          }
+        },
+        "clinip_macpaplr": {
+          "Variable / Field Name": "clinip_macpaplr",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Maculopapular",
+          "Field Type": "checkbox",
+          "Branching Logic": "[clinip_rash] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Yes": "True|False"
+          },
+          "codes": {
+            "Yes": "1"
+          }
+        },
+        "clinip_ptchl": {
+          "Variable / Field Name": "clinip_ptchl",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Petechial",
+          "Field Type": "checkbox",
+          "Branching Logic": "[clinip_rash] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Yes": "True|False"
+          },
+          "codes": {
+            "Yes": "1"
+          }
+        },
+        "clinip_raised": {
+          "Variable / Field Name": "clinip_raised",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Raised",
+          "Field Type": "checkbox",
+          "Branching Logic": "[clinip_rash] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Yes": "True|False"
+          },
+          "codes": {
+            "Yes": "1"
+          }
+        },
+        "clinip_flat": {
+          "Variable / Field Name": "clinip_flat",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Flat",
+          "Field Type": "checkbox",
+          "Branching Logic": "[clinip_rash] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Yes": "True|False"
+          },
+          "codes": {
+            "Yes": "1"
+          }
+        },
+        "clinip_erymulti": {
+          "Variable / Field Name": "clinip_erymulti",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Erythema multiforme like",
+          "Field Type": "checkbox",
+          "Branching Logic": "[clinip_rash] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Yes": "True|False"
+          },
+          "codes": {
+            "Yes": "1"
+          }
+        },
+        "clinip_folcltis": {
+          "Variable / Field Name": "clinip_folcltis",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Folliculitis like",
+          "Field Type": "checkbox",
+          "Branching Logic": "[clinip_rash] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Yes": "True|False"
+          },
+          "codes": {
+            "Yes": "1"
+          }
+        },
+        "clinip_edema": {
+          "Variable / Field Name": "clinip_edema",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "With edema",
+          "Field Type": "checkbox",
+          "Branching Logic": "[clinip_rash] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Yes": "True|False"
+          },
+          "codes": {
+            "Yes": "1"
+          }
+        },
+        "clinip_cnflnt": {
+          "Variable / Field Name": "clinip_cnflnt",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Confluent",
+          "Field Type": "checkbox",
+          "Branching Logic": "[clinip_rash] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Yes": "True|False"
+          },
+          "codes": {
+            "Yes": "1"
+          }
+        },
+        "clinip_rashunk": {
+          "Variable / Field Name": "clinip_rashunk",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Unknown",
+          "Field Type": "checkbox",
+          "Branching Logic": "[clinip_rash] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Yes": "True|False"
+          },
+          "codes": {
+            "Yes": "1"
+          }
+        },
+        "clinip_rashoth": {
+          "Variable / Field Name": "clinip_rashoth",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Rash, other",
+          "Field Type": "checkbox",
+          "Branching Logic": "[clinip_rash] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Yes": "True|False"
+          },
+          "codes": {
+            "Yes": "1"
+          }
+        },
+        "clinip_rashoths": {
+          "Variable / Field Name": "clinip_rashoths",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Rash other, please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[clinip_rash] = '1' and [clinip_rashoth(1)] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "clinip_arthlg": {
+      "Variable / Field Name": "clinip_arthlg",
+      "Form Name": "clinical_characteristics_hlh_initial_presentation",
+      "Field Label": "Arthralgia",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "clinip_arthlgdt": {
+          "Variable / Field Name": "clinip_arthlgdt",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[clinip_arthlg] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "clinip_vomit": {
+      "Variable / Field Name": "clinip_vomit",
+      "Form Name": "clinical_characteristics_hlh_initial_presentation",
+      "Field Label": "Vomiting",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "clinip_vomitdt": {
+          "Variable / Field Name": "clinip_vomitdt",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[clinip_vomit] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "clinip_drrha": {
+      "Variable / Field Name": "clinip_drrha",
+      "Form Name": "clinical_characteristics_hlh_initial_presentation",
+      "Field Label": "Diarrhea",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "clinip_drrhadt": {
+          "Variable / Field Name": "clinip_drrhadt",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[clinip_drrha] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "clinip_tchypn": {
+      "Variable / Field Name": "clinip_tchypn",
+      "Form Name": "clinical_characteristics_hlh_initial_presentation",
+      "Field Label": "Tachypnea",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "clinip_tchypndt": {
+          "Variable / Field Name": "clinip_tchypndt",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[clinip_tchypn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "clinip_cnfsn": {
+      "Variable / Field Name": "clinip_cnfsn",
+      "Form Name": "clinical_characteristics_hlh_initial_presentation",
+      "Field Label": "Confusion",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "clinip_cnfsndt": {
+          "Variable / Field Name": "clinip_cnfsndt",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[clinip_cnfsn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "clinip_hpa": {
+      "Variable / Field Name": "clinip_hpa",
+      "Form Name": "clinical_characteristics_hlh_initial_presentation",
+      "Field Label": "Hepatomegaly",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "clinip_hpas": {
+          "Variable / Field Name": "clinip_hpas",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Please specify size in centimeters below coastal margin",
+          "Field Type": "text",
+          "Branching Logic": "[clinip_hpa] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "clinip_hpaunk": {
+          "Variable / Field Name": "clinip_hpaunk",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Size in centimeters below coastal margin Unknown",
+          "Field Type": "checkbox",
+          "Branching Logic": "[clinip_hpa] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Size in centimeters below coastal margin Unknown"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Size in centimeters below coastal margin Unknown": "True|False"
+          },
+          "codes": {
+            "Size in centimeters below coastal margin Unknown": "1"
+          }
+        },
+        "clinip_hpam": {
+          "Variable / Field Name": "clinip_hpam",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Measurement",
+          "Field Type": "dropdown",
+          "Required Field?": "y",
+          "Branching Logic": "[clinip_hpa] = '1'",
+          "Possible Values (code->label)": {
+            "1": "US",
+            "2": "CT",
+            "3": "Physician's subjective assessment",
+            "4": "MRI",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "US": "True|False",
+            "CT": "True|False",
+            "Physician's subjective assessment": "True|False",
+            "MRI": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "US": "1",
+            "CT": "2",
+            "Physician's subjective assessment": "3",
+            "MRI": "4",
+            "Unknown": "98"
+          }
+        },
+        "clinip_hpadt": {
+          "Variable / Field Name": "clinip_hpadt",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[clinip_hpa] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "clinip_hptspl": {
+      "Variable / Field Name": "clinip_hptspl",
+      "Form Name": "clinical_characteristics_hlh_initial_presentation",
+      "Field Label": "Hepatosplenomegaly",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "clinip_hptsplm": {
+          "Variable / Field Name": "clinip_hptsplm",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Measurement",
+          "Field Type": "dropdown",
+          "Required Field?": "y",
+          "Branching Logic": "[clinip_hptspl] = '1'",
+          "Possible Values (code->label)": {
+            "1": "US",
+            "2": "CT",
+            "3": "Physician's subjective assessment",
+            "4": "MRI",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "US": "True|False",
+            "CT": "True|False",
+            "Physician's subjective assessment": "True|False",
+            "MRI": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "US": "1",
+            "CT": "2",
+            "Physician's subjective assessment": "3",
+            "MRI": "4",
+            "Unknown": "98"
+          }
+        },
+        "clinip_hptspldt": {
+          "Variable / Field Name": "clinip_hptspldt",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[clinip_hptspl] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "clinip_spl": {
+      "Variable / Field Name": "clinip_spl",
+      "Form Name": "clinical_characteristics_hlh_initial_presentation",
+      "Field Label": "Splenomegaly",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "clinip_spls": {
+          "Variable / Field Name": "clinip_spls",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Please specify size in centimeters below coastal margin",
+          "Field Type": "text",
+          "Branching Logic": "[clinip_spl] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "clinip_splsunk": {
+          "Variable / Field Name": "clinip_splsunk",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Size in centimeters below coastal margin Unknown",
+          "Field Type": "checkbox",
+          "Branching Logic": "[clinip_spl] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Unknown"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Unknown": "1"
+          }
+        },
+        "clinip_splm": {
+          "Variable / Field Name": "clinip_splm",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Measurement",
+          "Field Type": "dropdown",
+          "Required Field?": "y",
+          "Branching Logic": "[clinip_spl] = '1'",
+          "Possible Values (code->label)": {
+            "1": "US",
+            "2": "CT",
+            "3": "Physician's subjective assessment",
+            "4": "MRI",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "US": "True|False",
+            "CT": "True|False",
+            "Physician's subjective assessment": "True|False",
+            "MRI": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "US": "1",
+            "CT": "2",
+            "Physician's subjective assessment": "3",
+            "MRI": "4",
+            "Unknown": "98"
+          }
+        },
+        "clinip_spldt": {
+          "Variable / Field Name": "clinip_spldt",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[clinip_spl] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "clinip_lymph": {
+      "Variable / Field Name": "clinip_lymph",
+      "Form Name": "clinical_characteristics_hlh_initial_presentation",
+      "Field Label": "Lymphadenopathy",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "clinip_lymphm": {
+          "Variable / Field Name": "clinip_lymphm",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Measurement",
+          "Field Type": "dropdown",
+          "Required Field?": "y",
+          "Branching Logic": "[clinip_lymph] = '1'",
+          "Possible Values (code->label)": {
+            "1": "US",
+            "2": "CT",
+            "3": "Physician's subjective assessment",
+            "4": "MRI",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "US": "True|False",
+            "CT": "True|False",
+            "Physician's subjective assessment": "True|False",
+            "MRI": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "US": "1",
+            "CT": "2",
+            "Physician's subjective assessment": "3",
+            "MRI": "4",
+            "Unknown": "98"
+          }
+        },
+        "clinip_lymphdt": {
+          "Variable / Field Name": "clinip_lymphdt",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[clinip_lymph] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "clinip_tchycr": {
+      "Variable / Field Name": "clinip_tchycr",
+      "Form Name": "clinical_characteristics_hlh_initial_presentation",
+      "Field Label": "Tachycardia",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "clinip_tchycrdt": {
+          "Variable / Field Name": "clinip_tchycrdt",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[clinip_tchycr] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "clinip_hypxm": {
+      "Variable / Field Name": "clinip_hypxm",
+      "Form Name": "clinical_characteristics_hlh_initial_presentation",
+      "Field Label": "Hypoxemia",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "clinip_hypxmdt": {
+          "Variable / Field Name": "clinip_hypxmdt",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[clinip_hypxm] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "clinip_nur": {
+      "Variable / Field Name": "clinip_nur",
+      "Form Name": "clinical_characteristics_hlh_initial_presentation",
+      "Field Label": "Neurological symptoms",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "clinip_nurszur": {
+          "Variable / Field Name": "clinip_nurszur",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Seizures",
+          "Field Type": "checkbox",
+          "Branching Logic": "[clinip_nur] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Seizures"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Seizures": "True|False"
+          },
+          "codes": {
+            "Seizures": "1"
+          },
+          "Nested Fields": {
+            "clinip_szurdt": {
+              "Variable / Field Name": "clinip_szurdt",
+              "Form Name": "clinical_characteristics_hlh_initial_presentation",
+              "Field Label": "Date",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Required Field?": "y",
+              "Branching Logic": "[clinip_nurszur(1)] = '1' and [clinip_nur] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "clinip_nurfcld": {
+          "Variable / Field Name": "clinip_nurfcld",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Did the patient have any focal deficit(s)?",
+          "Field Type": "checkbox",
+          "Branching Logic": "[clinip_nur] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Focal deficit(s) present"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Focal deficit(s) present": "True|False"
+          },
+          "codes": {
+            "Focal deficit(s) present": "1"
+          },
+          "Nested Fields": {
+            "clinip_fclddt": {
+              "Variable / Field Name": "clinip_fclddt",
+              "Form Name": "clinical_characteristics_hlh_initial_presentation",
+              "Field Label": "Date",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Required Field?": "y",
+              "Branching Logic": "[clinip_nurfcld(1)] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "clinip_hmprs": {
+              "Variable / Field Name": "clinip_hmprs",
+              "Form Name": "clinical_characteristics_hlh_initial_presentation",
+              "Field Label": "Hemiparesis",
+              "Field Type": "checkbox",
+              "Branching Logic": "[clinip_nurfcld(1)] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Yes"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Yes": "True|False"
+              },
+              "codes": {
+                "Yes": "1"
+              }
+            },
+            "clinip_prslmb": {
+              "Variable / Field Name": "clinip_prslmb",
+              "Form Name": "clinical_characteristics_hlh_initial_presentation",
+              "Field Label": "Paresis of single limb",
+              "Field Type": "checkbox",
+              "Branching Logic": "[clinip_nurfcld(1)] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Yes"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Yes": "True|False"
+              },
+              "codes": {
+                "Yes": "1"
+              }
+            },
+            "clinip_snsry": {
+              "Variable / Field Name": "clinip_snsry",
+              "Form Name": "clinical_characteristics_hlh_initial_presentation",
+              "Field Label": "Sensory defects",
+              "Field Type": "checkbox",
+              "Branching Logic": "[clinip_nurfcld(1)] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Yes"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Yes": "True|False"
+              },
+              "codes": {
+                "Yes": "1"
+              }
+            },
+            "clinip_atxia": {
+              "Variable / Field Name": "clinip_atxia",
+              "Form Name": "clinical_characteristics_hlh_initial_presentation",
+              "Field Label": "Ataxia",
+              "Field Type": "checkbox",
+              "Branching Logic": "[clinip_nurfcld(1)] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Yes"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Yes": "True|False"
+              },
+              "codes": {
+                "Yes": "1"
+              }
+            },
+            "clinip_sxnrvp": {
+              "Variable / Field Name": "clinip_sxnrvp",
+              "Form Name": "clinical_characteristics_hlh_initial_presentation",
+              "Field Label": "Six nerve palsy",
+              "Field Type": "checkbox",
+              "Branching Logic": "[clinip_nurfcld(1)] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Yes"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Yes": "True|False"
+              },
+              "codes": {
+                "Yes": "1"
+              }
+            },
+            "clinip_ocrnply": {
+              "Variable / Field Name": "clinip_ocrnply",
+              "Form Name": "clinical_characteristics_hlh_initial_presentation",
+              "Field Label": "Other cranial palsy",
+              "Field Type": "checkbox",
+              "Branching Logic": "[clinip_nurfcld(1)] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Yes"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Yes": "True|False"
+              },
+              "codes": {
+                "Yes": "1"
+              },
+              "Nested Fields": {
+                "clinip_ocrnplys": {
+                  "Variable / Field Name": "clinip_ocrnplys",
+                  "Form Name": "clinical_characteristics_hlh_initial_presentation",
+                  "Field Label": "Other cranial palsy, please specify",
+                  "Field Type": "text",
+                  "Required Field?": "y",
+                  "Branching Logic": "[clinip_ocrnply(1)] = '1'",
+                  "answer_type": "string",
+                  "answer_template": "String"
+                }
+              }
+            },
+            "clinip_fcldunk": {
+              "Variable / Field Name": "clinip_fcldunk",
+              "Form Name": "clinical_characteristics_hlh_initial_presentation",
+              "Field Label": "Focal deficit unknown",
+              "Field Type": "checkbox",
+              "Branching Logic": "[clinip_nurfcld(1)] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Yes"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Yes": "True|False"
+              },
+              "codes": {
+                "Yes": "1"
+              }
+            }
+          }
+        },
+        "clinip_nurglo": {
+          "Variable / Field Name": "clinip_nurglo",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Did the patient have any global issue(s)?",
+          "Field Type": "checkbox",
+          "Branching Logic": "[clinip_nur] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Global issue(s) present"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Global issue(s) present": "True|False"
+          },
+          "codes": {
+            "Global issue(s) present": "1"
+          },
+          "Nested Fields": {
+            "clinip_glodt": {
+              "Variable / Field Name": "clinip_glodt",
+              "Form Name": "clinical_characteristics_hlh_initial_presentation",
+              "Field Label": "Date",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Required Field?": "y",
+              "Branching Logic": "[clinip_nurglo(1)] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "clinip_glsgow": {
+              "Variable / Field Name": "clinip_glsgow",
+              "Form Name": "clinical_characteristics_hlh_initial_presentation",
+              "Field Label": "Glasgow coma score",
+              "Field Type": "checkbox",
+              "Branching Logic": "[clinip_nurglo(1)] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Yes"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Yes": "True|False"
+              },
+              "codes": {
+                "Yes": "1"
+              },
+              "Nested Fields": {
+                "clinip_glsgows": {
+                  "Variable / Field Name": "clinip_glsgows",
+                  "Form Name": "clinical_characteristics_hlh_initial_presentation",
+                  "Field Label": "Please specify score",
+                  "Field Type": "dropdown",
+                  "Branching Logic": "[clinip_glsgow(1)] = '1'",
+                  "Possible Values (code->label)": {
+                    "3": "3",
+                    "4": "4",
+                    "5": "5",
+                    "6": "6",
+                    "7": "7",
+                    "8": "8",
+                    "9": "9",
+                    "10": "10",
+                    "11": "11",
+                    "12": "12",
+                    "13": "13",
+                    "14": "14",
+                    "15": "15",
+                    "98": "Unknown"
+                  },
+                  "answer_type": "single_choice",
+                  "answer_template": {
+                    "3": "True|False",
+                    "4": "True|False",
+                    "5": "True|False",
+                    "6": "True|False",
+                    "7": "True|False",
+                    "8": "True|False",
+                    "9": "True|False",
+                    "10": "True|False",
+                    "11": "True|False",
+                    "12": "True|False",
+                    "13": "True|False",
+                    "14": "True|False",
+                    "15": "True|False",
+                    "Unknown": "True|False"
+                  },
+                  "codes": {
+                    "3": "3",
+                    "4": "4",
+                    "5": "5",
+                    "6": "6",
+                    "7": "7",
+                    "8": "8",
+                    "9": "9",
+                    "10": "10",
+                    "11": "11",
+                    "12": "12",
+                    "13": "13",
+                    "14": "14",
+                    "15": "15",
+                    "Unknown": "98"
+                  }
+                }
+              }
+            },
+            "clinip_irritb": {
+              "Variable / Field Name": "clinip_irritb",
+              "Form Name": "clinical_characteristics_hlh_initial_presentation",
+              "Field Label": "Irritability",
+              "Field Type": "checkbox",
+              "Branching Logic": "[clinip_nurglo(1)] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Yes"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Yes": "True|False"
+              },
+              "codes": {
+                "Yes": "1"
+              }
+            },
+            "clinip_disornt": {
+              "Variable / Field Name": "clinip_disornt",
+              "Form Name": "clinical_characteristics_hlh_initial_presentation",
+              "Field Label": "Disorientation",
+              "Field Type": "checkbox",
+              "Branching Logic": "[clinip_nurglo(1)] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Yes"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Yes": "True|False"
+              },
+              "codes": {
+                "Yes": "1"
+              }
+            },
+            "clinip_glbunk": {
+              "Variable / Field Name": "clinip_glbunk",
+              "Form Name": "clinical_characteristics_hlh_initial_presentation",
+              "Field Label": "Global issue(s) unknown",
+              "Field Type": "checkbox",
+              "Branching Logic": "[clinip_nurglo(1)] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Yes"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Yes": "True|False"
+              },
+              "codes": {
+                "Yes": "1"
+              }
+            }
+          }
+        },
+        "clinip_nuroth": {
+          "Variable / Field Name": "clinip_nuroth",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Other neurological symptoms",
+          "Field Type": "checkbox",
+          "Branching Logic": "[clinip_nur] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Yes": "True|False"
+          },
+          "codes": {
+            "Yes": "1"
+          },
+          "Nested Fields": {
+            "clinip_nursp": {
+              "Variable / Field Name": "clinip_nursp",
+              "Form Name": "clinical_characteristics_hlh_initial_presentation",
+              "Field Label": "Other neurological symptoms, please specify",
+              "Field Type": "notes",
+              "Required Field?": "y",
+              "Branching Logic": "[clinip_nuroth(1)] = '1'",
+              "answer_type": "string",
+              "answer_template": "String (free text)"
+            }
+          }
+        },
+        "clinip_nurunk": {
+          "Variable / Field Name": "clinip_nurunk",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Neurological symptoms, unknown",
+          "Field Type": "checkbox",
+          "Branching Logic": "[clinip_nur] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Yes": "True|False"
+          },
+          "codes": {
+            "Yes": "1"
+          }
+        }
+      }
+    },
+    "clinip_othyn": {
+      "Variable / Field Name": "clinip_othyn",
+      "Form Name": "clinical_characteristics_hlh_initial_presentation",
+      "Field Label": "Other symptoms",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "clinip_oths": {
+          "Variable / Field Name": "clinip_oths",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Other symptoms, please specify",
+          "Field Type": "notes",
+          "Required Field?": "y",
+          "Branching Logic": "[clinip_othyn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String (free text)"
+        },
+        "clinip_othsdt": {
+          "Variable / Field Name": "clinip_othsdt",
+          "Form Name": "clinical_characteristics_hlh_initial_presentation",
+          "Field Label": "Other symptoms, date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[clinip_othyn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "clinip_notes": {
+      "Variable / Field Name": "clinip_notes",
+      "Form Name": "clinical_characteristics_hlh_initial_presentation",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    },
+    "profile_ab_notes": {
+      "Variable / Field Name": "profile_ab_notes",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    }
+  }
+}

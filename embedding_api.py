@@ -16,8 +16,8 @@ from pathlib import Path
 load_dotenv(dotenv_path=Path(__file__).resolve().parent / ".env")
 
 # ----------------------------------- Defaults / Endpoints ---------------------------------
-EMBEDDING_API_URL = os.getenv("EMBEDDING_API_URL", "https://llm.research.cchmc.org/ollama/api/embed")
-LLM_API_URL = os.getenv("LLM_API_URL", "https://llm.research.cchmc.org/api/chat/completions")
+EMBEDDING_API_URL = os.getenv("EMBEDDING_URL")
+LLM_API_URL = os.getenv("LLM_URL")
 EMBEDDING_API_KEY = os.getenv("EMBEDDING_API_KEY")
 LLM_API_KEY = os.getenv("LLM_API_KEY")
 

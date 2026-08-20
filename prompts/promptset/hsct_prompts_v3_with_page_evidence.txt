@@ -1,0 +1,1387 @@
+#### PROMPT_SET: hsct
+---RAG---
+REDCap form: hsct
+Retrieve document text needed to answer this form.
+Prefer labeled fields/tables; ignore repetitive footers/headers.
+Additional cues: demographics/face sheet, problem list, assessment & plan, discharge summary, lab results/flowsheets, medication list, imaging/pathology reports.
+Key terms: Sequence, number, Did, receive, HSCT, unit, CD34, content, CD3, Total, nucleated, cell, Abstractor, Notes
+
+---USER---
+You are a clinical information extractor.
+Given a clinical note (or EHR text), extract answers for the REDCap form: eligibility_and_patient_profile.
+
+Instructions:
+- Fill in the JSON TEMPLATE below using ONLY evidence explicitly present in the text. Do not guess.
+- Keep the same JSON keys and nesting.
+- For choice questions: replace 'True|False' with true or false.
+  * Single-choice (radio/dropdown/yes-no): set exactly one option to true if supported.
+  * Multi-choice (checkbox): set all supported options to true.
+- For 'String'/'Number'/'Integer'/'Date' placeholders: replace with the extracted value (or null if not found).
+- Only populate 'Nested Fields' (e.g., 'please specify') when the parent condition is met AND evidence supports it.
+- Output ONLY the filled JSON (no extra commentary).
+
+EVIDENCE / PAGE CITATION RULE (for auditability):
+- The retrieved Context snippets may include headers like [<source> p<page>] or [<source> p<start>-<end>].
+- For every non-null extracted field (any field whose answer is not null and/or any option you set to true), add an evidence line into profile_ab_notes.
+- Evidence line format (one per field): <VariableName>: <EvidenceTag> — <verbatim short phrase>.
+  * Example: profile_elig1: [patient.pdf p3] — "clinically suspected HLH"
+- Use the EvidenceTag exactly as shown in the Context header (including page number).
+- If no page header is present, cite the source header only (e.g., [note]) and still provide a short verbatim phrase.
+- Do NOT add new JSON keys for evidence; record all citations ONLY inside profile_ab_notes.
+
+OUTPUT FORMAT OVERRIDE (CRITICAL):
+- The JSON TEMPLATE below is REFERENCE ONLY (schema/choices/branching). Do NOT output it.
+- Output ONLY an ANSWERS JSON object, where EACH variable is formatted as:
+  "<variable_name>": { "answer": <value> }
+- Do NOT output "Form Name", "Questions", "Variable / Field Name", "Field Label", "Field Type",
+  "Possible Values", "answer_type", "answer_template", or "codes".
+- Keep the same variable names (e.g., record_id, profile_brthyr, profile_cntry, profile_usregn).
+- Output ONLY valid JSON (no commentary, no markdown, no extra keys).
+
+ANSWERS JSON TEMPLATE (THIS IS THE ONLY THING YOU SHOULD OUTPUT):
+{
+  "outcome_hsctseq": {
+    "answer": null
+  },
+  "outcome_hsctyn": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "outcome_hscthelp": {
+      "answer": null
+    },
+    "outcome_hsctdt": {
+      "answer": null
+    },
+    "outcome_dnrtyp": {
+      "answer": {
+        "Matched related donor": false,
+        "Matched unrelated donor": false,
+        "Mismatched related donor": false,
+        "Mismatched unrelated donor": false,
+        "Unknown": false
+      },
+      "outcome_dgrmtch": {
+        "answer": null
+      },
+      "outcome_dgrmtchu": {
+        "answer": {
+          "Degree of match unknown": false
+        }
+      }
+    },
+    "outcome_prdct": {
+      "answer": {
+        "Bone marrow": false,
+        "Peripheral blood stem cell (PBSC)": false,
+        "Umbilical cord blood (UCB) stem cell product": false,
+        "Unknown": false
+      }
+    },
+    "outcome_medcd34": {
+      "answer": null
+    },
+    "outcome_medcd34u": {
+      "answer": {
+        "CD34 content unknown": false
+      }
+    },
+    "outcome_medcd3": {
+      "answer": null
+    },
+    "outcome_medcd3u": {
+      "answer": {
+        "CD3 content unknown": false
+      }
+    },
+    "outcome_tnc": {
+      "answer": null
+    },
+    "outcome_tncunk": {
+      "answer": {
+        "Total nucleated cell (TNC) dose unknown": false
+      }
+    },
+    "outcome_graftt": {
+      "answer": {
+        "Yes": false,
+        "No": false,
+        "Unknown": false
+      },
+      "outcome_cd34": {
+        "answer": {
+          "CD34 selected": false
+        }
+      },
+      "outcome_tcr": {
+        "answer": {
+          "TCR alpha beta depleted": false
+        }
+      },
+      "outcome_grafto": {
+        "answer": {
+          "Other": false
+        },
+        "outcome_graftsp": {
+          "answer": null
+        }
+      },
+      "outcome_grftspu": {
+        "answer": {
+          "Unknown": false
+        }
+      }
+    },
+    "outcome_pfail": {
+      "answer": {
+        "Yes": false,
+        "No": false,
+        "Unknown": false
+      },
+      "outcome_nengday": {
+        "answer": null
+      },
+      "outcome_nengdayu": {
+        "answer": {
+          "Day of neutrophil engraftment (days after transplant) unknown": false
+        }
+      }
+    },
+    "outcome_sfail": {
+      "answer": {
+        "Yes": false,
+        "No": false,
+        "Unknown": false
+      },
+      "outcome_sgrftdt": {
+        "answer": null
+      }
+    },
+    "outcome_chmrsm": {
+      "answer": {
+        "Yes": false,
+        "No": false,
+        "Unknown": false
+      },
+      "outcome_whlbld": {
+        "answer": null
+      },
+      "outcome_whlbldu": {
+        "answer": {
+          "Lowest level of donor chimerism in whole blood by day 100 unknown": false
+        }
+      },
+      "outcome_tcll": {
+        "answer": null
+      },
+      "outcome_tcllu": {
+        "answer": {
+          "Lowest level of donor chimerism in sorted T cells by day 100 unknown": false
+        }
+      },
+      "outcome_myld": {
+        "answer": null
+      },
+      "outcome_myldu": {
+        "answer": {
+          "Lowest level of donor chimerism in sorted myeloid cells by day 100 unknown": false
+        }
+      },
+      "outcome_mrrw": {
+        "answer": null
+      },
+      "outcome_mrrwu": {
+        "answer": {
+          "Lowest level of donor chimerism in bone marrow by day 100 unknown": false
+        }
+      },
+      "outcome_whlbldy": {
+        "answer": null
+      },
+      "outcome_whlbldyu": {
+        "answer": {
+          "Lowest level of donor chimerism in whole blood by day 365 unknown": false
+        }
+      },
+      "outcome_tclly": {
+        "answer": null
+      },
+      "outcome_tcllyu": {
+        "answer": {
+          "Lowest level of donor chimerism in sorted T cells by day 365 unknown": false
+        }
+      },
+      "outcome_myldy": {
+        "answer": null
+      },
+      "outcome_myldyu": {
+        "answer": {
+          "Lowest level of donor chimerism in sorted myeloid cells by day 365 unknown": false
+        }
+      },
+      "outcome_mrrwy": {
+        "answer": null
+      },
+      "outcome_mrrwyu": {
+        "answer": {
+          "Lowest level of donor chimerism in bone marrow by day 365 unknown": false
+        }
+      },
+      "outcome_immchg": {
+        "answer": {
+          "Yes": false,
+          "No": false,
+          "Not available": false
+        },
+        "outcome_immchgs": {
+          "answer": null
+        }
+      }
+    },
+    "outcome_scndprt": {
+      "answer": {
+        "Yes": false,
+        "No": false,
+        "Unknown": false
+      },
+      "outcome_scndtrpt": {
+        "answer": {
+          "Second transplant (i.e., Preparative regimen plus either marrow or PBSC)": false
+        }
+      },
+      "outcome_scndtrptdt": {
+        "answer": null
+      },
+      "outcome_lympi": {
+        "answer": {
+          "Donor lymphocyte infusion": false
+        }
+      },
+      "outcome_lympidt": {
+        "answer": null
+      },
+      "outcome_cellbst": {
+        "answer": {
+          "Stem cell boost (i.e., Purified stem cell from donor without a new preparative regimen)": false
+        }
+      },
+      "outcome_cellbstdt": {
+        "answer": null
+      },
+      "outcome_othprdt": {
+        "answer": {
+          "Other": false
+        },
+        "outcome_othprdts": {
+          "answer": null
+        }
+      },
+      "outcome_othprdtdt": {
+        "answer": null
+      },
+      "outcome_prdctunk": {
+        "answer": {
+          "Unknown": false
+        }
+      }
+    },
+    "outcome_actgrft": {
+      "answer": {
+        "Yes": false,
+        "No": false,
+        "Unknown": false
+      },
+      "outcome_maxgrd": {
+        "answer": {
+          "Grade 1": false,
+          "Grade 2": false,
+          "Grade 3": false,
+          "Grade 4": false,
+          "Unknown": false
+        }
+      },
+      "outcome_maxstg": {
+        "answer": null
+      },
+      "outcome_maxstgu": {
+        "answer": {
+          "Max stage for skin and gut unknown": false
+        }
+      }
+    },
+    "outcome_chrcvhd": {
+      "answer": {
+        "Yes": false,
+        "No": false,
+        "Unknown": false
+      },
+      "outcome_chrcvhds": {
+        "answer": {
+          "Limited": false,
+          "Extensive": false,
+          "Unknown": false
+        }
+      }
+    }
+  },
+  "outcome_medcd34unit": {
+    "answer": null
+  },
+  "outcome_medcd3unit": {
+    "answer": null
+  },
+  "outcome_tncunit": {
+    "answer": null
+  },
+  "outcome_notes": {
+    "answer": null
+  },
+  "profile_ab_notes": {
+    "answer": null
+  }
+}
+
+GENERAL "OTHER" FALLBACK RULE (applies to ALL fields):
+- For any radio/dropdown/checkbox field:
+  1) First try to map the evidence to one of the allowed option labels (or clear synonyms).
+  2) If the evidence clearly provides a value but it does NOT match any allowed option label/code:
+     - If the field has an "Other" option AND has a nested/branching "Other specify" text field:
+       * Select/check the "Other" option (use its REDCap code)
+       * Put the exact unmatched value phrase from the evidence into the "Other specify" field
+     - If the field has "Other" option but no specify field:
+       * Select/check "Other" and do not invent text
+     - If the field does not have an "Other" option:
+       * Output null and add the variable name to not_found
+- Do NOT use "Other" when the value matches a valid option label or a clear synonym of a valid option.
+
+JSON TEMPLATE (schema + answer placeholders):
+{
+  "Form Name": "hsct",
+  "Questions": {
+    "outcome_hsctseq": {
+      "Variable / Field Name": "outcome_hsctseq",
+      "Form Name": "hsct",
+      "Field Label": "Sequence number",
+      "Field Type": "text",
+      "Field Note": "Ex: 1",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "outcome_hsctyn": {
+      "Variable / Field Name": "outcome_hsctyn",
+      "Form Name": "hsct",
+      "Field Label": "Did the patient receive HSCT?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "outcome_hscthelp": {
+          "Variable / Field Name": "outcome_hscthelp",
+          "Form Name": "hsct",
+          "Field Label": "Please complete the HSCT Conditioning CRF.",
+          "Field Type": "descriptive",
+          "Branching Logic": "[outcome_hsctyn] = '1'",
+          "answer_type": "display_only",
+          "answer_template": null
+        },
+        "outcome_hsctdt": {
+          "Variable / Field Name": "outcome_hsctdt",
+          "Form Name": "hsct",
+          "Field Label": "Date of HSCT",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[outcome_hsctyn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "outcome_dnrtyp": {
+          "Variable / Field Name": "outcome_dnrtyp",
+          "Form Name": "hsct",
+          "Field Label": "Type of HSCT donor?",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[outcome_hsctyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Matched related donor",
+            "2": "Matched unrelated donor",
+            "3": "Mismatched related donor",
+            "4": "Mismatched unrelated donor",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Matched related donor": "True|False",
+            "Matched unrelated donor": "True|False",
+            "Mismatched related donor": "True|False",
+            "Mismatched unrelated donor": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Matched related donor": "1",
+            "Matched unrelated donor": "2",
+            "Mismatched related donor": "3",
+            "Mismatched unrelated donor": "4",
+            "Unknown": "98"
+          },
+          "Nested Fields": {
+            "outcome_dgrmtch": {
+              "Variable / Field Name": "outcome_dgrmtch",
+              "Form Name": "hsct",
+              "Field Label": "Please specify degree of match",
+              "Field Type": "text",
+              "Branching Logic": "[outcome_dnrtyp] = '4' or [outcome_dnrtyp] = '3'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "outcome_dgrmtchu": {
+              "Variable / Field Name": "outcome_dgrmtchu",
+              "Form Name": "hsct",
+              "Field Label": "Degree of match unknown",
+              "Field Type": "checkbox",
+              "Branching Logic": "[outcome_dnrtyp] = '3' or [outcome_dnrtyp] = '4'",
+              "Possible Values (code->label)": {
+                "1": "Degree of match unknown"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Degree of match unknown": "True|False"
+              },
+              "codes": {
+                "Degree of match unknown": "1"
+              }
+            }
+          }
+        },
+        "outcome_prdct": {
+          "Variable / Field Name": "outcome_prdct",
+          "Form Name": "hsct",
+          "Field Label": "Indicate the product type",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[outcome_hsctyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Bone marrow",
+            "2": "Peripheral blood stem cell (PBSC)",
+            "3": "Umbilical cord blood (UCB) stem cell product",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Bone marrow": "True|False",
+            "Peripheral blood stem cell (PBSC)": "True|False",
+            "Umbilical cord blood (UCB) stem cell product": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Bone marrow": "1",
+            "Peripheral blood stem cell (PBSC)": "2",
+            "Umbilical cord blood (UCB) stem cell product": "3",
+            "Unknown": "98"
+          }
+        },
+        "outcome_medcd34": {
+          "Variable / Field Name": "outcome_medcd34",
+          "Form Name": "hsct",
+          "Field Label": "Specify the dose: CD34 content",
+          "Field Type": "text",
+          "Branching Logic": "[outcome_hsctyn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "outcome_medcd34u": {
+          "Variable / Field Name": "outcome_medcd34u",
+          "Form Name": "hsct",
+          "Field Label": "CD34 content unknown",
+          "Field Type": "checkbox",
+          "Branching Logic": "[outcome_hsctyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "CD34 content unknown"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "CD34 content unknown": "True|False"
+          },
+          "codes": {
+            "CD34 content unknown": "1"
+          }
+        },
+        "outcome_medcd3": {
+          "Variable / Field Name": "outcome_medcd3",
+          "Form Name": "hsct",
+          "Field Label": "Specify the dose: CD3 content",
+          "Field Type": "text",
+          "Branching Logic": "[outcome_hsctyn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "outcome_medcd3u": {
+          "Variable / Field Name": "outcome_medcd3u",
+          "Form Name": "hsct",
+          "Field Label": "CD3 content unknown",
+          "Field Type": "checkbox",
+          "Branching Logic": "[outcome_hsctyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "CD3 content unknown"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "CD3 content unknown": "True|False"
+          },
+          "codes": {
+            "CD3 content unknown": "1"
+          }
+        },
+        "outcome_tnc": {
+          "Variable / Field Name": "outcome_tnc",
+          "Form Name": "hsct",
+          "Field Label": "Specify the dose: Total nucleated cell (TNC) dose",
+          "Field Type": "text",
+          "Branching Logic": "[outcome_hsctyn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "outcome_tncunk": {
+          "Variable / Field Name": "outcome_tncunk",
+          "Form Name": "hsct",
+          "Field Label": "Total nucleated cell (TNC) dose unknown",
+          "Field Type": "checkbox",
+          "Branching Logic": "[outcome_hsctyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Total nucleated cell (TNC) dose unknown"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Total nucleated cell (TNC) dose unknown": "True|False"
+          },
+          "codes": {
+            "Total nucleated cell (TNC) dose unknown": "1"
+          }
+        },
+        "outcome_graftt": {
+          "Variable / Field Name": "outcome_graftt",
+          "Form Name": "hsct",
+          "Field Label": "Was the graft T cell depleted?",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[outcome_hsctyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes",
+            "2": "No",
+            "99": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Yes": "True|False",
+            "No": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Yes": "1",
+            "No": "2",
+            "Unknown": "99"
+          },
+          "Nested Fields": {
+            "outcome_cd34": {
+              "Variable / Field Name": "outcome_cd34",
+              "Form Name": "hsct",
+              "Field Label": "If yes, please specify: CD34 selected",
+              "Field Type": "checkbox",
+              "Branching Logic": "[outcome_graftt] = '1'",
+              "Possible Values (code->label)": {
+                "1": "CD34 selected"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "CD34 selected": "True|False"
+              },
+              "codes": {
+                "CD34 selected": "1"
+              }
+            },
+            "outcome_tcr": {
+              "Variable / Field Name": "outcome_tcr",
+              "Form Name": "hsct",
+              "Field Label": "If yes, please specify: TCR alpha beta depleted",
+              "Field Type": "checkbox",
+              "Branching Logic": "[outcome_graftt] = '1'",
+              "Possible Values (code->label)": {
+                "1": "TCR alpha beta depleted"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "TCR alpha beta depleted": "True|False"
+              },
+              "codes": {
+                "TCR alpha beta depleted": "1"
+              }
+            },
+            "outcome_grafto": {
+              "Variable / Field Name": "outcome_grafto",
+              "Form Name": "hsct",
+              "Field Label": "If yes, please specify: Other",
+              "Field Type": "checkbox",
+              "Branching Logic": "[outcome_graftt] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Other"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Other": "True|False"
+              },
+              "codes": {
+                "Other": "1"
+              },
+              "Nested Fields": {
+                "outcome_graftsp": {
+                  "Variable / Field Name": "outcome_graftsp",
+                  "Form Name": "hsct",
+                  "Field Label": "If yes, please specify: Other, please specify",
+                  "Field Type": "text",
+                  "Required Field?": "y",
+                  "Branching Logic": "[outcome_grafto(1)] = '1'",
+                  "answer_type": "string",
+                  "answer_template": "String"
+                }
+              }
+            },
+            "outcome_grftspu": {
+              "Variable / Field Name": "outcome_grftspu",
+              "Form Name": "hsct",
+              "Field Label": "If yes, please specify: Unknown",
+              "Field Type": "checkbox",
+              "Branching Logic": "[outcome_graftt] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Unknown"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Unknown": "True|False"
+              },
+              "codes": {
+                "Unknown": "1"
+              }
+            }
+          }
+        },
+        "outcome_pfail": {
+          "Variable / Field Name": "outcome_pfail",
+          "Form Name": "hsct",
+          "Field Label": "Did the patient experience primary graft failure?",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[outcome_hsctyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes",
+            "2": "No",
+            "99": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Yes": "True|False",
+            "No": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Yes": "1",
+            "No": "2",
+            "Unknown": "99"
+          },
+          "Nested Fields": {
+            "outcome_nengday": {
+              "Variable / Field Name": "outcome_nengday",
+              "Form Name": "hsct",
+              "Field Label": "Indicate the day of neutrophil engraftment/donor engraftment (days after transplant)",
+              "Field Type": "text",
+              "Field Note": "Ex: 14",
+              "Branching Logic": "[outcome_pfail] = '2'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "outcome_nengdayu": {
+              "Variable / Field Name": "outcome_nengdayu",
+              "Form Name": "hsct",
+              "Field Label": "Day of neutrophil engraftment/donor engraftment (days after transplant) unknown",
+              "Field Type": "checkbox",
+              "Branching Logic": "[outcome_pfail] = '2'",
+              "Possible Values (code->label)": {
+                "1": "Day of neutrophil engraftment (days after transplant) unknown"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Day of neutrophil engraftment (days after transplant) unknown": "True|False"
+              },
+              "codes": {
+                "Day of neutrophil engraftment (days after transplant) unknown": "1"
+              }
+            }
+          }
+        },
+        "outcome_sfail": {
+          "Variable / Field Name": "outcome_sfail",
+          "Form Name": "hsct",
+          "Field Label": "Did the patient experience secondary graft failure?",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[outcome_hsctyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes",
+            "2": "No",
+            "99": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Yes": "True|False",
+            "No": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Yes": "1",
+            "No": "2",
+            "Unknown": "99"
+          },
+          "Nested Fields": {
+            "outcome_sgrftdt": {
+              "Variable / Field Name": "outcome_sgrftdt",
+              "Form Name": "hsct",
+              "Field Label": "Date of secondary graft failure",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026",
+              "Required Field?": "y",
+              "Branching Logic": "[outcome_sfail] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "outcome_chmrsm": {
+          "Variable / Field Name": "outcome_chmrsm",
+          "Form Name": "hsct",
+          "Field Label": "Did patient experience mixed chimerism?",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[outcome_hsctyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes",
+            "2": "No",
+            "99": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Yes": "True|False",
+            "No": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Yes": "1",
+            "No": "2",
+            "Unknown": "99"
+          },
+          "Nested Fields": {
+            "outcome_whlbld": {
+              "Variable / Field Name": "outcome_whlbld",
+              "Form Name": "hsct",
+              "Field Label": "If yes, indicate: Lowest level of donor chimerism in whole blood by day 100",
+              "Field Type": "text",
+              "Branching Logic": "[outcome_chmrsm] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "outcome_whlbldu": {
+              "Variable / Field Name": "outcome_whlbldu",
+              "Form Name": "hsct",
+              "Field Label": "Lowest level of donor chimerism in whole blood by day 100 unknown",
+              "Field Type": "checkbox",
+              "Branching Logic": "[outcome_chmrsm] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Lowest level of donor chimerism in whole blood by day 100 unknown"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Lowest level of donor chimerism in whole blood by day 100 unknown": "True|False"
+              },
+              "codes": {
+                "Lowest level of donor chimerism in whole blood by day 100 unknown": "1"
+              }
+            },
+            "outcome_tcll": {
+              "Variable / Field Name": "outcome_tcll",
+              "Form Name": "hsct",
+              "Field Label": "If yes, indicate: Lowest level of donor chimerism in sorted T cells by day 100",
+              "Field Type": "text",
+              "Branching Logic": "[outcome_chmrsm] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "outcome_tcllu": {
+              "Variable / Field Name": "outcome_tcllu",
+              "Form Name": "hsct",
+              "Field Label": "Lowest level of donor chimerism in sorted T cells by day 100 unknown",
+              "Field Type": "checkbox",
+              "Branching Logic": "[outcome_chmrsm] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Lowest level of donor chimerism in sorted T cells by day 100 unknown"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Lowest level of donor chimerism in sorted T cells by day 100 unknown": "True|False"
+              },
+              "codes": {
+                "Lowest level of donor chimerism in sorted T cells by day 100 unknown": "1"
+              }
+            },
+            "outcome_myld": {
+              "Variable / Field Name": "outcome_myld",
+              "Form Name": "hsct",
+              "Field Label": "If yes, indicate: Lowest level of donor chimerism in sorted myeloid cells by day 100",
+              "Field Type": "text",
+              "Branching Logic": "[outcome_chmrsm] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "outcome_myldu": {
+              "Variable / Field Name": "outcome_myldu",
+              "Form Name": "hsct",
+              "Field Label": "Lowest level of donor chimerism in sorted myeloid cells by day 100 unknown",
+              "Field Type": "checkbox",
+              "Branching Logic": "[outcome_chmrsm] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Lowest level of donor chimerism in sorted myeloid cells by day 100 unknown"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Lowest level of donor chimerism in sorted myeloid cells by day 100 unknown": "True|False"
+              },
+              "codes": {
+                "Lowest level of donor chimerism in sorted myeloid cells by day 100 unknown": "1"
+              }
+            },
+            "outcome_mrrw": {
+              "Variable / Field Name": "outcome_mrrw",
+              "Form Name": "hsct",
+              "Field Label": "If yes, indicate: Lowest level of donor chimerism in bone marrow by day 100",
+              "Field Type": "text",
+              "Branching Logic": "[outcome_chmrsm] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "outcome_mrrwu": {
+              "Variable / Field Name": "outcome_mrrwu",
+              "Form Name": "hsct",
+              "Field Label": "Lowest level of donor chimerism in bone marrow by day 100 unknown",
+              "Field Type": "checkbox",
+              "Branching Logic": "[outcome_chmrsm] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Lowest level of donor chimerism in bone marrow by day 100 unknown"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Lowest level of donor chimerism in bone marrow by day 100 unknown": "True|False"
+              },
+              "codes": {
+                "Lowest level of donor chimerism in bone marrow by day 100 unknown": "1"
+              }
+            },
+            "outcome_whlbldy": {
+              "Variable / Field Name": "outcome_whlbldy",
+              "Form Name": "hsct",
+              "Field Label": "If yes, indicate: Lowest level of donor chimerism in whole blood by day 365",
+              "Field Type": "text",
+              "Branching Logic": "[outcome_chmrsm] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "outcome_whlbldyu": {
+              "Variable / Field Name": "outcome_whlbldyu",
+              "Form Name": "hsct",
+              "Field Label": "Lowest level of donor chimerism in whole blood by day 365 unknown",
+              "Field Type": "checkbox",
+              "Branching Logic": "[outcome_chmrsm] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Lowest level of donor chimerism in whole blood by day 365 unknown"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Lowest level of donor chimerism in whole blood by day 365 unknown": "True|False"
+              },
+              "codes": {
+                "Lowest level of donor chimerism in whole blood by day 365 unknown": "1"
+              }
+            },
+            "outcome_tclly": {
+              "Variable / Field Name": "outcome_tclly",
+              "Form Name": "hsct",
+              "Field Label": "If yes, indicate: Lowest level of donor chimerism in sorted T cells by day 365",
+              "Field Type": "text",
+              "Branching Logic": "[outcome_chmrsm] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "outcome_tcllyu": {
+              "Variable / Field Name": "outcome_tcllyu",
+              "Form Name": "hsct",
+              "Field Label": "Lowest level of donor chimerism in sorted T cells by day 365 unknown",
+              "Field Type": "checkbox",
+              "Branching Logic": "[outcome_chmrsm] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Lowest level of donor chimerism in sorted T cells by day 365 unknown"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Lowest level of donor chimerism in sorted T cells by day 365 unknown": "True|False"
+              },
+              "codes": {
+                "Lowest level of donor chimerism in sorted T cells by day 365 unknown": "1"
+              }
+            },
+            "outcome_myldy": {
+              "Variable / Field Name": "outcome_myldy",
+              "Form Name": "hsct",
+              "Field Label": "If yes, indicate: Lowest level of donor chimerism in sorted myeloid cells by day 365",
+              "Field Type": "text",
+              "Branching Logic": "[outcome_chmrsm] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "outcome_myldyu": {
+              "Variable / Field Name": "outcome_myldyu",
+              "Form Name": "hsct",
+              "Field Label": "Lowest level of donor chimerism in sorted myeloid cells by day 365 unknown",
+              "Field Type": "checkbox",
+              "Branching Logic": "[outcome_chmrsm] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Lowest level of donor chimerism in sorted myeloid cells by day 365 unknown"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Lowest level of donor chimerism in sorted myeloid cells by day 365 unknown": "True|False"
+              },
+              "codes": {
+                "Lowest level of donor chimerism in sorted myeloid cells by day 365 unknown": "1"
+              }
+            },
+            "outcome_mrrwy": {
+              "Variable / Field Name": "outcome_mrrwy",
+              "Form Name": "hsct",
+              "Field Label": "If yes, indicate: Lowest level of donor chimerism in bone marrow by day 365",
+              "Field Type": "text",
+              "Branching Logic": "[outcome_chmrsm] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "outcome_mrrwyu": {
+              "Variable / Field Name": "outcome_mrrwyu",
+              "Form Name": "hsct",
+              "Field Label": "Lowest level of donor chimerism in bone marrow by day 365 unknown",
+              "Field Type": "checkbox",
+              "Branching Logic": "[outcome_chmrsm] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Lowest level of donor chimerism in bone marrow by day 365 unknown"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Lowest level of donor chimerism in bone marrow by day 365 unknown": "True|False"
+              },
+              "codes": {
+                "Lowest level of donor chimerism in bone marrow by day 365 unknown": "1"
+              }
+            },
+            "outcome_immchg": {
+              "Variable / Field Name": "outcome_immchg",
+              "Form Name": "hsct",
+              "Field Label": "Was there a change in immunosuppression due to mixed chimerism?",
+              "Field Type": "radio",
+              "Required Field?": "y",
+              "Branching Logic": "[outcome_chmrsm] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Yes",
+                "2": "No",
+                "96": "Not available"
+              },
+              "answer_type": "single_choice",
+              "answer_template": {
+                "Yes": "True|False",
+                "No": "True|False",
+                "Not available": "True|False"
+              },
+              "codes": {
+                "Yes": "1",
+                "No": "2",
+                "Not available": "96"
+              },
+              "Nested Fields": {
+                "outcome_immchgs": {
+                  "Variable / Field Name": "outcome_immchgs",
+                  "Form Name": "hsct",
+                  "Field Label": "If yes, please describe the modification",
+                  "Field Type": "notes",
+                  "Required Field?": "y",
+                  "Branching Logic": "[outcome_immchg] = '1'",
+                  "answer_type": "string",
+                  "answer_template": "String (free text)"
+                }
+              }
+            }
+          }
+        },
+        "outcome_scndprt": {
+          "Variable / Field Name": "outcome_scndprt",
+          "Form Name": "hsct",
+          "Field Label": "Did the patient receive a second transplant or cellular product?",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[outcome_hsctyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes",
+            "2": "No",
+            "99": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Yes": "True|False",
+            "No": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Yes": "1",
+            "No": "2",
+            "Unknown": "99"
+          },
+          "Nested Fields": {
+            "outcome_scndtrpt": {
+              "Variable / Field Name": "outcome_scndtrpt",
+              "Form Name": "hsct",
+              "Field Label": "Type of product received: Second transplant (i.e., Preparative regimen plus either marrow or PBSC)",
+              "Field Type": "checkbox",
+              "Branching Logic": "[outcome_scndprt] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Second transplant (i.e., Preparative regimen plus either marrow or PBSC)"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Second transplant (i.e., Preparative regimen plus either marrow or PBSC)": "True|False"
+              },
+              "codes": {
+                "Second transplant (i.e., Preparative regimen plus either marrow or PBSC)": "1"
+              }
+            },
+            "outcome_scndtrptdt": {
+              "Variable / Field Name": "outcome_scndtrptdt",
+              "Form Name": "hsct",
+              "Field Label": "Date of second transplant",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026; 01-Feb-2027 (if more than 1)",
+              "Required Field?": "y",
+              "Branching Logic": "[outcome_scndprt] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "outcome_lympi": {
+              "Variable / Field Name": "outcome_lympi",
+              "Form Name": "hsct",
+              "Field Label": "Type of product received: Donor lymphocyte infusion",
+              "Field Type": "checkbox",
+              "Branching Logic": "[outcome_scndprt] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Donor lymphocyte infusion"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Donor lymphocyte infusion": "True|False"
+              },
+              "codes": {
+                "Donor lymphocyte infusion": "1"
+              }
+            },
+            "outcome_lympidt": {
+              "Variable / Field Name": "outcome_lympidt",
+              "Form Name": "hsct",
+              "Field Label": "Date of donor lymphocyte infusion",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026; 01-Feb-2027 (if more than 1)",
+              "Required Field?": "y",
+              "Branching Logic": "[outcome_scndprt] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "outcome_cellbst": {
+              "Variable / Field Name": "outcome_cellbst",
+              "Form Name": "hsct",
+              "Field Label": "Type of product received: Stem cell boost (i.e., Purified stem cell from donor without a new preparative regimen)",
+              "Field Type": "checkbox",
+              "Branching Logic": "[outcome_scndprt] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Stem cell boost (i.e., Purified stem cell from donor without a new preparative regimen)"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Stem cell boost (i.e., Purified stem cell from donor without a new preparative regimen)": "True|False"
+              },
+              "codes": {
+                "Stem cell boost (i.e., Purified stem cell from donor without a new preparative regimen)": "1"
+              }
+            },
+            "outcome_cellbstdt": {
+              "Variable / Field Name": "outcome_cellbstdt",
+              "Form Name": "hsct",
+              "Field Label": "Date of stem cell boost",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026; 01-Feb-2027 (if more than 1)",
+              "Required Field?": "y",
+              "Branching Logic": "[outcome_scndprt] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "outcome_othprdt": {
+              "Variable / Field Name": "outcome_othprdt",
+              "Form Name": "hsct",
+              "Field Label": "Type of product received: Other",
+              "Field Type": "checkbox",
+              "Branching Logic": "[outcome_scndprt] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Other"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Other": "True|False"
+              },
+              "codes": {
+                "Other": "1"
+              },
+              "Nested Fields": {
+                "outcome_othprdts": {
+                  "Variable / Field Name": "outcome_othprdts",
+                  "Form Name": "hsct",
+                  "Field Label": "Type of product received: Other, please specify",
+                  "Field Type": "text",
+                  "Required Field?": "y",
+                  "Branching Logic": "[outcome_othprdt(1)] = '1'",
+                  "answer_type": "string",
+                  "answer_template": "String"
+                }
+              }
+            },
+            "outcome_othprdtdt": {
+              "Variable / Field Name": "outcome_othprdtdt",
+              "Form Name": "hsct",
+              "Field Label": "Date of other product",
+              "Field Type": "text",
+              "Field Note": "Ex: 03-Mar-2026; 01-Feb-2027 (if more than 1)",
+              "Required Field?": "y",
+              "Branching Logic": "[outcome_scndprt] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "outcome_prdctunk": {
+              "Variable / Field Name": "outcome_prdctunk",
+              "Form Name": "hsct",
+              "Field Label": "Type of product received: Unknown",
+              "Field Type": "checkbox",
+              "Branching Logic": "[outcome_scndprt] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Unknown"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Unknown": "True|False"
+              },
+              "codes": {
+                "Unknown": "1"
+              }
+            }
+          }
+        },
+        "outcome_actgrft": {
+          "Variable / Field Name": "outcome_actgrft",
+          "Form Name": "hsct",
+          "Field Label": "Did patient experience acute graft versus host disease (GVHD)?",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[outcome_hsctyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes",
+            "2": "No",
+            "99": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Yes": "True|False",
+            "No": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Yes": "1",
+            "No": "2",
+            "Unknown": "99"
+          },
+          "Nested Fields": {
+            "outcome_maxgrd": {
+              "Variable / Field Name": "outcome_maxgrd",
+              "Form Name": "hsct",
+              "Field Label": "If yes, indicate maximum grade by/within 1 year",
+              "Field Type": "radio",
+              "Required Field?": "y",
+              "Branching Logic": "[outcome_actgrft] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Grade 1",
+                "2": "Grade 2",
+                "3": "Grade 3",
+                "4": "Grade 4",
+                "98": "Unknown"
+              },
+              "answer_type": "single_choice",
+              "answer_template": {
+                "Grade 1": "True|False",
+                "Grade 2": "True|False",
+                "Grade 3": "True|False",
+                "Grade 4": "True|False",
+                "Unknown": "True|False"
+              },
+              "codes": {
+                "Grade 1": "1",
+                "Grade 2": "2",
+                "Grade 3": "3",
+                "Grade 4": "4",
+                "Unknown": "98"
+              }
+            },
+            "outcome_maxstg": {
+              "Variable / Field Name": "outcome_maxstg",
+              "Form Name": "hsct",
+              "Field Label": "Please specify max stage for skin and gut",
+              "Field Type": "text",
+              "Branching Logic": "[outcome_actgrft] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "outcome_maxstgu": {
+              "Variable / Field Name": "outcome_maxstgu",
+              "Form Name": "hsct",
+              "Field Label": "Max stage for skin and gut unknown",
+              "Field Type": "checkbox",
+              "Branching Logic": "[outcome_actgrft] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Max stage for skin and gut unknown"
+              },
+              "answer_type": "multi_choice",
+              "answer_template": {
+                "Max stage for skin and gut unknown": "True|False"
+              },
+              "codes": {
+                "Max stage for skin and gut unknown": "1"
+              }
+            }
+          }
+        },
+        "outcome_chrcvhd": {
+          "Variable / Field Name": "outcome_chrcvhd",
+          "Form Name": "hsct",
+          "Field Label": "Did patient experience chronic GVHD?",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[outcome_hsctyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes",
+            "2": "No",
+            "99": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Yes": "True|False",
+            "No": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Yes": "1",
+            "No": "2",
+            "Unknown": "99"
+          },
+          "Nested Fields": {
+            "outcome_chrcvhds": {
+              "Variable / Field Name": "outcome_chrcvhds",
+              "Form Name": "hsct",
+              "Field Label": "If yes, please specify",
+              "Field Type": "radio",
+              "Required Field?": "y",
+              "Branching Logic": "[outcome_chrcvhd] = '1'",
+              "Possible Values (code->label)": {
+                "1": "Limited",
+                "2": "Extensive",
+                "98": "Unknown"
+              },
+              "answer_type": "single_choice",
+              "answer_template": {
+                "Limited": "True|False",
+                "Extensive": "True|False",
+                "Unknown": "True|False"
+              },
+              "codes": {
+                "Limited": "1",
+                "Extensive": "2",
+                "Unknown": "98"
+              }
+            }
+          }
+        }
+      }
+    },
+    "outcome_medcd34unit": {
+      "Variable / Field Name": "outcome_medcd34unit",
+      "Form Name": "hsct",
+      "Field Label": "Specify the unit: CD34 content (/kg)",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "outcome_medcd3unit": {
+      "Variable / Field Name": "outcome_medcd3unit",
+      "Form Name": "hsct",
+      "Field Label": "Specify the unit: CD3 content (/kg)",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "outcome_tncunit": {
+      "Variable / Field Name": "outcome_tncunit",
+      "Form Name": "hsct",
+      "Field Label": "Specify the unit: Total nucleated cell (TNC) dose (/kg)",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "outcome_notes": {
+      "Variable / Field Name": "outcome_notes",
+      "Form Name": "hsct",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    },
+    "profile_ab_notes": {
+      "Variable / Field Name": "profile_ab_notes",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    }
+  }
+}

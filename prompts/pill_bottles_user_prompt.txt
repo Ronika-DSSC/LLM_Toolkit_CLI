@@ -1,0 +1,27 @@
+You are analyzing a picture with one or more medication bottles, which may be prescription or over-the-counter. 
+Extract the medication information for each bottle and return ONLY valid JSON (no markdown, no explanation).
+Return exactly this structure:
+[
+ {
+  "medication_name_generic": "string",
+  "medication_name_brand": "string",
+  "dose": "string",
+  "formulation": "string",
+  "frequency": "string",
+  "route": "string",
+  "quantity": "string",
+  "instructions": "string"
+ {
+  "medication_name_generic": "string",
+  "medication_name_brand": "string",
+  "dose": "string",
+  "formulation": "string",
+  "frequency": "string",
+  "route": "string",
+  "quantity": "string",
+  "instructions": "string"
+ },
+ ...
+]
+If the bottle cannot be read, still create a record for the bottle with all "N/A"'s as values.
+Use "N/A" if information is not visible.

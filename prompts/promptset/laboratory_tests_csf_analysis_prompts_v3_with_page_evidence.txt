@@ -1,0 +1,971 @@
+#### PROMPT_SET: laboratory_tests_csf_analysis
+---RAG---
+REDCap form: laboratory_tests_csf_analysis
+Retrieve document text needed to answer this form.
+Prefer labeled fields/tables; ignore repetitive footers/headers.
+Additional cues: demographics/face sheet, problem list, assessment & plan, discharge summary, lab results/flowsheets, medication list, imaging/pathology reports.
+Key terms: Sequence, number, lumbar, puncture, completed, during, HLH-directed, Date, Test, Was, Hemophagocytosis, present, CSF, Neopterin, cerebrospinal, fluid, White, blood, cells, not, value, unit, normal, Proteins, available, abnormal, RBCs, Monocytes, Lymphocytes, Neutrophils
+
+---USER---
+You are a clinical information extractor.
+Given a clinical note (or EHR text), extract answers for the REDCap form: eligibility_and_patient_profile.
+
+Instructions:
+- Fill in the JSON TEMPLATE below using ONLY evidence explicitly present in the text. Do not guess.
+- Keep the same JSON keys and nesting.
+- For choice questions: replace 'True|False' with true or false.
+  * Single-choice (radio/dropdown/yes-no): set exactly one option to true if supported.
+  * Multi-choice (checkbox): set all supported options to true.
+- For 'String'/'Number'/'Integer'/'Date' placeholders: replace with the extracted value (or null if not found).
+- Only populate 'Nested Fields' (e.g., 'please specify') when the parent condition is met AND evidence supports it.
+- Output ONLY the filled JSON (no extra commentary).
+
+EVIDENCE / PAGE CITATION RULE (for auditability):
+- The retrieved Context snippets may include headers like [<source> p<page>] or [<source> p<start>-<end>].
+- For every non-null extracted field (any field whose answer is not null and/or any option you set to true), add an evidence line into profile_ab_notes.
+- Evidence line format (one per field): <VariableName>: <EvidenceTag> — <verbatim short phrase>.
+  * Example: profile_elig1: [patient.pdf p3] — "clinically suspected HLH"
+- Use the EvidenceTag exactly as shown in the Context header (including page number).
+- If no page header is present, cite the source header only (e.g., [note]) and still provide a short verbatim phrase.
+- Do NOT add new JSON keys for evidence; record all citations ONLY inside profile_ab_notes.
+
+OUTPUT FORMAT OVERRIDE (CRITICAL):
+- The JSON TEMPLATE below is REFERENCE ONLY (schema/choices/branching). Do NOT output it.
+- Output ONLY an ANSWERS JSON object, where EACH variable is formatted as:
+  "<variable_name>": { "answer": <value> }
+- Do NOT output "Form Name", "Questions", "Variable / Field Name", "Field Label", "Field Type",
+  "Possible Values", "answer_type", "answer_template", or "codes".
+- Keep the same variable names (e.g., record_id, profile_brthyr, profile_cntry, profile_usregn).
+- Output ONLY valid JSON (no commentary, no markdown, no extra keys).
+
+ANSWERS JSON TEMPLATE (THIS IS THE ONLY THING YOU SHOULD OUTPUT):
+{
+  "lablp_csfseq": {
+    "answer": null
+  },
+  "lablp_csfno": {
+    "answer": {
+      "No lumbar puncture completed during HLH-directed therapy": false
+    }
+  },
+  "lablp_csfdt": {
+    "answer": null
+  },
+  "lablp_hemopyn": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false,
+      "Not available": false
+    }
+  },
+  "lablp_csfnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "lablp_csfv": {
+    "answer": null
+  },
+  "lablp_csfu": {
+    "answer": {
+      "nmol/mL": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "lablp_csfuo": {
+      "answer": null
+    }
+  },
+  "lablp_csfnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "lablp_wbcnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "lablp_wbcv": {
+    "answer": null
+  },
+  "lablp_wbcu": {
+    "answer": {
+      "cells/L": false,
+      "cells/uL": false,
+      "cells/mm^3": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "lablp_wbcuo": {
+      "answer": null
+    }
+  },
+  "lablp_wbcnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "lablp_prtnnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "lablp_prtnv": {
+    "answer": null
+  },
+  "lablp_prtnu": {
+    "answer": {
+      "mg/dL": false,
+      "g/L": false,
+      "g/dL": false,
+      "g/100mL": false,
+      "mg/mL": false,
+      "g%": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "lablp_prtnuo": {
+      "answer": null
+    }
+  },
+  "lablp_prtnnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "lablp_rbcnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "lablp_rbcv": {
+    "answer": null
+  },
+  "lablp_rbcu": {
+    "answer": {
+      "cells/L": false,
+      "cells/uL": false,
+      "cells/mm^3": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "lablp_rbcuo": {
+      "answer": null
+    }
+  },
+  "lablp_rbcnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "lablp_monond": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "lablp_monov": {
+    "answer": null
+  },
+  "lablp_monou": {
+    "answer": {
+      "cells/L": false,
+      "cells/uL": false,
+      "cells/mm^3": false,
+      "%": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "lablp_monouo": {
+      "answer": null
+    }
+  },
+  "lablp_mononl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "lablp_lympnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "lablp_lympv": {
+    "answer": null
+  },
+  "lablp_lympu": {
+    "answer": {
+      "cells/L": false,
+      "cells/uL": false,
+      "cells/mm^3": false,
+      "%": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "lablp_lympuo": {
+      "answer": null
+    }
+  },
+  "lablp_lympnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "lablp_neutnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "lablp_neutv": {
+    "answer": null
+  },
+  "lablp_neutu": {
+    "answer": {
+      "cells/L": false,
+      "cells/uL": false,
+      "cells/mm^3": false,
+      "%": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "lablp_neutuo": {
+      "answer": null
+    }
+  },
+  "lablp_neutnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "lablp_notes": {
+    "answer": null
+  },
+  "profile_ab_notes": {
+    "answer": null
+  }
+}
+
+GENERAL "OTHER" FALLBACK RULE (applies to ALL fields):
+- For any radio/dropdown/checkbox field:
+  1) First try to map the evidence to one of the allowed option labels (or clear synonyms).
+  2) If the evidence clearly provides a value but it does NOT match any allowed option label/code:
+     - If the field has an "Other" option AND has a nested/branching "Other specify" text field:
+       * Select/check the "Other" option (use its REDCap code)
+       * Put the exact unmatched value phrase from the evidence into the "Other specify" field
+     - If the field has "Other" option but no specify field:
+       * Select/check "Other" and do not invent text
+     - If the field does not have an "Other" option:
+       * Output null and add the variable name to not_found
+- Do NOT use "Other" when the value matches a valid option label or a clear synonym of a valid option.
+
+JSON TEMPLATE (schema + answer placeholders):
+{
+  "Form Name": "laboratory_tests_csf_analysis",
+  "Questions": {
+    "lablp_csfseq": {
+      "Variable / Field Name": "lablp_csfseq",
+      "Form Name": "laboratory_tests_csf_analysis",
+      "Field Label": "Sequence number",
+      "Field Type": "text",
+      "Field Note": "Ex: 1",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "lablp_csfno": {
+      "Variable / Field Name": "lablp_csfno",
+      "Form Name": "laboratory_tests_csf_analysis",
+      "Field Label": "No lumbar puncture completed during HLH-directed therapy",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "No lumbar puncture completed during HLH-directed therapy"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "No lumbar puncture completed during HLH-directed therapy": "True|False"
+      },
+      "codes": {
+        "No lumbar puncture completed during HLH-directed therapy": "1"
+      }
+    },
+    "lablp_csfdt": {
+      "Variable / Field Name": "lablp_csfdt",
+      "Form Name": "laboratory_tests_csf_analysis",
+      "Field Label": "Date of Test",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "lablp_hemopyn": {
+      "Variable / Field Name": "lablp_hemopyn",
+      "Form Name": "laboratory_tests_csf_analysis",
+      "Field Label": "Was Hemophagocytosis present in CSF?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown",
+        "98": "Not available"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False",
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99",
+        "Not available": "98"
+      }
+    },
+    "lablp_csfnd": {
+      "Variable / Field Name": "lablp_csfnd",
+      "Form Name": "laboratory_tests_csf_analysis",
+      "Field Label": "Neopterin in the cerebrospinal fluid (CSF) not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "lablp_csfv": {
+      "Variable / Field Name": "lablp_csfv",
+      "Form Name": "laboratory_tests_csf_analysis",
+      "Field Label": "Neopterin in the cerebrospinal fluid (CSF) value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "lablp_csfu": {
+      "Variable / Field Name": "lablp_csfu",
+      "Form Name": "laboratory_tests_csf_analysis",
+      "Field Label": "Neopterin in the cerebrospinal fluid (CSF) unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "nmol/mL",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "nmol/mL": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "nmol/mL": "1",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "lablp_csfuo": {
+          "Variable / Field Name": "lablp_csfuo",
+          "Form Name": "laboratory_tests_csf_analysis",
+          "Field Label": "Neopterin in the cerebrospinal fluid (CSF) other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[lablp_csfu] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "lablp_csfnl": {
+      "Variable / Field Name": "lablp_csfnl",
+      "Form Name": "laboratory_tests_csf_analysis",
+      "Field Label": "Neopterin in the cerebrospinal fluid (CSF) normal or abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "lablp_wbcnd": {
+      "Variable / Field Name": "lablp_wbcnd",
+      "Form Name": "laboratory_tests_csf_analysis",
+      "Field Label": "White blood cells in CSF not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "lablp_wbcv": {
+      "Variable / Field Name": "lablp_wbcv",
+      "Form Name": "laboratory_tests_csf_analysis",
+      "Field Label": "White blood cells in CSF value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "lablp_wbcu": {
+      "Variable / Field Name": "lablp_wbcu",
+      "Form Name": "laboratory_tests_csf_analysis",
+      "Field Label": "White blood cells in CSF unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "cells/L",
+        "2": "cells/uL",
+        "3": "cells/mm^3",
+        "98": "Other",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "cells/L": "True|False",
+        "cells/uL": "True|False",
+        "cells/mm^3": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "cells/L": "1",
+        "cells/uL": "2",
+        "cells/mm^3": "3",
+        "Other": "98",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "lablp_wbcuo": {
+          "Variable / Field Name": "lablp_wbcuo",
+          "Form Name": "laboratory_tests_csf_analysis",
+          "Field Label": "White blood cells in CSF other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[lablp_wbcu] = '98'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "lablp_wbcnl": {
+      "Variable / Field Name": "lablp_wbcnl",
+      "Form Name": "laboratory_tests_csf_analysis",
+      "Field Label": "White blood cells in CSF normal or abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "lablp_prtnnd": {
+      "Variable / Field Name": "lablp_prtnnd",
+      "Form Name": "laboratory_tests_csf_analysis",
+      "Field Label": "Proteins in CSF not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "lablp_prtnv": {
+      "Variable / Field Name": "lablp_prtnv",
+      "Form Name": "laboratory_tests_csf_analysis",
+      "Field Label": "Proteins in CSF value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "lablp_prtnu": {
+      "Variable / Field Name": "lablp_prtnu",
+      "Form Name": "laboratory_tests_csf_analysis",
+      "Field Label": "Proteins in CSF unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "mg/dL",
+        "2": "g/L",
+        "3": "g/dL",
+        "4": "g/100mL",
+        "5": "mg/mL",
+        "6": "g%",
+        "98": "Other",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "mg/dL": "True|False",
+        "g/L": "True|False",
+        "g/dL": "True|False",
+        "g/100mL": "True|False",
+        "mg/mL": "True|False",
+        "g%": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "mg/dL": "1",
+        "g/L": "2",
+        "g/dL": "3",
+        "g/100mL": "4",
+        "mg/mL": "5",
+        "g%": "6",
+        "Other": "98",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "lablp_prtnuo": {
+          "Variable / Field Name": "lablp_prtnuo",
+          "Form Name": "laboratory_tests_csf_analysis",
+          "Field Label": "Proteins in CSF other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[lablp_prtnu] = '98'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "lablp_prtnnl": {
+      "Variable / Field Name": "lablp_prtnnl",
+      "Form Name": "laboratory_tests_csf_analysis",
+      "Field Label": "Proteins in CSF normal or abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "lablp_rbcnd": {
+      "Variable / Field Name": "lablp_rbcnd",
+      "Form Name": "laboratory_tests_csf_analysis",
+      "Field Label": "RBCs in CSF not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "lablp_rbcv": {
+      "Variable / Field Name": "lablp_rbcv",
+      "Form Name": "laboratory_tests_csf_analysis",
+      "Field Label": "RBCs in CSF value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "lablp_rbcu": {
+      "Variable / Field Name": "lablp_rbcu",
+      "Form Name": "laboratory_tests_csf_analysis",
+      "Field Label": "RBCs in CSF unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "cells/L",
+        "2": "cells/uL",
+        "3": "cells/mm^3",
+        "98": "Other",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "cells/L": "True|False",
+        "cells/uL": "True|False",
+        "cells/mm^3": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "cells/L": "1",
+        "cells/uL": "2",
+        "cells/mm^3": "3",
+        "Other": "98",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "lablp_rbcuo": {
+          "Variable / Field Name": "lablp_rbcuo",
+          "Form Name": "laboratory_tests_csf_analysis",
+          "Field Label": "RBCs in CSF other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[lablp_rbcu] = '98'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "lablp_rbcnl": {
+      "Variable / Field Name": "lablp_rbcnl",
+      "Form Name": "laboratory_tests_csf_analysis",
+      "Field Label": "RBCs in CSF normal or abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "lablp_monond": {
+      "Variable / Field Name": "lablp_monond",
+      "Form Name": "laboratory_tests_csf_analysis",
+      "Field Label": "Monocytes in CSF not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "lablp_monov": {
+      "Variable / Field Name": "lablp_monov",
+      "Form Name": "laboratory_tests_csf_analysis",
+      "Field Label": "Monocytes in CSF value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "lablp_monou": {
+      "Variable / Field Name": "lablp_monou",
+      "Form Name": "laboratory_tests_csf_analysis",
+      "Field Label": "Monocytes in CSF unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "cells/L",
+        "2": "cells/uL",
+        "3": "cells/mm^3",
+        "4": "%",
+        "98": "Other",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "cells/L": "True|False",
+        "cells/uL": "True|False",
+        "cells/mm^3": "True|False",
+        "%": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "cells/L": "1",
+        "cells/uL": "2",
+        "cells/mm^3": "3",
+        "%": "4",
+        "Other": "98",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "lablp_monouo": {
+          "Variable / Field Name": "lablp_monouo",
+          "Form Name": "laboratory_tests_csf_analysis",
+          "Field Label": "Monocytes in CSF other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[lablp_monou] = '98'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "lablp_mononl": {
+      "Variable / Field Name": "lablp_mononl",
+      "Form Name": "laboratory_tests_csf_analysis",
+      "Field Label": "Monocytes in CSF normal or abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "lablp_lympnd": {
+      "Variable / Field Name": "lablp_lympnd",
+      "Form Name": "laboratory_tests_csf_analysis",
+      "Field Label": "Lymphocytes in CSF not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "lablp_lympv": {
+      "Variable / Field Name": "lablp_lympv",
+      "Form Name": "laboratory_tests_csf_analysis",
+      "Field Label": "Lymphocytes in CSF value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "lablp_lympu": {
+      "Variable / Field Name": "lablp_lympu",
+      "Form Name": "laboratory_tests_csf_analysis",
+      "Field Label": "Lymphocytes in CSF unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "cells/L",
+        "2": "cells/uL",
+        "3": "cells/mm^3",
+        "4": "%",
+        "98": "Other",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "cells/L": "True|False",
+        "cells/uL": "True|False",
+        "cells/mm^3": "True|False",
+        "%": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "cells/L": "1",
+        "cells/uL": "2",
+        "cells/mm^3": "3",
+        "%": "4",
+        "Other": "98",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "lablp_lympuo": {
+          "Variable / Field Name": "lablp_lympuo",
+          "Form Name": "laboratory_tests_csf_analysis",
+          "Field Label": "Lymphocytes in CSF other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[lablp_lympu] = '98'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "lablp_lympnl": {
+      "Variable / Field Name": "lablp_lympnl",
+      "Form Name": "laboratory_tests_csf_analysis",
+      "Field Label": "Lymphocytes in CSF normal or abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "lablp_neutnd": {
+      "Variable / Field Name": "lablp_neutnd",
+      "Form Name": "laboratory_tests_csf_analysis",
+      "Field Label": "Neutrophils in CSF not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "lablp_neutv": {
+      "Variable / Field Name": "lablp_neutv",
+      "Form Name": "laboratory_tests_csf_analysis",
+      "Field Label": "Neutrophils in CSF value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "lablp_neutu": {
+      "Variable / Field Name": "lablp_neutu",
+      "Form Name": "laboratory_tests_csf_analysis",
+      "Field Label": "Neutrophils in CSF unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "cells/L",
+        "2": "cells/uL",
+        "3": "cells/mm^3",
+        "4": "%",
+        "98": "Other",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "cells/L": "True|False",
+        "cells/uL": "True|False",
+        "cells/mm^3": "True|False",
+        "%": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "cells/L": "1",
+        "cells/uL": "2",
+        "cells/mm^3": "3",
+        "%": "4",
+        "Other": "98",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "lablp_neutuo": {
+          "Variable / Field Name": "lablp_neutuo",
+          "Form Name": "laboratory_tests_csf_analysis",
+          "Field Label": "Neutrophils in CSF other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[lablp_neutu] = '98'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "lablp_neutnl": {
+      "Variable / Field Name": "lablp_neutnl",
+      "Form Name": "laboratory_tests_csf_analysis",
+      "Field Label": "Neutrophils in CSF normal or abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "lablp_notes": {
+      "Variable / Field Name": "lablp_notes",
+      "Form Name": "laboratory_tests_csf_analysis",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    },
+    "profile_ab_notes": {
+      "Variable / Field Name": "profile_ab_notes",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    }
+  }
+}

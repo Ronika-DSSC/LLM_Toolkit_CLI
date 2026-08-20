@@ -1,0 +1,908 @@
+#### PROMPT_SET: expert_review_committee
+---RAG---
+REDCap form: expert_review_committee
+Retrieve document text needed to answer this form.
+Prefer labeled fields/tables; ignore repetitive footers/headers.
+Additional cues: demographics/face sheet, problem list, assessment & plan, discharge summary, lab results/flowsheets, medication list, imaging/pathology reports.
+Key terms: How, would, you, categorize, this, HLH-mimic, HLH, was, misdiagnosis, SAE, Date, Relation, think, that, regimen, agents, chosen, appropriate, Were, dosing, schedule, there, failure, start, salvage, Expert, Review, Committee, Notes, Abstractor
+
+---USER---
+You are a clinical information extractor.
+Given a clinical note (or EHR text), extract answers for the REDCap form: eligibility_and_patient_profile.
+
+Instructions:
+- Fill in the JSON TEMPLATE below using ONLY evidence explicitly present in the text. Do not guess.
+- Keep the same JSON keys and nesting.
+- For choice questions: replace 'True|False' with true or false.
+  * Single-choice (radio/dropdown/yes-no): set exactly one option to true if supported.
+  * Multi-choice (checkbox): set all supported options to true.
+- For 'String'/'Number'/'Integer'/'Date' placeholders: replace with the extracted value (or null if not found).
+- Only populate 'Nested Fields' (e.g., 'please specify') when the parent condition is met AND evidence supports it.
+- Output ONLY the filled JSON (no extra commentary).
+
+EVIDENCE / PAGE CITATION RULE (for auditability):
+- The retrieved Context snippets may include headers like [<source> p<page>] or [<source> p<start>-<end>].
+- For every non-null extracted field (any field whose answer is not null and/or any option you set to true), add an evidence line into profile_ab_notes.
+- Evidence line format (one per field): <VariableName>: <EvidenceTag> — <verbatim short phrase>.
+  * Example: profile_elig1: [patient.pdf p3] — "clinically suspected HLH"
+- Use the EvidenceTag exactly as shown in the Context header (including page number).
+- If no page header is present, cite the source header only (e.g., [note]) and still provide a short verbatim phrase.
+- Do NOT add new JSON keys for evidence; record all citations ONLY inside profile_ab_notes.
+
+OUTPUT FORMAT OVERRIDE (CRITICAL):
+- The JSON TEMPLATE below is REFERENCE ONLY (schema/choices/branching). Do NOT output it.
+- Output ONLY an ANSWERS JSON object, where EACH variable is formatted as:
+  "<variable_name>": { "answer": <value> }
+- Do NOT output "Form Name", "Questions", "Variable / Field Name", "Field Label", "Field Type",
+  "Possible Values", "answer_type", "answer_template", or "codes".
+- Keep the same variable names (e.g., record_id, profile_brthyr, profile_cntry, profile_usregn).
+- Output ONLY valid JSON (no commentary, no markdown, no extra keys).
+
+ANSWERS JSON TEMPLATE (THIS IS THE ONLY THING YOU SHOULD OUTPUT):
+{
+  "erc_ctgry": {
+    "answer": {
+      "Primary HLH": false,
+      "Secondary HLH": false,
+      "Infection without genetic etiology": false,
+      "Non-classifiable": false,
+      "Not HLH disease": false,
+      "Unknown": false
+    },
+    "erc_trggr": {
+      "answer": {
+        "Triggered by infection": false,
+        "Other trigger": false,
+        "Unknown": false
+      }
+    },
+    "erc_scndhlh": {
+      "answer": {
+        "Not classifiable- infection-associated HLH": false,
+        "Malignancy associated HLH": false,
+        "Rheumatologic diseases associated HLH": false,
+        "Metabolic conditions associated with HLH": false,
+        "Iatrogenic conditions associated with HLH": false,
+        "Unknown": false
+      }
+    }
+  },
+  "erc_mimic": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "erc_mimicsp": {
+      "answer": null
+    }
+  },
+  "erc_msdiag": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "erc_msdiagsp": {
+      "answer": null
+    }
+  },
+  "erc_sae1": {
+    "answer": null
+  },
+  "erc_date1": {
+    "answer": null
+  },
+  "erc_rltn1": {
+    "answer": {
+      "Treatment-related": false,
+      "HLH-related": false,
+      "Cannot be assessed": false
+    },
+    "erc_drgnm1": {
+      "answer": null
+    }
+  },
+  "erc_sae2": {
+    "answer": null
+  },
+  "erc_date2": {
+    "answer": null
+  },
+  "erc_rltn2": {
+    "answer": {
+      "Treatment-related": false,
+      "HLH-related": false,
+      "Cannot be assessed": false
+    },
+    "erc_drgnm2": {
+      "answer": null
+    }
+  },
+  "erc_sae3": {
+    "answer": null
+  },
+  "erc_date3": {
+    "answer": null
+  },
+  "erc_rltn3": {
+    "answer": {
+      "Treatment-related": false,
+      "HLH-related": false,
+      "Cannot be assessed": false
+    },
+    "erc_drgnm3": {
+      "answer": null
+    }
+  },
+  "erc_sae4": {
+    "answer": null
+  },
+  "erc_date4": {
+    "answer": null
+  },
+  "erc_rltn4": {
+    "answer": {
+      "Treatment-related": false,
+      "HLH-related": false,
+      "Cannot be assessed": false
+    },
+    "erc_drgnm4": {
+      "answer": null
+    }
+  },
+  "erc_sae5": {
+    "answer": null
+  },
+  "erc_date5": {
+    "answer": null
+  },
+  "erc_rltn5": {
+    "answer": {
+      "Treatment-related": false,
+      "HLH-related": false,
+      "Cannot be assessed": false
+    },
+    "erc_drgnm5": {
+      "answer": null
+    }
+  },
+  "erc_diagdly": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "erc_diagdlyt": {
+      "answer": {
+        "Less than a week": false,
+        "1 - 2 weeks": false,
+        "2 weeks - a month": false,
+        "More than a month": false,
+        "Unknown": false
+      }
+    }
+  },
+  "erc_trtapprt": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Not assessable": false
+    },
+    "erc_agentsp": {
+      "answer": {
+        "Alemtuzumab": false,
+        "Anti thymocyte globulin": false,
+        "Emapalumab": false,
+        "Nivolumab": false,
+        "Pembrolizumab": false,
+        "Tadekining": false,
+        "Cyclophosphamide": false,
+        "Etoposide": false,
+        "Methotrexate along with hydrocortisone for CNS disease": false,
+        "Tocilizumab": false,
+        "Dexamethasone": false,
+        "Prednisolone": false,
+        "Prednisone": false,
+        "Methylprednisolone": false,
+        "Cyclosporine": false,
+        "Ruxolitinib": false,
+        "Sirolimums": false,
+        "Tofacitinib": false,
+        "Anakinra": false,
+        "Granulocyte colony stimulating factor": false,
+        "Other": false,
+        "Unknown": false
+      },
+      "erc_othagnts": {
+        "answer": null
+      }
+    }
+  },
+  "erc_dosapprt": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Not assessable": false
+    }
+  },
+  "erc_failur": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    }
+  },
+  "erc_notes": {
+    "answer": null
+  },
+  "profile_ab_notes": {
+    "answer": null
+  }
+}
+
+GENERAL "OTHER" FALLBACK RULE (applies to ALL fields):
+- For any radio/dropdown/checkbox field:
+  1) First try to map the evidence to one of the allowed option labels (or clear synonyms).
+  2) If the evidence clearly provides a value but it does NOT match any allowed option label/code:
+     - If the field has an "Other" option AND has a nested/branching "Other specify" text field:
+       * Select/check the "Other" option (use its REDCap code)
+       * Put the exact unmatched value phrase from the evidence into the "Other specify" field
+     - If the field has "Other" option but no specify field:
+       * Select/check "Other" and do not invent text
+     - If the field does not have an "Other" option:
+       * Output null and add the variable name to not_found
+- Do NOT use "Other" when the value matches a valid option label or a clear synonym of a valid option.
+
+JSON TEMPLATE (schema + answer placeholders):
+{
+  "Form Name": "expert_review_committee",
+  "Questions": {
+    "erc_ctgry": {
+      "Variable / Field Name": "erc_ctgry",
+      "Form Name": "expert_review_committee",
+      "Field Label": "How would you categorize this patient?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Primary HLH",
+        "2": "Secondary HLH",
+        "3": "Infection without genetic etiology",
+        "4": "Non-classifiable",
+        "5": "Not HLH disease",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Primary HLH": "True|False",
+        "Secondary HLH": "True|False",
+        "Infection without genetic etiology": "True|False",
+        "Non-classifiable": "True|False",
+        "Not HLH disease": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Primary HLH": "1",
+        "Secondary HLH": "2",
+        "Infection without genetic etiology": "3",
+        "Non-classifiable": "4",
+        "Not HLH disease": "5",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "erc_trggr": {
+          "Variable / Field Name": "erc_trggr",
+          "Form Name": "expert_review_committee",
+          "Field Label": "If Primary HLH, please specify",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[erc_ctgry] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Triggered by infection",
+            "2": "Other trigger",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Triggered by infection": "True|False",
+            "Other trigger": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Triggered by infection": "1",
+            "Other trigger": "2",
+            "Unknown": "98"
+          }
+        },
+        "erc_scndhlh": {
+          "Variable / Field Name": "erc_scndhlh",
+          "Form Name": "expert_review_committee",
+          "Field Label": "If Secondary HLH, please specify",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[erc_ctgry] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Not classifiable- infection-associated HLH",
+            "2": "Malignancy associated HLH",
+            "3": "Rheumatologic diseases associated HLH",
+            "4": "Metabolic conditions associated with HLH",
+            "5": "Iatrogenic conditions associated with HLH",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Not classifiable- infection-associated HLH": "True|False",
+            "Malignancy associated HLH": "True|False",
+            "Rheumatologic diseases associated HLH": "True|False",
+            "Metabolic conditions associated with HLH": "True|False",
+            "Iatrogenic conditions associated with HLH": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Not classifiable- infection-associated HLH": "1",
+            "Malignancy associated HLH": "2",
+            "Rheumatologic diseases associated HLH": "3",
+            "Metabolic conditions associated with HLH": "4",
+            "Iatrogenic conditions associated with HLH": "5",
+            "Unknown": "98"
+          }
+        }
+      }
+    },
+    "erc_mimic": {
+      "Variable / Field Name": "erc_mimic",
+      "Form Name": "expert_review_committee",
+      "Field Label": "Is it an HLH-mimic (HLH was not the primary disease process requiring treatment (e.g., only treating infection instead would be best)?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "erc_mimicsp": {
+          "Variable / Field Name": "erc_mimicsp",
+          "Form Name": "expert_review_committee",
+          "Field Label": "If yes, please specify",
+          "Field Type": "notes",
+          "Required Field?": "y",
+          "Branching Logic": "[erc_mimic] = '1'",
+          "answer_type": "string",
+          "answer_template": "String (free text)"
+        }
+      }
+    },
+    "erc_msdiag": {
+      "Variable / Field Name": "erc_msdiag",
+      "Form Name": "expert_review_committee",
+      "Field Label": "Is it a misdiagnosis?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "erc_msdiagsp": {
+          "Variable / Field Name": "erc_msdiagsp",
+          "Form Name": "expert_review_committee",
+          "Field Label": "If yes, please specify",
+          "Field Type": "notes",
+          "Required Field?": "y",
+          "Branching Logic": "[erc_msdiag] = '1'",
+          "answer_type": "string",
+          "answer_template": "String (free text)"
+        }
+      }
+    },
+    "erc_sae1": {
+      "Variable / Field Name": "erc_sae1",
+      "Form Name": "expert_review_committee",
+      "Field Label": "SAE",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "erc_date1": {
+      "Variable / Field Name": "erc_date1",
+      "Form Name": "expert_review_committee",
+      "Field Label": "Date",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "erc_rltn1": {
+      "Variable / Field Name": "erc_rltn1",
+      "Form Name": "expert_review_committee",
+      "Field Label": "Relation",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Treatment-related",
+        "2": "HLH-related",
+        "3": "Cannot be assessed"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Treatment-related": "True|False",
+        "HLH-related": "True|False",
+        "Cannot be assessed": "True|False"
+      },
+      "codes": {
+        "Treatment-related": "1",
+        "HLH-related": "2",
+        "Cannot be assessed": "3"
+      },
+      "Nested Fields": {
+        "erc_drgnm1": {
+          "Variable / Field Name": "erc_drgnm1",
+          "Form Name": "expert_review_committee",
+          "Field Label": "Name of the casual drug",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[erc_rltn1] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "erc_sae2": {
+      "Variable / Field Name": "erc_sae2",
+      "Form Name": "expert_review_committee",
+      "Field Label": "SAE",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "erc_date2": {
+      "Variable / Field Name": "erc_date2",
+      "Form Name": "expert_review_committee",
+      "Field Label": "Date",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "erc_rltn2": {
+      "Variable / Field Name": "erc_rltn2",
+      "Form Name": "expert_review_committee",
+      "Field Label": "Relation",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Treatment-related",
+        "2": "HLH-related",
+        "3": "Cannot be assessed"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Treatment-related": "True|False",
+        "HLH-related": "True|False",
+        "Cannot be assessed": "True|False"
+      },
+      "codes": {
+        "Treatment-related": "1",
+        "HLH-related": "2",
+        "Cannot be assessed": "3"
+      },
+      "Nested Fields": {
+        "erc_drgnm2": {
+          "Variable / Field Name": "erc_drgnm2",
+          "Form Name": "expert_review_committee",
+          "Field Label": "Name of the casual drug",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[erc_rltn2] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "erc_sae3": {
+      "Variable / Field Name": "erc_sae3",
+      "Form Name": "expert_review_committee",
+      "Field Label": "SAE",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "erc_date3": {
+      "Variable / Field Name": "erc_date3",
+      "Form Name": "expert_review_committee",
+      "Field Label": "Date",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "erc_rltn3": {
+      "Variable / Field Name": "erc_rltn3",
+      "Form Name": "expert_review_committee",
+      "Field Label": "Relation",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Treatment-related",
+        "2": "HLH-related",
+        "3": "Cannot be assessed"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Treatment-related": "True|False",
+        "HLH-related": "True|False",
+        "Cannot be assessed": "True|False"
+      },
+      "codes": {
+        "Treatment-related": "1",
+        "HLH-related": "2",
+        "Cannot be assessed": "3"
+      },
+      "Nested Fields": {
+        "erc_drgnm3": {
+          "Variable / Field Name": "erc_drgnm3",
+          "Form Name": "expert_review_committee",
+          "Field Label": "Name of the casual drug",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[erc_rltn3] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "erc_sae4": {
+      "Variable / Field Name": "erc_sae4",
+      "Form Name": "expert_review_committee",
+      "Field Label": "SAE",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "erc_date4": {
+      "Variable / Field Name": "erc_date4",
+      "Form Name": "expert_review_committee",
+      "Field Label": "Date",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "erc_rltn4": {
+      "Variable / Field Name": "erc_rltn4",
+      "Form Name": "expert_review_committee",
+      "Field Label": "Relation",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Treatment-related",
+        "2": "HLH-related",
+        "3": "Cannot be assessed"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Treatment-related": "True|False",
+        "HLH-related": "True|False",
+        "Cannot be assessed": "True|False"
+      },
+      "codes": {
+        "Treatment-related": "1",
+        "HLH-related": "2",
+        "Cannot be assessed": "3"
+      },
+      "Nested Fields": {
+        "erc_drgnm4": {
+          "Variable / Field Name": "erc_drgnm4",
+          "Form Name": "expert_review_committee",
+          "Field Label": "Name of the casual drug",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[erc_rltn4] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "erc_sae5": {
+      "Variable / Field Name": "erc_sae5",
+      "Form Name": "expert_review_committee",
+      "Field Label": "SAE",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "erc_date5": {
+      "Variable / Field Name": "erc_date5",
+      "Form Name": "expert_review_committee",
+      "Field Label": "Date",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "erc_rltn5": {
+      "Variable / Field Name": "erc_rltn5",
+      "Form Name": "expert_review_committee",
+      "Field Label": "Relation",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Treatment-related",
+        "2": "HLH-related",
+        "3": "Cannot be assessed"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Treatment-related": "True|False",
+        "HLH-related": "True|False",
+        "Cannot be assessed": "True|False"
+      },
+      "codes": {
+        "Treatment-related": "1",
+        "HLH-related": "2",
+        "Cannot be assessed": "3"
+      },
+      "Nested Fields": {
+        "erc_drgnm5": {
+          "Variable / Field Name": "erc_drgnm5",
+          "Form Name": "expert_review_committee",
+          "Field Label": "Name of the casual drug",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[erc_rltn5] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "erc_diagdly": {
+      "Variable / Field Name": "erc_diagdly",
+      "Form Name": "expert_review_committee",
+      "Field Label": "Do you think that the HLH diagnosis was delayed in this patient?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "erc_diagdlyt": {
+          "Variable / Field Name": "erc_diagdlyt",
+          "Form Name": "expert_review_committee",
+          "Field Label": "If yes, please specify",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[erc_diagdly] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Less than a week",
+            "2": "1 - 2 weeks",
+            "3": "2 weeks - a month",
+            "4": "More than a month",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Less than a week": "True|False",
+            "1 - 2 weeks": "True|False",
+            "2 weeks - a month": "True|False",
+            "More than a month": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Less than a week": "1",
+            "1 - 2 weeks": "2",
+            "2 weeks - a month": "3",
+            "More than a month": "4",
+            "Unknown": "98"
+          }
+        }
+      }
+    },
+    "erc_trtapprt": {
+      "Variable / Field Name": "erc_trtapprt",
+      "Form Name": "expert_review_committee",
+      "Field Label": "Is the regimen/agents chosen appropriate therapy?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "0": "No",
+        "2": "Not assessable"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Not assessable": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "0",
+        "Not assessable": "2"
+      },
+      "Nested Fields": {
+        "erc_agentsp": {
+          "Variable / Field Name": "erc_agentsp",
+          "Form Name": "expert_review_committee",
+          "Field Label": "If no, what agent/regimen would you choose? Please specify.",
+          "Field Type": "checkbox",
+          "Required Field?": "y",
+          "Branching Logic": "[erc_trtapprt] = '0'",
+          "Possible Values (code->label)": {
+            "1": "Alemtuzumab",
+            "2": "Anti thymocyte globulin",
+            "3": "Emapalumab",
+            "4": "Nivolumab",
+            "5": "Pembrolizumab",
+            "6": "Tadekining",
+            "7": "Cyclophosphamide",
+            "8": "Etoposide",
+            "9": "Methotrexate along with hydrocortisone for CNS disease",
+            "10": "Tocilizumab",
+            "11": "Dexamethasone",
+            "12": "Prednisolone",
+            "13": "Prednisone",
+            "14": "Methylprednisolone",
+            "15": "Cyclosporine",
+            "16": "Ruxolitinib",
+            "17": "Sirolimums",
+            "18": "Tofacitinib",
+            "19": "Anakinra",
+            "20": "Granulocyte colony stimulating factor",
+            "21": "Other",
+            "22": "Unknown"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Alemtuzumab": "True|False",
+            "Anti thymocyte globulin": "True|False",
+            "Emapalumab": "True|False",
+            "Nivolumab": "True|False",
+            "Pembrolizumab": "True|False",
+            "Tadekining": "True|False",
+            "Cyclophosphamide": "True|False",
+            "Etoposide": "True|False",
+            "Methotrexate along with hydrocortisone for CNS disease": "True|False",
+            "Tocilizumab": "True|False",
+            "Dexamethasone": "True|False",
+            "Prednisolone": "True|False",
+            "Prednisone": "True|False",
+            "Methylprednisolone": "True|False",
+            "Cyclosporine": "True|False",
+            "Ruxolitinib": "True|False",
+            "Sirolimums": "True|False",
+            "Tofacitinib": "True|False",
+            "Anakinra": "True|False",
+            "Granulocyte colony stimulating factor": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Alemtuzumab": "1",
+            "Anti thymocyte globulin": "2",
+            "Emapalumab": "3",
+            "Nivolumab": "4",
+            "Pembrolizumab": "5",
+            "Tadekining": "6",
+            "Cyclophosphamide": "7",
+            "Etoposide": "8",
+            "Methotrexate along with hydrocortisone for CNS disease": "9",
+            "Tocilizumab": "10",
+            "Dexamethasone": "11",
+            "Prednisolone": "12",
+            "Prednisone": "13",
+            "Methylprednisolone": "14",
+            "Cyclosporine": "15",
+            "Ruxolitinib": "16",
+            "Sirolimums": "17",
+            "Tofacitinib": "18",
+            "Anakinra": "19",
+            "Granulocyte colony stimulating factor": "20",
+            "Other": "21",
+            "Unknown": "22"
+          },
+          "Nested Fields": {
+            "erc_othagnts": {
+              "Variable / Field Name": "erc_othagnts",
+              "Form Name": "expert_review_committee",
+              "Field Label": "Other, please specify",
+              "Field Type": "text",
+              "Required Field?": "y",
+              "Branching Logic": "[erc_agentsp(21)] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        }
+      }
+    },
+    "erc_dosapprt": {
+      "Variable / Field Name": "erc_dosapprt",
+      "Form Name": "expert_review_committee",
+      "Field Label": "Were the dosing and schedule for these drugs appropriate?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "0": "No",
+        "2": "Not assessable"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Not assessable": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "0",
+        "Not assessable": "2"
+      }
+    },
+    "erc_failur": {
+      "Variable / Field Name": "erc_failur",
+      "Form Name": "expert_review_committee",
+      "Field Label": "Was there a failure to start salvage or re-intensify?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      }
+    },
+    "erc_notes": {
+      "Variable / Field Name": "erc_notes",
+      "Form Name": "expert_review_committee",
+      "Field Label": "Expert Review Committee Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    },
+    "profile_ab_notes": {
+      "Variable / Field Name": "profile_ab_notes",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    }
+  }
+}

@@ -1,0 +1,233 @@
+#### PROMPT_SET: height_and_weight
+---RAG---
+REDCap form: height_and_weight
+Retrieve document text needed to answer this form.
+Prefer labeled fields/tables; ignore repetitive footers/headers.
+Additional cues: demographics/face sheet, problem list, assessment & plan, discharge summary, lab results/flowsheets, medication list, imaging/pathology reports.
+Key terms: Sequence, number, Date, assessment, Height, unknown, unit, Weight, Abstractor, Notes
+
+---USER---
+You are a clinical information extractor.
+Given a clinical note (or EHR text), extract answers for the REDCap form: eligibility_and_patient_profile.
+
+Instructions:
+- Fill in the JSON TEMPLATE below using ONLY evidence explicitly present in the text. Do not guess.
+- Keep the same JSON keys and nesting.
+- For choice questions: replace 'True|False' with true or false.
+  * Single-choice (radio/dropdown/yes-no): set exactly one option to true if supported.
+  * Multi-choice (checkbox): set all supported options to true.
+- For 'String'/'Number'/'Integer'/'Date' placeholders: replace with the extracted value (or null if not found).
+- Only populate 'Nested Fields' (e.g., 'please specify') when the parent condition is met AND evidence supports it.
+- Output ONLY the filled JSON (no extra commentary).
+
+EVIDENCE / PAGE CITATION RULE (for auditability):
+- The retrieved Context snippets may include headers like [<source> p<page>] or [<source> p<start>-<end>].
+- For every non-null extracted field (any field whose answer is not null and/or any option you set to true), add an evidence line into profile_ab_notes.
+- Evidence line format (one per field): <VariableName>: <EvidenceTag> — <verbatim short phrase>.
+  * Example: profile_elig1: [patient.pdf p3] — "clinically suspected HLH"
+- Use the EvidenceTag exactly as shown in the Context header (including page number).
+- If no page header is present, cite the source header only (e.g., [note]) and still provide a short verbatim phrase.
+- Do NOT add new JSON keys for evidence; record all citations ONLY inside profile_ab_notes.
+
+OUTPUT FORMAT OVERRIDE (CRITICAL):
+- The JSON TEMPLATE below is REFERENCE ONLY (schema/choices/branching). Do NOT output it.
+- Output ONLY an ANSWERS JSON object, where EACH variable is formatted as:
+  "<variable_name>": { "answer": <value> }
+- Do NOT output "Form Name", "Questions", "Variable / Field Name", "Field Label", "Field Type",
+  "Possible Values", "answer_type", "answer_template", or "codes".
+- Keep the same variable names (e.g., record_id, profile_brthyr, profile_cntry, profile_usregn).
+- Output ONLY valid JSON (no commentary, no markdown, no extra keys).
+
+ANSWERS JSON TEMPLATE (THIS IS THE ONLY THING YOU SHOULD OUTPUT):
+{
+  "vs_vsseq": {
+    "answer": null
+  },
+  "vs_vsdt": {
+    "answer": null
+  },
+  "vs_hgt": {
+    "answer": null
+  },
+  "vs_hgtunk": {
+    "answer": {
+      "Unknown": false
+    }
+  },
+  "vs_hgtu": {
+    "answer": {
+      "in": false,
+      "cm": false,
+      "Unknown": false
+    }
+  },
+  "vs_wgt": {
+    "answer": null
+  },
+  "vs_wgtunk": {
+    "answer": {
+      "Unknown": false
+    }
+  },
+  "vs_wgtu": {
+    "answer": {
+      "kg": false,
+      "lb": false,
+      "Unknown": false
+    }
+  },
+  "vs_notes": {
+    "answer": null
+  },
+  "profile_ab_notes": {
+    "answer": null
+  }
+}
+
+GENERAL "OTHER" FALLBACK RULE (applies to ALL fields):
+- For any radio/dropdown/checkbox field:
+  1) First try to map the evidence to one of the allowed option labels (or clear synonyms).
+  2) If the evidence clearly provides a value but it does NOT match any allowed option label/code:
+     - If the field has an "Other" option AND has a nested/branching "Other specify" text field:
+       * Select/check the "Other" option (use its REDCap code)
+       * Put the exact unmatched value phrase from the evidence into the "Other specify" field
+     - If the field has "Other" option but no specify field:
+       * Select/check "Other" and do not invent text
+     - If the field does not have an "Other" option:
+       * Output null and add the variable name to not_found
+- Do NOT use "Other" when the value matches a valid option label or a clear synonym of a valid option.
+
+JSON TEMPLATE (schema + answer placeholders):
+{
+  "Form Name": "height_and_weight",
+  "Questions": {
+    "vs_vsseq": {
+      "Variable / Field Name": "vs_vsseq",
+      "Form Name": "height_and_weight",
+      "Field Label": "Sequence number",
+      "Field Type": "text",
+      "Field Note": "Ex: 1",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "vs_vsdt": {
+      "Variable / Field Name": "vs_vsdt",
+      "Form Name": "height_and_weight",
+      "Field Label": "Date of assessment",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "vs_hgt": {
+      "Variable / Field Name": "vs_hgt",
+      "Form Name": "height_and_weight",
+      "Field Label": "Height",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "vs_hgtunk": {
+      "Variable / Field Name": "vs_hgtunk",
+      "Form Name": "height_and_weight",
+      "Field Label": "Height unknown",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Unknown"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Unknown": "1"
+      }
+    },
+    "vs_hgtu": {
+      "Variable / Field Name": "vs_hgtu",
+      "Form Name": "height_and_weight",
+      "Field Label": "Height unit",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "in",
+        "2": "cm",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "in": "True|False",
+        "cm": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "in": "1",
+        "cm": "2",
+        "Unknown": "98"
+      }
+    },
+    "vs_wgt": {
+      "Variable / Field Name": "vs_wgt",
+      "Form Name": "height_and_weight",
+      "Field Label": "Weight",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "vs_wgtunk": {
+      "Variable / Field Name": "vs_wgtunk",
+      "Form Name": "height_and_weight",
+      "Field Label": "Weight unknown",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Unknown"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Unknown": "1"
+      }
+    },
+    "vs_wgtu": {
+      "Variable / Field Name": "vs_wgtu",
+      "Form Name": "height_and_weight",
+      "Field Label": "Weight unit",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "kg",
+        "2": "lb",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "kg": "True|False",
+        "lb": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "kg": "1",
+        "lb": "2",
+        "Unknown": "98"
+      }
+    },
+    "vs_notes": {
+      "Variable / Field Name": "vs_notes",
+      "Form Name": "height_and_weight",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    },
+    "profile_ab_notes": {
+      "Variable / Field Name": "profile_ab_notes",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    }
+  }
+}

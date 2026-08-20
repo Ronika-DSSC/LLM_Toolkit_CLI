@@ -1,0 +1,1064 @@
+#### PROMPT_SET: concomitant_medication_details
+---RAG---
+REDCap form: concomitant_medication_details
+Retrieve document text needed to answer this form.
+Prefer labeled fields/tables; ignore repetitive footers/headers.
+Additional cues: demographics/face sheet, problem list, assessment & plan, discharge summary, lab results/flowsheets, medication list, imaging/pathology reports.
+Key terms: Sequence, number, this, antimicrobial, medication, Start, date, Ongoing, Intermittent, End, Indication, Frequency, Route, Abstractor, Notes
+
+---USER---
+You are a clinical information extractor.
+Given a clinical note (or EHR text), extract answers for the REDCap form: eligibility_and_patient_profile.
+
+Instructions:
+- Fill in the JSON TEMPLATE below using ONLY evidence explicitly present in the text. Do not guess.
+- Keep the same JSON keys and nesting.
+- For choice questions: replace 'True|False' with true or false.
+  * Single-choice (radio/dropdown/yes-no): set exactly one option to true if supported.
+  * Multi-choice (checkbox): set all supported options to true.
+- For 'String'/'Number'/'Integer'/'Date' placeholders: replace with the extracted value (or null if not found).
+- Only populate 'Nested Fields' (e.g., 'please specify') when the parent condition is met AND evidence supports it.
+- Output ONLY the filled JSON (no extra commentary).
+
+EVIDENCE / PAGE CITATION RULE (for auditability):
+- The retrieved Context snippets may include headers like [<source> p<page>] or [<source> p<start>-<end>].
+- For every non-null extracted field (any field whose answer is not null and/or any option you set to true), add an evidence line into profile_ab_notes.
+- Evidence line format (one per field): <VariableName>: <EvidenceTag> — <verbatim short phrase>.
+  * Example: profile_elig1: [patient.pdf p3] — "clinically suspected HLH"
+- Use the EvidenceTag exactly as shown in the Context header (including page number).
+- If no page header is present, cite the source header only (e.g., [note]) and still provide a short verbatim phrase.
+- Do NOT add new JSON keys for evidence; record all citations ONLY inside profile_ab_notes.
+
+OUTPUT FORMAT OVERRIDE (CRITICAL):
+- The JSON TEMPLATE below is REFERENCE ONLY (schema/choices/branching). Do NOT output it.
+- Output ONLY an ANSWERS JSON object, where EACH variable is formatted as:
+  "<variable_name>": { "answer": <value> }
+- Do NOT output "Form Name", "Questions", "Variable / Field Name", "Field Label", "Field Type",
+  "Possible Values", "answer_type", "answer_template", or "codes".
+- Keep the same variable names (e.g., record_id, profile_brthyr, profile_cntry, profile_usregn).
+- Output ONLY valid JSON (no commentary, no markdown, no extra keys).
+
+ANSWERS JSON TEMPLATE (THIS IS THE ONLY THING YOU SHOULD OUTPUT):
+{
+  "cm_cmseq": {
+    "answer": null
+  },
+  "cm_cmantyn": {
+    "answer": {
+      "No": false,
+      "Yes": false
+    },
+    "cm_cmantm": {
+      "answer": {
+        "Abacavir": false,
+        "Acetohydroxamic Acid": false,
+        "Acyclovir": false,
+        "Adefovir": false,
+        "Amantadine": false,
+        "Amikacin": false,
+        "Aminosalicylic Acid": false,
+        "Amoxicillin": false,
+        "Amoxicillin/Clavulanate": false,
+        "Ampicillin": false,
+        "Ampicillin/Sulbactam": false,
+        "Atazanavir": false,
+        "Azithromycin": false,
+        "Aztreonam": false,
+        "Bacitracin": false,
+        "Benznidazole": false,
+        "Capreomycin": false,
+        "Caspofungin": false,
+        "Cefaclor": false,
+        "Cefadroxil": false,
+        "Cefazolin": false,
+        "Cefdinir": false,
+        "Cefditoren": false,
+        "Cefepime": false,
+        "Cefiderocol": false,
+        "Cefoxitin": false,
+        "Ceftaroline": false,
+        "Ceftazidime": false,
+        "Ceftazidime/Avibactam": false,
+        "Ceftobiprole": false,
+        "Ceftolozane/Tazobactam": false,
+        "Ceftriaxone": false,
+        "Cefuroxime": false,
+        "Cephalexin": false,
+        "Chlorhexidine": false,
+        "Chloroquine": false,
+        "Cidofovir": false,
+        "Ciprofloxacin": false,
+        "Clarithromycin": false,
+        "Clindamycin": false,
+        "Clotrimazole": false,
+        "Colistin": false,
+        "Cycloserine": false,
+        "Dalbavancin": false,
+        "Dapsone": false,
+        "Daptomycin": false,
+        "Delafloxacin": false,
+        "Demeclocycline": false,
+        "Dicloxacillin": false,
+        "Dificid": false,
+        "Doripenem": false,
+        "Doxycycline": false,
+        "Ertapenem": false,
+        "Erythromycin": false,
+        "Ethambutol": false,
+        "Ethionamide": false,
+        "Fidaxomicin": false,
+        "Fluconazole": false,
+        "Flucytosine": false,
+        "Foscarnet": false,
+        "Fosfomycin": false,
+        "Fusidic Acid": false,
+        "Ganciclovir": false,
+        "Gemifloxacin": false,
+        "Gentamicin": false,
+        "Hydroxychloroquine Sulfate": false,
+        "Imipenem/Cilastatin": false,
+        "Indinavir": false,
+        "Isavuconazonium Sulfate": false,
+        "Itraconazole": false,
+        "Ivermectin": false,
+        "Ketoconazole": false,
+        "Lamivudine": false,
+        "Lenacapavir": false,
+        "Levofloxacin": false,
+        "Lincomycin": false,
+        "Linezolid": false,
+        "Mefloquine": false,
+        "Meropenem": false,
+        "Methenamine": false,
+        "Metronidazole": false,
+        "Micafungin": false,
+        "Miconazole": false,
+        "Minocycline": false,
+        "Moxifloxacin": false,
+        "Mupirocin": false,
+        "Nafcillin": false,
+        "Neomycin": false,
+        "Nitazoxanide": false,
+        "Nitrofurantoin": false,
+        "Nystatin": false,
+        "Omadacycline": false,
+        "Oritavancin": false,
+        "Oseltamivir": false,
+        "Paromomycin": false,
+        "Pentamidine": false,
+        "Piperacillin": false,
+        "Piperacillin/Tazobactam": false,
+        "Polymyxin B": false,
+        "Posaconazole": false,
+        "Pyrimethamine": false,
+        "Remdesivir": false,
+        "Rezafungin": false,
+        "Rifabutin": false,
+        "Rifampin": false,
+        "Rifamycin": false,
+        "Rifaximin": false,
+        "Rimantadine": false,
+        "Streptomycin": false,
+        "Sulbactam/Durlobactam": false,
+        "Sulfadiazine": false,
+        "Sulfamethoxazole": false,
+        "Sulfisoxazole": false,
+        "Suramin": false,
+        "Tedizolid": false,
+        "Teicoplanin": false,
+        "Telavancin": false,
+        "Terbinafine": false,
+        "Tetracycline": false,
+        "Ticarcillin/Clavulanate": false,
+        "Tigecycline": false,
+        "Tinidazole": false,
+        "Tobramycin": false,
+        "Trimethoprim": false,
+        "Trimethoprim/Sulfamethoxazole": false,
+        "Valacyclovir": false,
+        "Valganciclovir": false,
+        "Vancomycin": false,
+        "Voriconazole": false,
+        "Zidovudine": false,
+        "Other": false,
+        "Unknown": false
+      },
+      "cm_cmantmo": {
+        "answer": null
+      }
+    },
+    "cm_cmterm": {
+      "answer": null
+    }
+  },
+  "cm_cmstpd": {
+    "answer": null
+  },
+  "cm_cmongbx": {
+    "answer": {
+      "Ongoing": false
+    }
+  },
+  "cm_cminterm": {
+    "answer": {
+      "Intermittent": false
+    }
+  },
+  "cm_cmenpd": {
+    "answer": null
+  },
+  "cm_cmindcd": {
+    "answer": {
+      "Medical History": false,
+      "Adverse Event": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "cm_medhxhelp": {
+      "answer": null
+    },
+    "cm_aehelp": {
+      "answer": null
+    },
+    "cm_cmmhid": {
+      "answer": null
+    },
+    "cm_cmaeid": {
+      "answer": null
+    },
+    "cm_indotsp": {
+      "answer": null
+    }
+  },
+  "cm_cmfreqcd": {
+    "answer": {
+      "Daily (OD)": false,
+      "Twice daily (BD)": false,
+      "Three times daily (TID)": false,
+      "Four times daily (QID)": false,
+      "Five times daily (QID)": false,
+      "Weekly (QS)": false,
+      "Monthly (QM)": false,
+      "As needed (PRN)": false,
+      "Every other day (QOD)": false,
+      "Not applicable": false,
+      "Unknown": false,
+      "Other": false
+    },
+    "cm_freqotsp": {
+      "answer": null
+    }
+  },
+  "cm_cmroutcd": {
+    "answer": {
+      "Intravenous (IV)": false,
+      "Laryngeal": false,
+      "Nasal": false,
+      "Nasogastric": false,
+      "Ophthalmic": false,
+      "Parenteral": false,
+      "Percutaneous": false,
+      "Rectal": false,
+      "Inhalation (INH)": false,
+      "Subcutaneous (SC)": false,
+      "Sublingual (SL)": false,
+      "Submucosal": false,
+      "Topical (TOP)": false,
+      "Transdermal": false,
+      "Auricular": false,
+      "Buccal": false,
+      "Cutaneous": false,
+      "Epidural": false,
+      "Oral (PO)": false,
+      "Intramuscular (IM)": false,
+      "Not applicable": false,
+      "Unknown": false,
+      "Other": false
+    },
+    "cm_routotsp": {
+      "answer": null
+    }
+  },
+  "cm_notesb": {
+    "answer": null
+  },
+  "profile_ab_notes": {
+    "answer": null
+  }
+}
+
+GENERAL "OTHER" FALLBACK RULE (applies to ALL fields):
+- For any radio/dropdown/checkbox field:
+  1) First try to map the evidence to one of the allowed option labels (or clear synonyms).
+  2) If the evidence clearly provides a value but it does NOT match any allowed option label/code:
+     - If the field has an "Other" option AND has a nested/branching "Other specify" text field:
+       * Select/check the "Other" option (use its REDCap code)
+       * Put the exact unmatched value phrase from the evidence into the "Other specify" field
+     - If the field has "Other" option but no specify field:
+       * Select/check "Other" and do not invent text
+     - If the field does not have an "Other" option:
+       * Output null and add the variable name to not_found
+- Do NOT use "Other" when the value matches a valid option label or a clear synonym of a valid option.
+
+JSON TEMPLATE (schema + answer placeholders):
+{
+  "Form Name": "concomitant_medication_details",
+  "Questions": {
+    "cm_cmseq": {
+      "Variable / Field Name": "cm_cmseq",
+      "Form Name": "concomitant_medication_details",
+      "Field Label": "Sequence number",
+      "Field Type": "text",
+      "Field Note": "Ex: 1",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "cm_cmantyn": {
+      "Variable / Field Name": "cm_cmantyn",
+      "Form Name": "concomitant_medication_details",
+      "Field Label": "Is this an antimicrobial medication?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "2": "No",
+        "1": "Yes"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "No": "True|False",
+        "Yes": "True|False"
+      },
+      "codes": {
+        "No": "2",
+        "Yes": "1"
+      },
+      "Nested Fields": {
+        "cm_cmantm": {
+          "Variable / Field Name": "cm_cmantm",
+          "Form Name": "concomitant_medication_details",
+          "Field Label": "Please select the antimicrobial medication",
+          "Field Type": "dropdown",
+          "Required Field?": "y",
+          "Branching Logic": "[cm_cmantyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Abacavir",
+            "2": "Acetohydroxamic Acid",
+            "3": "Acyclovir",
+            "4": "Adefovir",
+            "5": "Amantadine",
+            "6": "Amikacin",
+            "7": "Aminosalicylic Acid",
+            "8": "Amoxicillin",
+            "9": "Amoxicillin/Clavulanate",
+            "10": "Ampicillin",
+            "11": "Ampicillin/Sulbactam",
+            "12": "Atazanavir",
+            "13": "Azithromycin",
+            "14": "Aztreonam",
+            "15": "Bacitracin",
+            "16": "Benznidazole",
+            "17": "Capreomycin",
+            "18": "Caspofungin",
+            "19": "Cefaclor",
+            "20": "Cefadroxil",
+            "21": "Cefazolin",
+            "22": "Cefdinir",
+            "23": "Cefditoren",
+            "24": "Cefepime",
+            "25": "Cefiderocol",
+            "26": "Cefoxitin",
+            "27": "Ceftaroline",
+            "28": "Ceftazidime",
+            "29": "Ceftazidime/Avibactam",
+            "30": "Ceftobiprole",
+            "31": "Ceftolozane/Tazobactam",
+            "32": "Ceftriaxone",
+            "33": "Cefuroxime",
+            "34": "Cephalexin",
+            "35": "Chlorhexidine",
+            "36": "Chloroquine",
+            "37": "Cidofovir",
+            "38": "Ciprofloxacin",
+            "39": "Clarithromycin",
+            "40": "Clindamycin",
+            "41": "Clotrimazole",
+            "42": "Colistin",
+            "43": "Cycloserine",
+            "44": "Dalbavancin",
+            "45": "Dapsone",
+            "46": "Daptomycin",
+            "47": "Delafloxacin",
+            "48": "Demeclocycline",
+            "49": "Dicloxacillin",
+            "50": "Dificid",
+            "51": "Doripenem",
+            "52": "Doxycycline",
+            "53": "Ertapenem",
+            "54": "Erythromycin",
+            "55": "Ethambutol",
+            "56": "Ethionamide",
+            "57": "Fidaxomicin",
+            "58": "Fluconazole",
+            "59": "Flucytosine",
+            "60": "Foscarnet",
+            "61": "Fosfomycin",
+            "62": "Fusidic Acid",
+            "63": "Ganciclovir",
+            "64": "Gemifloxacin",
+            "65": "Gentamicin",
+            "66": "Hydroxychloroquine Sulfate",
+            "67": "Imipenem/Cilastatin",
+            "68": "Indinavir",
+            "69": "Isavuconazonium Sulfate",
+            "70": "Itraconazole",
+            "71": "Ivermectin",
+            "72": "Ketoconazole",
+            "73": "Lamivudine",
+            "74": "Lenacapavir",
+            "75": "Levofloxacin",
+            "76": "Lincomycin",
+            "77": "Linezolid",
+            "78": "Mefloquine",
+            "79": "Meropenem",
+            "80": "Methenamine",
+            "81": "Metronidazole",
+            "82": "Micafungin",
+            "83": "Miconazole",
+            "84": "Minocycline",
+            "85": "Moxifloxacin",
+            "86": "Mupirocin",
+            "87": "Nafcillin",
+            "88": "Neomycin",
+            "89": "Nitazoxanide",
+            "90": "Nitrofurantoin",
+            "91": "Nystatin",
+            "92": "Omadacycline",
+            "93": "Oritavancin",
+            "94": "Oseltamivir",
+            "95": "Paromomycin",
+            "96": "Pentamidine",
+            "97": "Piperacillin",
+            "131": "Piperacillin/Tazobactam",
+            "132": "Polymyxin B",
+            "100": "Posaconazole",
+            "101": "Pyrimethamine",
+            "102": "Remdesivir",
+            "103": "Rezafungin",
+            "104": "Rifabutin",
+            "105": "Rifampin",
+            "106": "Rifamycin",
+            "107": "Rifaximin",
+            "108": "Rimantadine",
+            "109": "Streptomycin",
+            "110": "Sulbactam/Durlobactam",
+            "111": "Sulfadiazine",
+            "112": "Sulfamethoxazole",
+            "113": "Sulfisoxazole",
+            "114": "Suramin",
+            "115": "Tedizolid",
+            "116": "Teicoplanin",
+            "117": "Telavancin",
+            "118": "Terbinafine",
+            "119": "Tetracycline",
+            "120": "Ticarcillin/Clavulanate",
+            "121": "Tigecycline",
+            "122": "Tinidazole",
+            "123": "Tobramycin",
+            "124": "Trimethoprim",
+            "125": "Trimethoprim/Sulfamethoxazole",
+            "126": "Valacyclovir",
+            "127": "Valganciclovir",
+            "128": "Vancomycin",
+            "129": "Voriconazole",
+            "130": "Zidovudine",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Abacavir": "True|False",
+            "Acetohydroxamic Acid": "True|False",
+            "Acyclovir": "True|False",
+            "Adefovir": "True|False",
+            "Amantadine": "True|False",
+            "Amikacin": "True|False",
+            "Aminosalicylic Acid": "True|False",
+            "Amoxicillin": "True|False",
+            "Amoxicillin/Clavulanate": "True|False",
+            "Ampicillin": "True|False",
+            "Ampicillin/Sulbactam": "True|False",
+            "Atazanavir": "True|False",
+            "Azithromycin": "True|False",
+            "Aztreonam": "True|False",
+            "Bacitracin": "True|False",
+            "Benznidazole": "True|False",
+            "Capreomycin": "True|False",
+            "Caspofungin": "True|False",
+            "Cefaclor": "True|False",
+            "Cefadroxil": "True|False",
+            "Cefazolin": "True|False",
+            "Cefdinir": "True|False",
+            "Cefditoren": "True|False",
+            "Cefepime": "True|False",
+            "Cefiderocol": "True|False",
+            "Cefoxitin": "True|False",
+            "Ceftaroline": "True|False",
+            "Ceftazidime": "True|False",
+            "Ceftazidime/Avibactam": "True|False",
+            "Ceftobiprole": "True|False",
+            "Ceftolozane/Tazobactam": "True|False",
+            "Ceftriaxone": "True|False",
+            "Cefuroxime": "True|False",
+            "Cephalexin": "True|False",
+            "Chlorhexidine": "True|False",
+            "Chloroquine": "True|False",
+            "Cidofovir": "True|False",
+            "Ciprofloxacin": "True|False",
+            "Clarithromycin": "True|False",
+            "Clindamycin": "True|False",
+            "Clotrimazole": "True|False",
+            "Colistin": "True|False",
+            "Cycloserine": "True|False",
+            "Dalbavancin": "True|False",
+            "Dapsone": "True|False",
+            "Daptomycin": "True|False",
+            "Delafloxacin": "True|False",
+            "Demeclocycline": "True|False",
+            "Dicloxacillin": "True|False",
+            "Dificid": "True|False",
+            "Doripenem": "True|False",
+            "Doxycycline": "True|False",
+            "Ertapenem": "True|False",
+            "Erythromycin": "True|False",
+            "Ethambutol": "True|False",
+            "Ethionamide": "True|False",
+            "Fidaxomicin": "True|False",
+            "Fluconazole": "True|False",
+            "Flucytosine": "True|False",
+            "Foscarnet": "True|False",
+            "Fosfomycin": "True|False",
+            "Fusidic Acid": "True|False",
+            "Ganciclovir": "True|False",
+            "Gemifloxacin": "True|False",
+            "Gentamicin": "True|False",
+            "Hydroxychloroquine Sulfate": "True|False",
+            "Imipenem/Cilastatin": "True|False",
+            "Indinavir": "True|False",
+            "Isavuconazonium Sulfate": "True|False",
+            "Itraconazole": "True|False",
+            "Ivermectin": "True|False",
+            "Ketoconazole": "True|False",
+            "Lamivudine": "True|False",
+            "Lenacapavir": "True|False",
+            "Levofloxacin": "True|False",
+            "Lincomycin": "True|False",
+            "Linezolid": "True|False",
+            "Mefloquine": "True|False",
+            "Meropenem": "True|False",
+            "Methenamine": "True|False",
+            "Metronidazole": "True|False",
+            "Micafungin": "True|False",
+            "Miconazole": "True|False",
+            "Minocycline": "True|False",
+            "Moxifloxacin": "True|False",
+            "Mupirocin": "True|False",
+            "Nafcillin": "True|False",
+            "Neomycin": "True|False",
+            "Nitazoxanide": "True|False",
+            "Nitrofurantoin": "True|False",
+            "Nystatin": "True|False",
+            "Omadacycline": "True|False",
+            "Oritavancin": "True|False",
+            "Oseltamivir": "True|False",
+            "Paromomycin": "True|False",
+            "Pentamidine": "True|False",
+            "Piperacillin": "True|False",
+            "Piperacillin/Tazobactam": "True|False",
+            "Polymyxin B": "True|False",
+            "Posaconazole": "True|False",
+            "Pyrimethamine": "True|False",
+            "Remdesivir": "True|False",
+            "Rezafungin": "True|False",
+            "Rifabutin": "True|False",
+            "Rifampin": "True|False",
+            "Rifamycin": "True|False",
+            "Rifaximin": "True|False",
+            "Rimantadine": "True|False",
+            "Streptomycin": "True|False",
+            "Sulbactam/Durlobactam": "True|False",
+            "Sulfadiazine": "True|False",
+            "Sulfamethoxazole": "True|False",
+            "Sulfisoxazole": "True|False",
+            "Suramin": "True|False",
+            "Tedizolid": "True|False",
+            "Teicoplanin": "True|False",
+            "Telavancin": "True|False",
+            "Terbinafine": "True|False",
+            "Tetracycline": "True|False",
+            "Ticarcillin/Clavulanate": "True|False",
+            "Tigecycline": "True|False",
+            "Tinidazole": "True|False",
+            "Tobramycin": "True|False",
+            "Trimethoprim": "True|False",
+            "Trimethoprim/Sulfamethoxazole": "True|False",
+            "Valacyclovir": "True|False",
+            "Valganciclovir": "True|False",
+            "Vancomycin": "True|False",
+            "Voriconazole": "True|False",
+            "Zidovudine": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Abacavir": "1",
+            "Acetohydroxamic Acid": "2",
+            "Acyclovir": "3",
+            "Adefovir": "4",
+            "Amantadine": "5",
+            "Amikacin": "6",
+            "Aminosalicylic Acid": "7",
+            "Amoxicillin": "8",
+            "Amoxicillin/Clavulanate": "9",
+            "Ampicillin": "10",
+            "Ampicillin/Sulbactam": "11",
+            "Atazanavir": "12",
+            "Azithromycin": "13",
+            "Aztreonam": "14",
+            "Bacitracin": "15",
+            "Benznidazole": "16",
+            "Capreomycin": "17",
+            "Caspofungin": "18",
+            "Cefaclor": "19",
+            "Cefadroxil": "20",
+            "Cefazolin": "21",
+            "Cefdinir": "22",
+            "Cefditoren": "23",
+            "Cefepime": "24",
+            "Cefiderocol": "25",
+            "Cefoxitin": "26",
+            "Ceftaroline": "27",
+            "Ceftazidime": "28",
+            "Ceftazidime/Avibactam": "29",
+            "Ceftobiprole": "30",
+            "Ceftolozane/Tazobactam": "31",
+            "Ceftriaxone": "32",
+            "Cefuroxime": "33",
+            "Cephalexin": "34",
+            "Chlorhexidine": "35",
+            "Chloroquine": "36",
+            "Cidofovir": "37",
+            "Ciprofloxacin": "38",
+            "Clarithromycin": "39",
+            "Clindamycin": "40",
+            "Clotrimazole": "41",
+            "Colistin": "42",
+            "Cycloserine": "43",
+            "Dalbavancin": "44",
+            "Dapsone": "45",
+            "Daptomycin": "46",
+            "Delafloxacin": "47",
+            "Demeclocycline": "48",
+            "Dicloxacillin": "49",
+            "Dificid": "50",
+            "Doripenem": "51",
+            "Doxycycline": "52",
+            "Ertapenem": "53",
+            "Erythromycin": "54",
+            "Ethambutol": "55",
+            "Ethionamide": "56",
+            "Fidaxomicin": "57",
+            "Fluconazole": "58",
+            "Flucytosine": "59",
+            "Foscarnet": "60",
+            "Fosfomycin": "61",
+            "Fusidic Acid": "62",
+            "Ganciclovir": "63",
+            "Gemifloxacin": "64",
+            "Gentamicin": "65",
+            "Hydroxychloroquine Sulfate": "66",
+            "Imipenem/Cilastatin": "67",
+            "Indinavir": "68",
+            "Isavuconazonium Sulfate": "69",
+            "Itraconazole": "70",
+            "Ivermectin": "71",
+            "Ketoconazole": "72",
+            "Lamivudine": "73",
+            "Lenacapavir": "74",
+            "Levofloxacin": "75",
+            "Lincomycin": "76",
+            "Linezolid": "77",
+            "Mefloquine": "78",
+            "Meropenem": "79",
+            "Methenamine": "80",
+            "Metronidazole": "81",
+            "Micafungin": "82",
+            "Miconazole": "83",
+            "Minocycline": "84",
+            "Moxifloxacin": "85",
+            "Mupirocin": "86",
+            "Nafcillin": "87",
+            "Neomycin": "88",
+            "Nitazoxanide": "89",
+            "Nitrofurantoin": "90",
+            "Nystatin": "91",
+            "Omadacycline": "92",
+            "Oritavancin": "93",
+            "Oseltamivir": "94",
+            "Paromomycin": "95",
+            "Pentamidine": "96",
+            "Piperacillin": "97",
+            "Piperacillin/Tazobactam": "131",
+            "Polymyxin B": "132",
+            "Posaconazole": "100",
+            "Pyrimethamine": "101",
+            "Remdesivir": "102",
+            "Rezafungin": "103",
+            "Rifabutin": "104",
+            "Rifampin": "105",
+            "Rifamycin": "106",
+            "Rifaximin": "107",
+            "Rimantadine": "108",
+            "Streptomycin": "109",
+            "Sulbactam/Durlobactam": "110",
+            "Sulfadiazine": "111",
+            "Sulfamethoxazole": "112",
+            "Sulfisoxazole": "113",
+            "Suramin": "114",
+            "Tedizolid": "115",
+            "Teicoplanin": "116",
+            "Telavancin": "117",
+            "Terbinafine": "118",
+            "Tetracycline": "119",
+            "Ticarcillin/Clavulanate": "120",
+            "Tigecycline": "121",
+            "Tinidazole": "122",
+            "Tobramycin": "123",
+            "Trimethoprim": "124",
+            "Trimethoprim/Sulfamethoxazole": "125",
+            "Valacyclovir": "126",
+            "Valganciclovir": "127",
+            "Vancomycin": "128",
+            "Voriconazole": "129",
+            "Zidovudine": "130",
+            "Other": "99",
+            "Unknown": "98"
+          },
+          "Nested Fields": {
+            "cm_cmantmo": {
+              "Variable / Field Name": "cm_cmantmo",
+              "Form Name": "concomitant_medication_details",
+              "Field Label": "Other, specify",
+              "Field Type": "text",
+              "Required Field?": "y",
+              "Branching Logic": "[cm_cmantm] = '99'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "cm_cmterm": {
+          "Variable / Field Name": "cm_cmterm",
+          "Form Name": "concomitant_medication_details",
+          "Field Label": "Medication name",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[cm_cmantyn] = '2'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "cm_cmstpd": {
+      "Variable / Field Name": "cm_cmstpd",
+      "Form Name": "concomitant_medication_details",
+      "Field Label": "Start date",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "cm_cmongbx": {
+      "Variable / Field Name": "cm_cmongbx",
+      "Form Name": "concomitant_medication_details",
+      "Field Label": "Ongoing?",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Ongoing"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Ongoing": "True|False"
+      },
+      "codes": {
+        "Ongoing": "1"
+      }
+    },
+    "cm_cminterm": {
+      "Variable / Field Name": "cm_cminterm",
+      "Form Name": "concomitant_medication_details",
+      "Field Label": "Intermittent",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Intermittent"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Intermittent": "True|False"
+      },
+      "codes": {
+        "Intermittent": "1"
+      }
+    },
+    "cm_cmenpd": {
+      "Variable / Field Name": "cm_cmenpd",
+      "Form Name": "concomitant_medication_details",
+      "Field Label": "End date",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "cm_cmindcd": {
+      "Variable / Field Name": "cm_cmindcd",
+      "Form Name": "concomitant_medication_details",
+      "Field Label": "Indication",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Medical History",
+        "2": "Adverse Event",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Medical History": "True|False",
+        "Adverse Event": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Medical History": "1",
+        "Adverse Event": "2",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "cm_medhxhelp": {
+          "Variable / Field Name": "cm_medhxhelp",
+          "Form Name": "concomitant_medication_details",
+          "Field Label": "Please record on the Medical History Details form.",
+          "Field Type": "descriptive",
+          "Branching Logic": "[cm_cmindcd] = '1'",
+          "answer_type": "display_only",
+          "answer_template": null
+        },
+        "cm_aehelp": {
+          "Variable / Field Name": "cm_aehelp",
+          "Form Name": "concomitant_medication_details",
+          "Field Label": "Please record on the Adverse Event Details form.",
+          "Field Type": "descriptive",
+          "Branching Logic": "[cm_cmindcd] = '2'",
+          "answer_type": "display_only",
+          "answer_template": null
+        },
+        "cm_cmmhid": {
+          "Variable / Field Name": "cm_cmmhid",
+          "Form Name": "concomitant_medication_details",
+          "Field Label": "List the applicable Medical History sequence number",
+          "Field Type": "text",
+          "Branching Logic": "[cm_cmindcd] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "cm_cmaeid": {
+          "Variable / Field Name": "cm_cmaeid",
+          "Form Name": "concomitant_medication_details",
+          "Field Label": "List the applicable Adverse Event sequence number",
+          "Field Type": "text",
+          "Branching Logic": "[cm_cmindcd] = '2'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "cm_indotsp": {
+          "Variable / Field Name": "cm_indotsp",
+          "Form Name": "concomitant_medication_details",
+          "Field Label": "Other, please specify",
+          "Field Type": "text",
+          "Branching Logic": "[cm_cmindcd] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "cm_cmfreqcd": {
+      "Variable / Field Name": "cm_cmfreqcd",
+      "Form Name": "concomitant_medication_details",
+      "Field Label": "Frequency",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Daily (OD)",
+        "2": "Twice daily (BD)",
+        "3": "Three times daily (TID)",
+        "4": "Four times daily (QID)",
+        "5": "Five times daily (QID)",
+        "6": "Weekly (QS)",
+        "7": "Monthly (QM)",
+        "8": "As needed (PRN)",
+        "9": "Every other day (QOD)",
+        "97": "Not applicable",
+        "98": "Unknown",
+        "99": "Other"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Daily (OD)": "True|False",
+        "Twice daily (BD)": "True|False",
+        "Three times daily (TID)": "True|False",
+        "Four times daily (QID)": "True|False",
+        "Five times daily (QID)": "True|False",
+        "Weekly (QS)": "True|False",
+        "Monthly (QM)": "True|False",
+        "As needed (PRN)": "True|False",
+        "Every other day (QOD)": "True|False",
+        "Not applicable": "True|False",
+        "Unknown": "True|False",
+        "Other": "True|False"
+      },
+      "codes": {
+        "Daily (OD)": "1",
+        "Twice daily (BD)": "2",
+        "Three times daily (TID)": "3",
+        "Four times daily (QID)": "4",
+        "Five times daily (QID)": "5",
+        "Weekly (QS)": "6",
+        "Monthly (QM)": "7",
+        "As needed (PRN)": "8",
+        "Every other day (QOD)": "9",
+        "Not applicable": "97",
+        "Unknown": "98",
+        "Other": "99"
+      },
+      "Nested Fields": {
+        "cm_freqotsp": {
+          "Variable / Field Name": "cm_freqotsp",
+          "Form Name": "concomitant_medication_details",
+          "Field Label": "Other, please specify",
+          "Field Type": "text",
+          "Branching Logic": "[cm_cmfreqcd] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "cm_cmroutcd": {
+      "Variable / Field Name": "cm_cmroutcd",
+      "Form Name": "concomitant_medication_details",
+      "Field Label": "Route",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Intravenous (IV)",
+        "2": "Laryngeal",
+        "3": "Nasal",
+        "4": "Nasogastric",
+        "5": "Ophthalmic",
+        "6": "Parenteral",
+        "7": "Percutaneous",
+        "8": "Rectal",
+        "9": "Inhalation (INH)",
+        "10": "Subcutaneous (SC)",
+        "11": "Sublingual (SL)",
+        "12": "Submucosal",
+        "13": "Topical (TOP)",
+        "14": "Transdermal",
+        "15": "Auricular",
+        "16": "Buccal",
+        "17": "Cutaneous",
+        "18": "Epidural",
+        "19": "Oral (PO)",
+        "20": "Intramuscular (IM)",
+        "97": "Not applicable",
+        "98": "Unknown",
+        "99": "Other"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Intravenous (IV)": "True|False",
+        "Laryngeal": "True|False",
+        "Nasal": "True|False",
+        "Nasogastric": "True|False",
+        "Ophthalmic": "True|False",
+        "Parenteral": "True|False",
+        "Percutaneous": "True|False",
+        "Rectal": "True|False",
+        "Inhalation (INH)": "True|False",
+        "Subcutaneous (SC)": "True|False",
+        "Sublingual (SL)": "True|False",
+        "Submucosal": "True|False",
+        "Topical (TOP)": "True|False",
+        "Transdermal": "True|False",
+        "Auricular": "True|False",
+        "Buccal": "True|False",
+        "Cutaneous": "True|False",
+        "Epidural": "True|False",
+        "Oral (PO)": "True|False",
+        "Intramuscular (IM)": "True|False",
+        "Not applicable": "True|False",
+        "Unknown": "True|False",
+        "Other": "True|False"
+      },
+      "codes": {
+        "Intravenous (IV)": "1",
+        "Laryngeal": "2",
+        "Nasal": "3",
+        "Nasogastric": "4",
+        "Ophthalmic": "5",
+        "Parenteral": "6",
+        "Percutaneous": "7",
+        "Rectal": "8",
+        "Inhalation (INH)": "9",
+        "Subcutaneous (SC)": "10",
+        "Sublingual (SL)": "11",
+        "Submucosal": "12",
+        "Topical (TOP)": "13",
+        "Transdermal": "14",
+        "Auricular": "15",
+        "Buccal": "16",
+        "Cutaneous": "17",
+        "Epidural": "18",
+        "Oral (PO)": "19",
+        "Intramuscular (IM)": "20",
+        "Not applicable": "97",
+        "Unknown": "98",
+        "Other": "99"
+      },
+      "Nested Fields": {
+        "cm_routotsp": {
+          "Variable / Field Name": "cm_routotsp",
+          "Form Name": "concomitant_medication_details",
+          "Field Label": "Other, please specify",
+          "Field Type": "text",
+          "Branching Logic": "[cm_cmroutcd] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "cm_notesb": {
+      "Variable / Field Name": "cm_notesb",
+      "Form Name": "concomitant_medication_details",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    },
+    "profile_ab_notes": {
+      "Variable / Field Name": "profile_ab_notes",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    }
+  }
+}

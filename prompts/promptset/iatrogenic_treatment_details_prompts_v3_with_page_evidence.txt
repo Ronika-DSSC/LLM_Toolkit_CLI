@@ -1,0 +1,319 @@
+#### PROMPT_SET: iatrogenic_treatment_details
+---RAG---
+REDCap form: iatrogenic_treatment_details
+Retrieve document text needed to answer this form.
+Prefer labeled fields/tables; ignore repetitive footers/headers.
+Additional cues: demographics/face sheet, problem list, assessment & plan, discharge summary, lab results/flowsheets, medication list, imaging/pathology reports.
+Key terms: Sequence, number, Therapeutic, regimen, Date, was, first, administered, last, day, treatment, administration, Dose, unknown, Unit, Route, Indication, Abstractor, Notes
+
+---USER---
+You are a clinical information extractor.
+Given a clinical note (or EHR text), extract answers for the REDCap form: eligibility_and_patient_profile.
+
+Instructions:
+- Fill in the JSON TEMPLATE below using ONLY evidence explicitly present in the text. Do not guess.
+- Keep the same JSON keys and nesting.
+- For choice questions: replace 'True|False' with true or false.
+  * Single-choice (radio/dropdown/yes-no): set exactly one option to true if supported.
+  * Multi-choice (checkbox): set all supported options to true.
+- For 'String'/'Number'/'Integer'/'Date' placeholders: replace with the extracted value (or null if not found).
+- Only populate 'Nested Fields' (e.g., 'please specify') when the parent condition is met AND evidence supports it.
+- Output ONLY the filled JSON (no extra commentary).
+
+EVIDENCE / PAGE CITATION RULE (for auditability):
+- The retrieved Context snippets may include headers like [<source> p<page>] or [<source> p<start>-<end>].
+- For every non-null extracted field (any field whose answer is not null and/or any option you set to true), add an evidence line into profile_ab_notes.
+- Evidence line format (one per field): <VariableName>: <EvidenceTag> — <verbatim short phrase>.
+  * Example: profile_elig1: [patient.pdf p3] — "clinically suspected HLH"
+- Use the EvidenceTag exactly as shown in the Context header (including page number).
+- If no page header is present, cite the source header only (e.g., [note]) and still provide a short verbatim phrase.
+- Do NOT add new JSON keys for evidence; record all citations ONLY inside profile_ab_notes.
+
+OUTPUT FORMAT OVERRIDE (CRITICAL):
+- The JSON TEMPLATE below is REFERENCE ONLY (schema/choices/branching). Do NOT output it.
+- Output ONLY an ANSWERS JSON object, where EACH variable is formatted as:
+  "<variable_name>": { "answer": <value> }
+- Do NOT output "Form Name", "Questions", "Variable / Field Name", "Field Label", "Field Type",
+  "Possible Values", "answer_type", "answer_template", or "codes".
+- Keep the same variable names (e.g., record_id, profile_brthyr, profile_cntry, profile_usregn).
+- Output ONLY valid JSON (no commentary, no markdown, no extra keys).
+
+ANSWERS JSON TEMPLATE (THIS IS THE ONLY THING YOU SHOULD OUTPUT):
+{
+  "itrgnc_seq": {
+    "answer": null
+  },
+  "itrgnc_regmn": {
+    "answer": null
+  },
+  "itrgnc_trtstdt": {
+    "answer": null
+  },
+  "itrgnc_trteddt": {
+    "answer": null
+  },
+  "itrgnc_dose": {
+    "answer": null
+  },
+  "itrgnc_doseunk": {
+    "answer": {
+      "Unknown": false
+    }
+  },
+  "itrgnc_unit": {
+    "answer": {
+      "mg": false,
+      "mg/kg": false,
+      "mg/m2": false,
+      "Other": false
+    },
+    "itrgnc_unitoth": {
+      "answer": null
+    }
+  },
+  "itrgnc_route": {
+    "answer": {
+      "Oral": false,
+      "IV": false,
+      "Subcutaneous": false,
+      "Intrathecal": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "itrgnc_routeo": {
+      "answer": null
+    }
+  },
+  "itrgnc_indctn": {
+    "answer": {
+      "The underlying malignancy": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "itrgnc_indctno": {
+      "answer": null
+    }
+  },
+  "itrgnc_notes": {
+    "answer": null
+  },
+  "profile_ab_notes": {
+    "answer": null
+  }
+}
+
+GENERAL "OTHER" FALLBACK RULE (applies to ALL fields):
+- For any radio/dropdown/checkbox field:
+  1) First try to map the evidence to one of the allowed option labels (or clear synonyms).
+  2) If the evidence clearly provides a value but it does NOT match any allowed option label/code:
+     - If the field has an "Other" option AND has a nested/branching "Other specify" text field:
+       * Select/check the "Other" option (use its REDCap code)
+       * Put the exact unmatched value phrase from the evidence into the "Other specify" field
+     - If the field has "Other" option but no specify field:
+       * Select/check "Other" and do not invent text
+     - If the field does not have an "Other" option:
+       * Output null and add the variable name to not_found
+- Do NOT use "Other" when the value matches a valid option label or a clear synonym of a valid option.
+
+JSON TEMPLATE (schema + answer placeholders):
+{
+  "Form Name": "iatrogenic_treatment_details",
+  "Questions": {
+    "itrgnc_seq": {
+      "Variable / Field Name": "itrgnc_seq",
+      "Form Name": "iatrogenic_treatment_details",
+      "Field Label": "Sequence number",
+      "Field Type": "text",
+      "Field Note": "Ex: 1",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "itrgnc_regmn": {
+      "Variable / Field Name": "itrgnc_regmn",
+      "Form Name": "iatrogenic_treatment_details",
+      "Field Label": "Therapeutic regimen",
+      "Field Type": "text",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "itrgnc_trtstdt": {
+      "Variable / Field Name": "itrgnc_trtstdt",
+      "Form Name": "iatrogenic_treatment_details",
+      "Field Label": "Date the regimen was first administered",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "itrgnc_trteddt": {
+      "Variable / Field Name": "itrgnc_trteddt",
+      "Form Name": "iatrogenic_treatment_details",
+      "Field Label": "The last day of treatment administration",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "itrgnc_dose": {
+      "Variable / Field Name": "itrgnc_dose",
+      "Form Name": "iatrogenic_treatment_details",
+      "Field Label": "Dose",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "itrgnc_doseunk": {
+      "Variable / Field Name": "itrgnc_doseunk",
+      "Form Name": "iatrogenic_treatment_details",
+      "Field Label": "Dose unknown",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Unknown"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Unknown": "1"
+      }
+    },
+    "itrgnc_unit": {
+      "Variable / Field Name": "itrgnc_unit",
+      "Form Name": "iatrogenic_treatment_details",
+      "Field Label": "Unit",
+      "Field Type": "dropdown",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "3": "mg",
+        "1": "mg/kg",
+        "2": "mg/m2",
+        "99": "Other"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "mg": "True|False",
+        "mg/kg": "True|False",
+        "mg/m2": "True|False",
+        "Other": "True|False"
+      },
+      "codes": {
+        "mg": "3",
+        "mg/kg": "1",
+        "mg/m2": "2",
+        "Other": "99"
+      },
+      "Nested Fields": {
+        "itrgnc_unitoth": {
+          "Variable / Field Name": "itrgnc_unitoth",
+          "Form Name": "iatrogenic_treatment_details",
+          "Field Label": "Unit other, specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[itrgnc_unit] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "itrgnc_route": {
+      "Variable / Field Name": "itrgnc_route",
+      "Form Name": "iatrogenic_treatment_details",
+      "Field Label": "Route",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Oral",
+        "2": "IV",
+        "3": "Subcutaneous",
+        "4": "Intrathecal",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Oral": "True|False",
+        "IV": "True|False",
+        "Subcutaneous": "True|False",
+        "Intrathecal": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Oral": "1",
+        "IV": "2",
+        "Subcutaneous": "3",
+        "Intrathecal": "4",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "itrgnc_routeo": {
+          "Variable / Field Name": "itrgnc_routeo",
+          "Form Name": "iatrogenic_treatment_details",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[itrgnc_route] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "itrgnc_indctn": {
+      "Variable / Field Name": "itrgnc_indctn",
+      "Form Name": "iatrogenic_treatment_details",
+      "Field Label": "Indication",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "3": "The underlying malignancy",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "The underlying malignancy": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "The underlying malignancy": "3",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "itrgnc_indctno": {
+          "Variable / Field Name": "itrgnc_indctno",
+          "Form Name": "iatrogenic_treatment_details",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[itrgnc_indctn] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "itrgnc_notes": {
+      "Variable / Field Name": "itrgnc_notes",
+      "Form Name": "iatrogenic_treatment_details",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    },
+    "profile_ab_notes": {
+      "Variable / Field Name": "profile_ab_notes",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    }
+  }
+}

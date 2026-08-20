@@ -1,0 +1,2372 @@
+#### PROMPT_SET: patient_diagnosis
+---RAG---
+REDCap form: patient_diagnosis
+Retrieve document text needed to answer this form.
+Prefer labeled fields/tables; ignore repetitive footers/headers.
+Additional cues: demographics/face sheet, problem list, assessment & plan, discharge summary, lab results/flowsheets, medication list, imaging/pathology reports.
+Key terms: Did, have, family, history, When, was, first, time, that, date, receive, any, vaccines, within, What, underlying, diagnosis, Leukemia, Lymphoma, Kawasaki, disease, Sepsis, Infection, Other, Unknown, final, HLH, related, Fever, Celsius
+
+---USER---
+You are a clinical information extractor.
+Given a clinical note (or EHR text), extract answers for the REDCap form: eligibility_and_patient_profile.
+
+Instructions:
+- Fill in the JSON TEMPLATE below using ONLY evidence explicitly present in the text. Do not guess.
+- Keep the same JSON keys and nesting.
+- For choice questions: replace 'True|False' with true or false.
+  * Single-choice (radio/dropdown/yes-no): set exactly one option to true if supported.
+  * Multi-choice (checkbox): set all supported options to true.
+- For 'String'/'Number'/'Integer'/'Date' placeholders: replace with the extracted value (or null if not found).
+- Only populate 'Nested Fields' (e.g., 'please specify') when the parent condition is met AND evidence supports it.
+- Output ONLY the filled JSON (no extra commentary).
+
+EVIDENCE / PAGE CITATION RULE (for auditability):
+- The retrieved Context snippets may include headers like [<source> p<page>] or [<source> p<start>-<end>].
+- For every non-null extracted field (any field whose answer is not null and/or any option you set to true), add an evidence line into profile_ab_notes.
+- Evidence line format (one per field): <VariableName>: <EvidenceTag> — <verbatim short phrase>.
+  * Example: profile_elig1: [patient.pdf p3] — "clinically suspected HLH"
+- Use the EvidenceTag exactly as shown in the Context header (including page number).
+- If no page header is present, cite the source header only (e.g., [note]) and still provide a short verbatim phrase.
+- Do NOT add new JSON keys for evidence; record all citations ONLY inside profile_ab_notes.
+
+OUTPUT FORMAT OVERRIDE (CRITICAL):
+- The JSON TEMPLATE below is REFERENCE ONLY (schema/choices/branching). Do NOT output it.
+- Output ONLY an ANSWERS JSON object, where EACH variable is formatted as:
+  "<variable_name>": { "answer": <value> }
+- Do NOT output "Form Name", "Questions", "Variable / Field Name", "Field Label", "Field Type",
+  "Possible Values", "answer_type", "answer_template", or "codes".
+- Keep the same variable names (e.g., record_id, profile_brthyr, profile_cntry, profile_usregn).
+- Output ONLY valid JSON (no commentary, no markdown, no extra keys).
+
+ANSWERS JSON TEMPLATE (THIS IS THE ONLY THING YOU SHOULD OUTPUT):
+{
+  "diag_famhx": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "if_yes_please_complete_the": {
+      "answer": null
+    }
+  },
+  "diag_fstsymp": {
+    "answer": null
+  },
+  "diag_firstmedencount": {
+    "answer": null
+  },
+  "diag_vaccyn": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "vaccination_1": {
+      "answer": null
+    },
+    "diag_vacc1": {
+      "answer": {
+        "COVID": false,
+        "Influenza": false,
+        "West Nile Virus Vaccine": false,
+        "MMR": false,
+        "Varicella": false,
+        "dTAP": false,
+        "Unknown": false,
+        "Other": false
+      },
+      "diag_vacc1s": {
+        "answer": null
+      }
+    },
+    "diag_vacc1dt": {
+      "answer": null
+    },
+    "diag_vacc1rt": {
+      "answer": {
+        "IM": false,
+        "Nasal": false,
+        "Oral": false,
+        "Unknown": false,
+        "Other": false
+      },
+      "diag_vacc1rts": {
+        "answer": null
+      }
+    },
+    "vaccination_2": {
+      "answer": null
+    },
+    "diag_vacc2": {
+      "answer": {
+        "COVID": false,
+        "Influenza": false,
+        "West Nile Virus Vaccine": false,
+        "MMR": false,
+        "Varicella": false,
+        "dTAP": false,
+        "Unknown": false,
+        "Other": false
+      },
+      "diag_vacc2s": {
+        "answer": null
+      }
+    },
+    "diag_vacc2dt": {
+      "answer": null
+    },
+    "diag_vacc2rt": {
+      "answer": {
+        "IM": false,
+        "Nasal": false,
+        "Oral": false,
+        "Unknown": false,
+        "Other": false
+      },
+      "diag_vacc2rts": {
+        "answer": null
+      }
+    },
+    "vaccination_3": {
+      "answer": null
+    },
+    "diag_vacc3": {
+      "answer": {
+        "COVID": false,
+        "Influenza": false,
+        "West Nile Virus Vaccine": false,
+        "MMR": false,
+        "Varicella": false,
+        "dTAP": false,
+        "Unknown": false,
+        "Other": false
+      },
+      "diag_vacc3s": {
+        "answer": null
+      }
+    },
+    "diag_vacc3dt": {
+      "answer": null
+    },
+    "diag_vacc3rt": {
+      "answer": {
+        "IM": false,
+        "Nasal": false,
+        "Oral": false,
+        "Unknown": false,
+        "Other": false
+      },
+      "diag_vacc3rts": {
+        "answer": null
+      }
+    },
+    "diag_addvacc": {
+      "answer": {
+        "Yes": false,
+        "No": false,
+        "Unknown": false
+      },
+      "diag_help1": {
+        "answer": null
+      }
+    }
+  },
+  "diag_intldiag": {
+    "answer": {
+      "Primary HLH": false,
+      "Secondary HLH": false,
+      "Infection": false,
+      "Malignancy": false,
+      "Sepsis": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "diag_idiago": {
+      "answer": null
+    },
+    "diag_help2": {
+      "answer": null
+    },
+    "diag_malig": {
+      "answer": {
+        "Leukemia": false,
+        "Lymphoma": false,
+        "Other": false,
+        "Unknown": false
+      },
+      "diag_maligsp": {
+        "answer": null
+      }
+    }
+  },
+  "diag_exlkm": {
+    "answer": {
+      "Leukemia": false
+    },
+    "diag_exlkmdt": {
+      "answer": null
+    }
+  },
+  "diag_exlymp": {
+    "answer": {
+      "Lymphoma": false
+    },
+    "diag_exlympdt": {
+      "answer": null
+    }
+  },
+  "diag_exkwsk": {
+    "answer": {
+      "Kawasaki disease": false
+    },
+    "diag_exkwskdt": {
+      "answer": null
+    }
+  },
+  "diag_exsps": {
+    "answer": {
+      "Sepsis": false
+    },
+    "diag_exspsdt": {
+      "answer": null
+    }
+  },
+  "diag_exinf": {
+    "answer": {
+      "Infection": false
+    },
+    "diag_exinfdt": {
+      "answer": null
+    }
+  },
+  "diag_exoth": {
+    "answer": {
+      "Other": false
+    },
+    "diag_exdiag1": {
+      "answer": null
+    },
+    "diag_exdg1dt": {
+      "answer": null
+    },
+    "diag_exdiag2": {
+      "answer": null
+    },
+    "diag_exdg2dt": {
+      "answer": null
+    },
+    "diag_exdiag3": {
+      "answer": null
+    },
+    "diag_exdg3dt": {
+      "answer": null
+    }
+  },
+  "diag_exdgunk": {
+    "answer": {
+      "Unknown": false
+    }
+  },
+  "diag_hlhdiag": {
+    "answer": {
+      "Primary/familial": false,
+      "Malignancy-associated HLH": false,
+      "Drug reaction and Eosinophilia and Systemic symptoms (DRESS)": false,
+      "Macrophage Activation Syndrome (MAS)": false,
+      "Cytokine releasing syndrome related to immune activating agents": false,
+      "Other secondary": false,
+      "Unknown": false
+    },
+    "diag_hlhdiago": {
+      "answer": null
+    }
+  },
+  "diag_fvr": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "diag_fvrdt": {
+      "answer": null
+    }
+  },
+  "diag_spln": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "diag_splndt": {
+      "answer": null
+    }
+  },
+  "diag_hgbln": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "diag_hgblnv": {
+      "answer": null
+    },
+    "diag_hgblndt": {
+      "answer": null
+    }
+  },
+  "diag_plts": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "diag_pltsv": {
+      "answer": null
+    },
+    "diag_pltsdt": {
+      "answer": null
+    }
+  },
+  "diag_mplts": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false,
+      "Not applicable": false
+    },
+    "diag_mpltsv": {
+      "answer": null
+    },
+    "diag_mpltsdt": {
+      "answer": null
+    }
+  },
+  "diag_neut": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "diag_neutv": {
+      "answer": null
+    },
+    "diag_neutdt": {
+      "answer": null
+    }
+  },
+  "diag_trig": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "diag_trigv": {
+      "answer": null
+    },
+    "diag_trigdt": {
+      "answer": null
+    }
+  },
+  "diag_mtrig": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false,
+      "Not applicable": false
+    },
+    "diag_mtrigv": {
+      "answer": null
+    },
+    "diag_mtrigdt": {
+      "answer": null
+    }
+  },
+  "diag_fbrgn": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "diag_fbrgnv": {
+      "answer": null
+    },
+    "diag_fbrgndt": {
+      "answer": null
+    }
+  },
+  "diag_mfbrgn": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false,
+      "Not applicable": false
+    },
+    "diag_mfbrgnv": {
+      "answer": null
+    },
+    "diag_mfbrgndt": {
+      "answer": null
+    }
+  },
+  "diag_hmphg": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "diag_hmphgdt": {
+      "answer": null
+    }
+  },
+  "diag_nkcll": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "diag_nkclldt": {
+      "answer": null
+    }
+  },
+  "diag_frrtn": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "diag_frrtnv": {
+      "answer": null
+    },
+    "diag_frrtndt": {
+      "answer": null
+    }
+  },
+  "diag_mfrrtn": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false,
+      "Not applicable": false
+    },
+    "diag_mfrrtnv": {
+      "answer": null
+    },
+    "diag_mfrrtndt": {
+      "answer": null
+    }
+  },
+  "diag_ofrrtn": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false,
+      "Not applicable": false
+    },
+    "diag_ofrrtnv": {
+      "answer": null
+    },
+    "diag_ofrrtndt": {
+      "answer": null
+    }
+  },
+  "diag_scd25": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "diag_scd25v": {
+      "answer": null
+    },
+    "diag_scd25dt": {
+      "answer": null
+    }
+  },
+  "diag_ohi": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false,
+      "Not applicable": false
+    },
+    "diag_ohiv": {
+      "answer": null
+    },
+    "diag_ohidt": {
+      "answer": null
+    }
+  },
+  "diag_ast": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false,
+      "Not applicable": false
+    },
+    "diag_astv": {
+      "answer": null
+    },
+    "diag_astdt": {
+      "answer": null
+    }
+  },
+  "diag_chrtdt": {
+    "answer": null
+  },
+  "diag_chrtdtns": {
+    "answer": {
+      "Not specified": false
+    }
+  },
+  "diag_ihrtdt": {
+    "answer": null
+  },
+  "diag_ihrtdmc": {
+    "answer": {
+      "Did not meet criteria": false
+    }
+  },
+  "diag_dxmalig": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "if_yes_malignancy": {
+      "answer": null
+    }
+  },
+  "diag_wgt": {
+    "answer": null
+  },
+  "diag_wghunk": {
+    "answer": {
+      "Weight at diagnosis unknown": false
+    }
+  },
+  "diag_wgtu": {
+    "answer": {
+      "kg": false,
+      "lb": false,
+      "Unknown": false
+    }
+  },
+  "diag_wgtdt": {
+    "answer": null
+  },
+  "diag_notesa": {
+    "answer": null
+  },
+  "profile_ab_notes": {
+    "answer": null
+  }
+}
+
+GENERAL "OTHER" FALLBACK RULE (applies to ALL fields):
+- For any radio/dropdown/checkbox field:
+  1) First try to map the evidence to one of the allowed option labels (or clear synonyms).
+  2) If the evidence clearly provides a value but it does NOT match any allowed option label/code:
+     - If the field has an "Other" option AND has a nested/branching "Other specify" text field:
+       * Select/check the "Other" option (use its REDCap code)
+       * Put the exact unmatched value phrase from the evidence into the "Other specify" field
+     - If the field has "Other" option but no specify field:
+       * Select/check "Other" and do not invent text
+     - If the field does not have an "Other" option:
+       * Output null and add the variable name to not_found
+- Do NOT use "Other" when the value matches a valid option label or a clear synonym of a valid option.
+
+JSON TEMPLATE (schema + answer placeholders):
+{
+  "Form Name": "patient_diagnosis",
+  "Questions": {
+    "diag_famhx": {
+      "Variable / Field Name": "diag_famhx",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Did the patient have a family history of confirmed diagnosis of HLH, Immune disorders, Autoimmune disease, Childhood cancer, Inflammatory features or Unexplained Disease/ Disorder?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "if_yes_please_complete_the": {
+          "Variable / Field Name": "if_yes_please_complete_the",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "If yes, please complete the Family History CRF.",
+          "Field Type": "descriptive",
+          "Branching Logic": "[diag_famhx] = '1'",
+          "answer_type": "display_only",
+          "answer_template": null
+        }
+      }
+    },
+    "diag_fstsymp": {
+      "Variable / Field Name": "diag_fstsymp",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "When was the first time that patient presented with symptoms of HLH?",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "diag_firstmedencount": {
+      "Variable / Field Name": "diag_firstmedencount",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Please specify the date of the patient's first medical encounter occurring after the Initial Presentation date.",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "diag_vaccyn": {
+      "Variable / Field Name": "diag_vaccyn",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Did patient receive any vaccines within two months prior to HLH presentation?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "vaccination_1": {
+          "Variable / Field Name": "vaccination_1",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "VACCINATION #1",
+          "Field Type": "descriptive",
+          "Branching Logic": "[diag_vaccyn] = '1'",
+          "answer_type": "display_only",
+          "answer_template": null
+        },
+        "diag_vacc1": {
+          "Variable / Field Name": "diag_vacc1",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Vaccination",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_vaccyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "COVID",
+            "2": "Influenza",
+            "3": "West Nile Virus Vaccine",
+            "4": "MMR",
+            "5": "Varicella",
+            "6": "dTAP",
+            "98": "Unknown",
+            "99": "Other"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "COVID": "True|False",
+            "Influenza": "True|False",
+            "West Nile Virus Vaccine": "True|False",
+            "MMR": "True|False",
+            "Varicella": "True|False",
+            "dTAP": "True|False",
+            "Unknown": "True|False",
+            "Other": "True|False"
+          },
+          "codes": {
+            "COVID": "1",
+            "Influenza": "2",
+            "West Nile Virus Vaccine": "3",
+            "MMR": "4",
+            "Varicella": "5",
+            "dTAP": "6",
+            "Unknown": "98",
+            "Other": "99"
+          },
+          "Nested Fields": {
+            "diag_vacc1s": {
+              "Variable / Field Name": "diag_vacc1s",
+              "Form Name": "patient_diagnosis",
+              "Field Label": "Please specify",
+              "Field Type": "text",
+              "Required Field?": "y",
+              "Branching Logic": "[diag_vacc1] = '99'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "diag_vacc1dt": {
+          "Variable / Field Name": "diag_vacc1dt",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Date of Administration",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_vaccyn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "diag_vacc1rt": {
+          "Variable / Field Name": "diag_vacc1rt",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Vaccine 1 Route",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_vaccyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "IM",
+            "2": "Nasal",
+            "3": "Oral",
+            "98": "Unknown",
+            "99": "Other"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "IM": "True|False",
+            "Nasal": "True|False",
+            "Oral": "True|False",
+            "Unknown": "True|False",
+            "Other": "True|False"
+          },
+          "codes": {
+            "IM": "1",
+            "Nasal": "2",
+            "Oral": "3",
+            "Unknown": "98",
+            "Other": "99"
+          },
+          "Nested Fields": {
+            "diag_vacc1rts": {
+              "Variable / Field Name": "diag_vacc1rts",
+              "Form Name": "patient_diagnosis",
+              "Field Label": "Please specify",
+              "Field Type": "text",
+              "Required Field?": "y",
+              "Branching Logic": "[diag_vacc1rt] = '99'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "vaccination_2": {
+          "Variable / Field Name": "vaccination_2",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "VACCINATION #2",
+          "Field Type": "descriptive",
+          "Branching Logic": "[diag_vaccyn] = '1'",
+          "answer_type": "display_only",
+          "answer_template": null
+        },
+        "diag_vacc2": {
+          "Variable / Field Name": "diag_vacc2",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Vaccination",
+          "Field Type": "radio",
+          "Branching Logic": "[diag_vaccyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "COVID",
+            "2": "Influenza",
+            "3": "West Nile Virus Vaccine",
+            "4": "MMR",
+            "5": "Varicella",
+            "6": "dTAP",
+            "98": "Unknown",
+            "99": "Other"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "COVID": "True|False",
+            "Influenza": "True|False",
+            "West Nile Virus Vaccine": "True|False",
+            "MMR": "True|False",
+            "Varicella": "True|False",
+            "dTAP": "True|False",
+            "Unknown": "True|False",
+            "Other": "True|False"
+          },
+          "codes": {
+            "COVID": "1",
+            "Influenza": "2",
+            "West Nile Virus Vaccine": "3",
+            "MMR": "4",
+            "Varicella": "5",
+            "dTAP": "6",
+            "Unknown": "98",
+            "Other": "99"
+          },
+          "Nested Fields": {
+            "diag_vacc2s": {
+              "Variable / Field Name": "diag_vacc2s",
+              "Form Name": "patient_diagnosis",
+              "Field Label": "Please specify",
+              "Field Type": "text",
+              "Branching Logic": "[diag_vacc2] = '99'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "diag_vacc2dt": {
+          "Variable / Field Name": "diag_vacc2dt",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Date of Administration",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Branching Logic": "[diag_vaccyn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "diag_vacc2rt": {
+          "Variable / Field Name": "diag_vacc2rt",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Vaccine 2 Route",
+          "Field Type": "radio",
+          "Branching Logic": "[diag_vaccyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "IM",
+            "2": "Nasal",
+            "3": "Oral",
+            "98": "Unknown",
+            "99": "Other"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "IM": "True|False",
+            "Nasal": "True|False",
+            "Oral": "True|False",
+            "Unknown": "True|False",
+            "Other": "True|False"
+          },
+          "codes": {
+            "IM": "1",
+            "Nasal": "2",
+            "Oral": "3",
+            "Unknown": "98",
+            "Other": "99"
+          },
+          "Nested Fields": {
+            "diag_vacc2rts": {
+              "Variable / Field Name": "diag_vacc2rts",
+              "Form Name": "patient_diagnosis",
+              "Field Label": "Please specify",
+              "Field Type": "text",
+              "Branching Logic": "[diag_vacc2rt] = '99'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "vaccination_3": {
+          "Variable / Field Name": "vaccination_3",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "VACCINATION #3",
+          "Field Type": "descriptive",
+          "Branching Logic": "[diag_vaccyn] = '1'",
+          "answer_type": "display_only",
+          "answer_template": null
+        },
+        "diag_vacc3": {
+          "Variable / Field Name": "diag_vacc3",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Vaccination",
+          "Field Type": "radio",
+          "Branching Logic": "[diag_vaccyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "COVID",
+            "2": "Influenza",
+            "3": "West Nile Virus Vaccine",
+            "4": "MMR",
+            "5": "Varicella",
+            "6": "dTAP",
+            "98": "Unknown",
+            "99": "Other"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "COVID": "True|False",
+            "Influenza": "True|False",
+            "West Nile Virus Vaccine": "True|False",
+            "MMR": "True|False",
+            "Varicella": "True|False",
+            "dTAP": "True|False",
+            "Unknown": "True|False",
+            "Other": "True|False"
+          },
+          "codes": {
+            "COVID": "1",
+            "Influenza": "2",
+            "West Nile Virus Vaccine": "3",
+            "MMR": "4",
+            "Varicella": "5",
+            "dTAP": "6",
+            "Unknown": "98",
+            "Other": "99"
+          },
+          "Nested Fields": {
+            "diag_vacc3s": {
+              "Variable / Field Name": "diag_vacc3s",
+              "Form Name": "patient_diagnosis",
+              "Field Label": "Please specify",
+              "Field Type": "text",
+              "Branching Logic": "[diag_vacc3] = '99'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "diag_vacc3dt": {
+          "Variable / Field Name": "diag_vacc3dt",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Date of Administration",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Branching Logic": "[diag_vaccyn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "diag_vacc3rt": {
+          "Variable / Field Name": "diag_vacc3rt",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Vaccine 3 Route",
+          "Field Type": "radio",
+          "Branching Logic": "[diag_vaccyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "IM",
+            "2": "Nasal",
+            "3": "Oral",
+            "98": "Unknown",
+            "99": "Other"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "IM": "True|False",
+            "Nasal": "True|False",
+            "Oral": "True|False",
+            "Unknown": "True|False",
+            "Other": "True|False"
+          },
+          "codes": {
+            "IM": "1",
+            "Nasal": "2",
+            "Oral": "3",
+            "Unknown": "98",
+            "Other": "99"
+          },
+          "Nested Fields": {
+            "diag_vacc3rts": {
+              "Variable / Field Name": "diag_vacc3rts",
+              "Form Name": "patient_diagnosis",
+              "Field Label": "Please specify",
+              "Field Type": "text",
+              "Branching Logic": "[diag_vacc3rt] = '99'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "diag_addvacc": {
+          "Variable / Field Name": "diag_addvacc",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Were there any additional vaccines administered?",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_vaccyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes",
+            "2": "No",
+            "99": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Yes": "True|False",
+            "No": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Yes": "1",
+            "No": "2",
+            "Unknown": "99"
+          },
+          "Nested Fields": {
+            "diag_help1": {
+              "Variable / Field Name": "diag_help1",
+              "Form Name": "patient_diagnosis",
+              "Field Label": "For each additional vaccine, please complete the Additional Vaccine Details CRF.",
+              "Field Type": "descriptive",
+              "Branching Logic": "[diag_addvacc] = '1'",
+              "answer_type": "display_only",
+              "answer_template": null
+            }
+          }
+        }
+      }
+    },
+    "diag_intldiag": {
+      "Variable / Field Name": "diag_intldiag",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "What was the first underlying diagnosis considered beyond their immediate symptoms?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Primary HLH",
+        "2": "Secondary HLH",
+        "3": "Infection",
+        "4": "Malignancy",
+        "5": "Sepsis",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Primary HLH": "True|False",
+        "Secondary HLH": "True|False",
+        "Infection": "True|False",
+        "Malignancy": "True|False",
+        "Sepsis": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Primary HLH": "1",
+        "Secondary HLH": "2",
+        "Infection": "3",
+        "Malignancy": "4",
+        "Sepsis": "5",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "diag_idiago": {
+          "Variable / Field Name": "diag_idiago",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_intldiag] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "diag_help2": {
+          "Variable / Field Name": "diag_help2",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "If infection, please complete the Infection Details CRF.",
+          "Field Type": "descriptive",
+          "Branching Logic": "[diag_intldiag] = '3'",
+          "answer_type": "display_only",
+          "answer_template": null
+        },
+        "diag_malig": {
+          "Variable / Field Name": "diag_malig",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "What type of malignancy considered?",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_intldiag] = '4'",
+          "Possible Values (code->label)": {
+            "1": "Leukemia",
+            "2": "Lymphoma",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Leukemia": "True|False",
+            "Lymphoma": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Leukemia": "1",
+            "Lymphoma": "2",
+            "Other": "99",
+            "Unknown": "98"
+          },
+          "Nested Fields": {
+            "diag_maligsp": {
+              "Variable / Field Name": "diag_maligsp",
+              "Form Name": "patient_diagnosis",
+              "Field Label": "Please specify",
+              "Field Type": "text",
+              "Required Field?": "y",
+              "Branching Logic": "[diag_malig] = '99'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        }
+      }
+    },
+    "diag_exlkm": {
+      "Variable / Field Name": "diag_exlkm",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Leukemia",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Leukemia"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Leukemia": "True|False"
+      },
+      "codes": {
+        "Leukemia": "1"
+      },
+      "Nested Fields": {
+        "diag_exlkmdt": {
+          "Variable / Field Name": "diag_exlkmdt",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Date diagnosis was excluded",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_exlkm(1)] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "diag_exlymp": {
+      "Variable / Field Name": "diag_exlymp",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Lymphoma",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Lymphoma"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Lymphoma": "True|False"
+      },
+      "codes": {
+        "Lymphoma": "1"
+      },
+      "Nested Fields": {
+        "diag_exlympdt": {
+          "Variable / Field Name": "diag_exlympdt",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Date diagnosis was excluded",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_exlymp(1)] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "diag_exkwsk": {
+      "Variable / Field Name": "diag_exkwsk",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Kawasaki disease",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Kawasaki disease"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Kawasaki disease": "True|False"
+      },
+      "codes": {
+        "Kawasaki disease": "1"
+      },
+      "Nested Fields": {
+        "diag_exkwskdt": {
+          "Variable / Field Name": "diag_exkwskdt",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Date diagnosis was excluded",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_exkwsk(1)] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "diag_exsps": {
+      "Variable / Field Name": "diag_exsps",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Sepsis",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Sepsis"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Sepsis": "True|False"
+      },
+      "codes": {
+        "Sepsis": "1"
+      },
+      "Nested Fields": {
+        "diag_exspsdt": {
+          "Variable / Field Name": "diag_exspsdt",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Date diagnosis was excluded",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_exsps(1)] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "diag_exinf": {
+      "Variable / Field Name": "diag_exinf",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Infection",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Infection"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Infection": "True|False"
+      },
+      "codes": {
+        "Infection": "1"
+      },
+      "Nested Fields": {
+        "diag_exinfdt": {
+          "Variable / Field Name": "diag_exinfdt",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Date diagnosis was excluded",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_exinf(1)] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "diag_exoth": {
+      "Variable / Field Name": "diag_exoth",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Other",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Other"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Other": "True|False"
+      },
+      "codes": {
+        "Other": "1"
+      },
+      "Nested Fields": {
+        "diag_exdiag1": {
+          "Variable / Field Name": "diag_exdiag1",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Excluded Diagnosis 1",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_exoth(1)] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "diag_exdg1dt": {
+          "Variable / Field Name": "diag_exdg1dt",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Date diagnosis was excluded",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_exoth(1)] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "diag_exdiag2": {
+          "Variable / Field Name": "diag_exdiag2",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Excluded Diagnosis 2",
+          "Field Type": "text",
+          "Branching Logic": "[diag_exoth(1)] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "diag_exdg2dt": {
+          "Variable / Field Name": "diag_exdg2dt",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Date diagnosis was excluded",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Branching Logic": "[diag_exoth(1)] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "diag_exdiag3": {
+          "Variable / Field Name": "diag_exdiag3",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Excluded Diagnosis 3",
+          "Field Type": "text",
+          "Branching Logic": "[diag_exoth(1)] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "diag_exdg3dt": {
+          "Variable / Field Name": "diag_exdg3dt",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Date diagnosis was excluded",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Branching Logic": "[diag_exoth(1)] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "diag_exdgunk": {
+      "Variable / Field Name": "diag_exdgunk",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Unknown",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Unknown"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Unknown": "1"
+      }
+    },
+    "diag_hlhdiag": {
+      "Variable / Field Name": "diag_hlhdiag",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Please specify the final HLH related diagnosis",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Primary/familial",
+        "2": "Malignancy-associated HLH",
+        "3": "Drug reaction and Eosinophilia and Systemic symptoms (DRESS)",
+        "4": "Macrophage Activation Syndrome (MAS)",
+        "5": "Cytokine releasing syndrome related to immune activating agents",
+        "99": "Other secondary",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Primary/familial": "True|False",
+        "Malignancy-associated HLH": "True|False",
+        "Drug reaction and Eosinophilia and Systemic symptoms (DRESS)": "True|False",
+        "Macrophage Activation Syndrome (MAS)": "True|False",
+        "Cytokine releasing syndrome related to immune activating agents": "True|False",
+        "Other secondary": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Primary/familial": "1",
+        "Malignancy-associated HLH": "2",
+        "Drug reaction and Eosinophilia and Systemic symptoms (DRESS)": "3",
+        "Macrophage Activation Syndrome (MAS)": "4",
+        "Cytokine releasing syndrome related to immune activating agents": "5",
+        "Other secondary": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "diag_hlhdiago": {
+          "Variable / Field Name": "diag_hlhdiago",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_hlhdiag] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "diag_fvr": {
+      "Variable / Field Name": "diag_fvr",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Fever >38 (Celsius)",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "diag_fvrdt": {
+          "Variable / Field Name": "diag_fvrdt",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_fvr] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "diag_spln": {
+      "Variable / Field Name": "diag_spln",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Enlarged spleen",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "diag_splndt": {
+          "Variable / Field Name": "diag_splndt",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_spln] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "diag_hgbln": {
+      "Variable / Field Name": "diag_hgbln",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Hemoglobin < 90 g/L (hemoglobin < 100 g/L in infants < 4 wk)",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "diag_hgblnv": {
+          "Variable / Field Name": "diag_hgblnv",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Value",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_hgbln] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "diag_hgblndt": {
+          "Variable / Field Name": "diag_hgblndt",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_hgbln] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "diag_plts": {
+      "Variable / Field Name": "diag_plts",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Platelets < 100K/mL (HLH-2004)",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "diag_pltsv": {
+          "Variable / Field Name": "diag_pltsv",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Value",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_plts] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "diag_pltsdt": {
+          "Variable / Field Name": "diag_pltsdt",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_plts] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "diag_mplts": {
+      "Variable / Field Name": "diag_mplts",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Platelets < 180K/mL (MAS)",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown",
+        "97": "Not applicable"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False",
+        "Not applicable": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99",
+        "Not applicable": "97"
+      },
+      "Nested Fields": {
+        "diag_mpltsv": {
+          "Variable / Field Name": "diag_mpltsv",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Value",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_mplts] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "diag_mpltsdt": {
+          "Variable / Field Name": "diag_mpltsdt",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_mplts] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "diag_neut": {
+      "Variable / Field Name": "diag_neut",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Neutrophils < 1 K/mL",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "diag_neutv": {
+          "Variable / Field Name": "diag_neutv",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Value",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_neut] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "diag_neutdt": {
+          "Variable / Field Name": "diag_neutdt",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_neut] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "diag_trig": {
+      "Variable / Field Name": "diag_trig",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Triglycerides ≥ 265 mg/dL (HLH-2004)",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "diag_trigv": {
+          "Variable / Field Name": "diag_trigv",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Value",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_trig] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "diag_trigdt": {
+          "Variable / Field Name": "diag_trigdt",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_trig] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "diag_mtrig": {
+      "Variable / Field Name": "diag_mtrig",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Triglycerides > 160 mg/dL (MAS)",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown",
+        "97": "Not applicable"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False",
+        "Not applicable": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99",
+        "Not applicable": "97"
+      },
+      "Nested Fields": {
+        "diag_mtrigv": {
+          "Variable / Field Name": "diag_mtrigv",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Value",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_mtrig] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "diag_mtrigdt": {
+          "Variable / Field Name": "diag_mtrigdt",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_mtrig] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "diag_fbrgn": {
+      "Variable / Field Name": "diag_fbrgn",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Fibrinogen ≤ 1.5 g/L",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "diag_fbrgnv": {
+          "Variable / Field Name": "diag_fbrgnv",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Value",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_fbrgn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "diag_fbrgndt": {
+          "Variable / Field Name": "diag_fbrgndt",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_fbrgn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "diag_mfbrgn": {
+      "Variable / Field Name": "diag_mfbrgn",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Fibrinogen < 360 mg/dL (MAS)",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown",
+        "97": "Not applicable"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False",
+        "Not applicable": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99",
+        "Not applicable": "97"
+      },
+      "Nested Fields": {
+        "diag_mfbrgnv": {
+          "Variable / Field Name": "diag_mfbrgnv",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Value",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_mfbrgn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "diag_mfbrgndt": {
+          "Variable / Field Name": "diag_mfbrgndt",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_mfbrgn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "diag_hmphg": {
+      "Variable / Field Name": "diag_hmphg",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Hemophagocytosis in bone marrow",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "diag_hmphgdt": {
+          "Variable / Field Name": "diag_hmphgdt",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_hmphg] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "diag_nkcll": {
+      "Variable / Field Name": "diag_nkcll",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Low or absent NK-cell activity",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "diag_nkclldt": {
+          "Variable / Field Name": "diag_nkclldt",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_nkcll] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "diag_frrtn": {
+      "Variable / Field Name": "diag_frrtn",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Ferritin ≥ 500 ug/L",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "diag_frrtnv": {
+          "Variable / Field Name": "diag_frrtnv",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Value",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_frrtn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "diag_frrtndt": {
+          "Variable / Field Name": "diag_frrtndt",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_frrtn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "diag_mfrrtn": {
+      "Variable / Field Name": "diag_mfrrtn",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Ferritin > 700 ng/mL (MAS)",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown",
+        "97": "Not applicable"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False",
+        "Not applicable": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99",
+        "Not applicable": "97"
+      },
+      "Nested Fields": {
+        "diag_mfrrtnv": {
+          "Variable / Field Name": "diag_mfrrtnv",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Value",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_mfrrtn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "diag_mfrrtndt": {
+          "Variable / Field Name": "diag_mfrrtndt",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_mfrrtn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "diag_ofrrtn": {
+      "Variable / Field Name": "diag_ofrrtn",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Ferritin > 1,000 ng/mL (OHI)",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown",
+        "97": "Not applicable"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False",
+        "Not applicable": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99",
+        "Not applicable": "97"
+      },
+      "Nested Fields": {
+        "diag_ofrrtnv": {
+          "Variable / Field Name": "diag_ofrrtnv",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Value",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_ofrrtn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "diag_ofrrtndt": {
+          "Variable / Field Name": "diag_ofrrtndt",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_ofrrtn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "diag_scd25": {
+      "Variable / Field Name": "diag_scd25",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "sCD25 (i.e., soluble IL-2 receptor) ≥ 2400 U/mL",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "diag_scd25v": {
+          "Variable / Field Name": "diag_scd25v",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Value",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_scd25] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "diag_scd25dt": {
+          "Variable / Field Name": "diag_scd25dt",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_scd25] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "diag_ohi": {
+      "Variable / Field Name": "diag_ohi",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Soluble sCD25 > 3,900 U/mL (OHI)",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown",
+        "97": "Not applicable"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False",
+        "Not applicable": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99",
+        "Not applicable": "97"
+      },
+      "Nested Fields": {
+        "diag_ohiv": {
+          "Variable / Field Name": "diag_ohiv",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Value",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_ohi] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "diag_ohidt": {
+          "Variable / Field Name": "diag_ohidt",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_ohi] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "diag_ast": {
+      "Variable / Field Name": "diag_ast",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Aspartate aminotransferase > 50 U/L (MAS)",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown",
+        "97": "Not applicable"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False",
+        "Not applicable": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99",
+        "Not applicable": "97"
+      },
+      "Nested Fields": {
+        "diag_astv": {
+          "Variable / Field Name": "diag_astv",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Value",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_ast] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "diag_astdt": {
+          "Variable / Field Name": "diag_astdt",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "Date",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[diag_ast] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "diag_chrtdt": {
+      "Variable / Field Name": "diag_chrtdt",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Date of initial HLH diagnosis as indicated in the medical chart",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "diag_chrtdtns": {
+      "Variable / Field Name": "diag_chrtdtns",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Not specified",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Not specified"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Not specified": "True|False"
+      },
+      "codes": {
+        "Not specified": "1"
+      }
+    },
+    "diag_ihrtdt": {
+      "Variable / Field Name": "diag_ihrtdt",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Date of initial HLH diagnosis as defined by the IHRT",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "diag_ihrtdmc": {
+      "Variable / Field Name": "diag_ihrtdmc",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Did not meet criteria",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Did not meet criteria"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Did not meet criteria": "True|False"
+      },
+      "codes": {
+        "Did not meet criteria": "1"
+      }
+    },
+    "diag_dxmalig": {
+      "Variable / Field Name": "diag_dxmalig",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Did patient have malignancy around the time HLH diagnosis?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "if_yes_malignancy": {
+          "Variable / Field Name": "if_yes_malignancy",
+          "Form Name": "patient_diagnosis",
+          "Field Label": "If yes, please complete the Malignancy CRF.",
+          "Field Type": "descriptive",
+          "Branching Logic": "[diag_dxmalig] = '1'",
+          "answer_type": "display_only",
+          "answer_template": null
+        }
+      }
+    },
+    "diag_wgt": {
+      "Variable / Field Name": "diag_wgt",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Weight at diagnosis",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "diag_wghunk": {
+      "Variable / Field Name": "diag_wghunk",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Weight at diagnosis unknown",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Weight at diagnosis unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Weight at diagnosis unknown": "True|False"
+      },
+      "codes": {
+        "Weight at diagnosis unknown": "1"
+      }
+    },
+    "diag_wgtu": {
+      "Variable / Field Name": "diag_wgtu",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Unit",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "kg",
+        "2": "lb",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "kg": "True|False",
+        "lb": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "kg": "1",
+        "lb": "2",
+        "Unknown": "98"
+      }
+    },
+    "diag_wgtdt": {
+      "Variable / Field Name": "diag_wgtdt",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Date of assessment",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "diag_notesa": {
+      "Variable / Field Name": "diag_notesa",
+      "Form Name": "patient_diagnosis",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    },
+    "profile_ab_notes": {
+      "Variable / Field Name": "profile_ab_notes",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    }
+  }
+}

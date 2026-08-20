@@ -1,0 +1,3 @@
+ImagingTextKey,PrimaryMrn,FON_SubjectID,ProcedureEpicId,Name,OrderingDate,ExamStartDate,ExamEndDate,Narrative,Impression,Addenda
+,,,,,,,,this is a narrative,this is the impression, this is the addendum
+,,,,,,,,this is another narrative,this is another impression, this is the addendum

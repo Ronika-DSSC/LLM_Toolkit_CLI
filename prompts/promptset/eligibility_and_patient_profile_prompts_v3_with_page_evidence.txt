@@ -1,0 +1,3042 @@
+#### PROMPT_SET: eligibility_and_patient_profile
+---RAG---
+REDCap form: eligibility_and_patient_profile
+Retrieve document text needed to answer this form.
+Prefer labeled fields/tables; ignore repetitive footers/headers.
+Additional cues: demographics/face sheet, problem list, assessment & plan, discharge summary, lab results/flowsheets, medication list, imaging/pathology reports.
+Key terms: Record, Participant, Global, Unique, Identifier, Country, birth, City, Study, Arm, still, alive, Date, Chart, Data, Abstraction, Does, have, had, clinically, informed, consent, assent, Did, receive, HLH-related, treatment, caregiver, Sex, Race
+
+---USER---
+You are a clinical information extractor.
+Given a clinical note (or EHR text), extract answers for the REDCap form: eligibility_and_patient_profile.
+
+Instructions:
+- Fill in the JSON TEMPLATE below using ONLY evidence explicitly present in the text. Do not guess.
+- Keep the same JSON keys and nesting.
+- For choice questions: replace 'True|False' with true or false.
+  * Single-choice (radio/dropdown/yes-no): set exactly one option to true if supported.
+  * Multi-choice (checkbox): set all supported options to true.
+- For 'String'/'Number'/'Integer'/'Date' placeholders: replace with the extracted value (or null if not found).
+- Only populate 'Nested Fields' (e.g., 'please specify') when the parent condition is met AND evidence supports it.
+- Output ONLY the filled JSON (no extra commentary).
+
+EVIDENCE / PAGE CITATION RULE (for auditability):
+- The retrieved Context snippets may include headers like [<source> p<page>] or [<source> p<start>-<end>].
+- For every non-null extracted field (any field whose answer is not null and/or any option you set to true), add an evidence line into profile_ab_notes.
+- Evidence line format (one per field): <VariableName>: <EvidenceTag> — <verbatim short phrase>.
+  * Example: profile_elig1: [patient.pdf p3] — "clinically suspected HLH"
+- Use the EvidenceTag exactly as shown in the Context header (including page number).
+- If no page header is present, cite the source header only (e.g., [note]) and still provide a short verbatim phrase.
+- Do NOT add new JSON keys for evidence; record all citations ONLY inside profile_ab_notes.
+
+OUTPUT FORMAT OVERRIDE (CRITICAL):
+- The JSON TEMPLATE below is REFERENCE ONLY (schema/choices/branching). Do NOT output it.
+- Output ONLY an ANSWERS JSON object, where EACH variable is formatted as:
+  "<variable_name>": { "answer": <value> }
+- Do NOT output "Form Name", "Questions", "Variable / Field Name", "Field Label", "Field Type",
+  "Possible Values", "answer_type", "answer_template", or "codes".
+- Keep the same variable names (e.g., record_id, profile_brthyr, profile_cntry, profile_usregn).
+- Output ONLY valid JSON (no commentary, no markdown, no extra keys).
+
+ANSWERS JSON TEMPLATE (THIS IS THE ONLY THING YOU SHOULD OUTPUT):
+{
+  "record_id": {
+    "answer": null
+  },
+  "participant_id": {
+    "answer": null
+  },
+  "guid": {
+    "answer": null
+  },
+  "profile_brthcntry": {
+    "answer": {
+      "Afghanistan": false,
+      "Albania": false,
+      "Algeria": false,
+      "Andorra": false,
+      "Angola": false,
+      "Antigua &amp; Deps": false,
+      "Argentina": false,
+      "Armenia": false,
+      "Australia": false,
+      "Austria": false,
+      "Azerbaijan": false,
+      "Bahamas": false,
+      "Bahrain": false,
+      "Bangladesh": false,
+      "Barbados": false,
+      "Belarus": false,
+      "Belgium": false,
+      "Belize": false,
+      "Benin": false,
+      "Bhutan": false,
+      "Bolivia": false,
+      "Bosnia Herzegovina": false,
+      "Botswana": false,
+      "Brazil": false,
+      "Brunei": false,
+      "Bulgaria": false,
+      "Burkina": false,
+      "Burundi": false,
+      "Cambodia": false,
+      "Cameroon": false,
+      "Canada": false,
+      "Cape Verde": false,
+      "Central African Rep": false,
+      "Chad": false,
+      "Chile": false,
+      "China": false,
+      "Columbia": false,
+      "Comoros": false,
+      "Congo": false,
+      "Congo {Democratic Rep}": false,
+      "Costa Rica": false,
+      "Croatia": false,
+      "Cuba": false,
+      "Cyprus": false,
+      "Czech Republic": false,
+      "Denmark": false,
+      "Djibouti": false,
+      "Dominica": false,
+      "Dominican Republic": false,
+      "East Timor": false,
+      "Ecuador": false,
+      "Egypt": false,
+      "El Salvador": false,
+      "Equatorial Guinea": false,
+      "Eritrea": false,
+      "Estonia": false,
+      "Ethiopia": false,
+      "Fiji": false,
+      "Finland": false,
+      "France": false,
+      "Gabon": false,
+      "Gambia": false,
+      "Georgia": false,
+      "Germany": false,
+      "Ghana": false,
+      "Greece": false,
+      "Grenada": false,
+      "Guatemala": false,
+      "Guinea": false,
+      "Guinea-Bissau": false,
+      "Guyana": false,
+      "Haiti": false,
+      "Honduras": false,
+      "Hungary": false,
+      "Iceland": false,
+      "India": false,
+      "Indonesia": false,
+      "Iran": false,
+      "Iraq": false,
+      "Ireland {Republic}": false,
+      "Israel": false,
+      "Italy": false,
+      "Ivory Coast": false,
+      "Jamaica": false,
+      "Japan": false,
+      "Jordan": false,
+      "Kazakhstan": false,
+      "Kenya": false,
+      "Kiribati": false,
+      "Korea North": false,
+      "Korea South": false,
+      "Kosovo": false,
+      "Kuwait": false,
+      "Kyrgyzstan": false,
+      "Laos": false,
+      "Latvia": false,
+      "Lebanon": false,
+      "Lesotho": false,
+      "Liberia": false,
+      "Libya": false,
+      "Liechtenstein": false,
+      "Lithuania": false,
+      "Luxembourg": false,
+      "Macedonia": false,
+      "Madagascar": false,
+      "Malawi": false,
+      "Malaysia": false,
+      "Maldives": false,
+      "Mali": false,
+      "Malta": false,
+      "Marshall Islands": false,
+      "Mauritania": false,
+      "Mauritius": false,
+      "Mexico": false,
+      "Micronesia": false,
+      "Moldova": false,
+      "Monaco": false,
+      "Mongolia": false,
+      "Montenegro": false,
+      "Morocco": false,
+      "Mozambique": false,
+      "Myanmar, {Burma}": false,
+      "Namibia": false,
+      "Nauru": false,
+      "Nepal": false,
+      "Netherlands": false,
+      "New Zealand": false,
+      "Nicaragua": false,
+      "Niger": false,
+      "Nigeria": false,
+      "Norway": false,
+      "Oman": false,
+      "Pakistan": false,
+      "Palau": false,
+      "Panama": false,
+      "Papua New Guinea": false,
+      "Paraguay": false,
+      "Peru": false,
+      "Philippines": false,
+      "Poland": false,
+      "Portugal": false,
+      "Qatar": false,
+      "Romania": false,
+      "Russian Federation": false,
+      "Rwanda": false,
+      "St Kitts &amp; Nevis": false,
+      "St Lucia": false,
+      "Saint Vincent &amp; the Grenadines": false,
+      "Samoa": false,
+      "San Marino": false,
+      "Sao Tome &amp; Principe": false,
+      "Saudi Arabia": false,
+      "Senegal": false,
+      "Serbia": false,
+      "Seychelles": false,
+      "Sierra Leone": false,
+      "Singapore": false,
+      "Slovakia": false,
+      "Slovenia": false,
+      "Solomon Islands": false,
+      "Somalia": false,
+      "South Africa": false,
+      "South Sudan": false,
+      "Spain": false,
+      "Sri Lanka": false,
+      "Sudan": false,
+      "Suriname": false,
+      "Swaziland": false,
+      "Sweden": false,
+      "Switzerland": false,
+      "Syria": false,
+      "Taiwan": false,
+      "Tajikistan": false,
+      "Tanzania": false,
+      "Thailand": false,
+      "Togo": false,
+      "Tonga": false,
+      "Trinidad &amp; Tobago": false,
+      "Tunisia": false,
+      "Turkey": false,
+      "Turkmenistan": false,
+      "Tuvalu": false,
+      "Uganda": false,
+      "Ukraine": false,
+      "United Arab Emirates": false,
+      "United Kingdom": false,
+      "United States": false,
+      "Uruguay": false,
+      "Uzbekistan": false,
+      "Vanuatu": false,
+      "Vatican City": false,
+      "Venezuela": false,
+      "Vietnam": false,
+      "Yemen": false,
+      "Zambia": false,
+      "Zimbabwe": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "profile_cntrysp": {
+      "answer": null
+    }
+  },
+  "profile_brthcty": {
+    "answer": null
+  },
+  "profile_arm": {
+    "answer": {
+      "Patient-Powered Arm": false,
+      "Physician Powered Arm": false
+    }
+  },
+  "profile_ptstatus": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "profile_ptdthdt": {
+      "answer": null
+    },
+    "indicate_the_causes_of_dea": {
+      "answer": null
+    },
+    "proximate_cause_of_death": {
+      "answer": null
+    },
+    "profile_orgfaila": {
+      "answer": {
+        "Multi-organ failure": false
+      }
+    },
+    "profile_infecta": {
+      "answer": {
+        "Infection": false
+      },
+      "profile_orgspca": {
+        "answer": null
+      },
+      "profile_infspca": {
+        "answer": null
+      },
+      "profile_orgspcb": {
+        "answer": null
+      },
+      "profile_infspcb": {
+        "answer": null
+      },
+      "profile_orgspcc": {
+        "answer": null
+      },
+      "profile_infspcc": {
+        "answer": null
+      },
+      "profile_orgspcd": {
+        "answer": null
+      },
+      "profile_infspcd": {
+        "answer": null
+      }
+    },
+    "profile_bleeda": {
+      "answer": {
+        "Bleeding": false
+      }
+    },
+    "profile_withdraa": {
+      "answer": {
+        "Withdrawal of care": false
+      }
+    },
+    "profile_severea": {
+      "answer": {
+        "Severe neurologic injury": false
+      }
+    },
+    "profile_respfaia": {
+      "answer": {
+        "Respiratory failure": false
+      }
+    },
+    "profile_cardioa": {
+      "answer": {
+        "Cardiovascular collapse": false
+      }
+    },
+    "profile_othera": {
+      "answer": {
+        "Other": false
+      },
+      "profile_dthrsno": {
+        "answer": null
+      }
+    },
+    "profile_unkrsna": {
+      "answer": {
+        "Unknown": false
+      }
+    },
+    "secondary_cause_of_death": {
+      "answer": null
+    },
+    "profile_orgfailb": {
+      "answer": {
+        "Multi-organ failure": false
+      }
+    },
+    "profile_infectb": {
+      "answer": {
+        "Infection": false
+      }
+    },
+    "profile_bleedb": {
+      "answer": {
+        "Bleeding": false
+      }
+    },
+    "profile_withdrab": {
+      "answer": {
+        "Withdrawal of care": false
+      }
+    },
+    "profile_severeb": {
+      "answer": {
+        "Severe neurologic injury": false
+      }
+    },
+    "profile_respfaib": {
+      "answer": {
+        "Respiratory failure": false
+      }
+    },
+    "profile_cardiob": {
+      "answer": {
+        "Cardiovascular collapse": false
+      }
+    },
+    "profile_otherb": {
+      "answer": {
+        "Other": false
+      },
+      "profile_dthrsbno": {
+        "answer": null
+      }
+    },
+    "profile_unkrsnb": {
+      "answer": {
+        "Unknown": false
+      }
+    },
+    "tertiary_cause_of_death": {
+      "answer": null
+    },
+    "profile_orgfailc": {
+      "answer": {
+        "Multi-organ failure": false
+      }
+    },
+    "profile_infectc": {
+      "answer": {
+        "Infection": false
+      }
+    },
+    "profile_bleedc": {
+      "answer": {
+        "Bleeding": false
+      }
+    },
+    "profile_withdrac": {
+      "answer": {
+        "Withdrawal of care": false
+      }
+    },
+    "profile_severec": {
+      "answer": {
+        "Severe neurologic injury": false
+      }
+    },
+    "profile_respfaic": {
+      "answer": {
+        "Respiratory failure": false
+      }
+    },
+    "profile_cardioc": {
+      "answer": {
+        "Cardiovascular collapse": false
+      }
+    },
+    "profile_otherc": {
+      "answer": {
+        "Other": false
+      },
+      "profile_dthrscno": {
+        "answer": null
+      }
+    },
+    "profile_unkrsnc": {
+      "answer": {
+        "Unknown": false
+      }
+    },
+    "quaternary_cause_of_death": {
+      "answer": null
+    },
+    "profile_orgfaild": {
+      "answer": {
+        "Multi-organ failure": false
+      }
+    },
+    "profile_infectd": {
+      "answer": {
+        "Infection": false
+      }
+    },
+    "profile_bleedd": {
+      "answer": {
+        "Bleeding": false
+      }
+    },
+    "profile_withdrad": {
+      "answer": {
+        "Withdrawal of care": false
+      }
+    },
+    "profile_severed": {
+      "answer": {
+        "Severe neurologic injury": false
+      }
+    },
+    "profile_respfaid": {
+      "answer": {
+        "Respiratory failure": false
+      }
+    },
+    "profile_cardiod": {
+      "answer": {
+        "Cardiovascular collapse": false
+      }
+    },
+    "profile_otherd": {
+      "answer": {
+        "Other": false
+      },
+      "profile_dthrsdno": {
+        "answer": null
+      }
+    },
+    "profile_unkrsnd": {
+      "answer": {
+        "Unknown": false
+      }
+    },
+    "profile_deathrel": {
+      "answer": {
+        "Yes": false,
+        "No": false,
+        "Unknown": false
+      }
+    }
+  },
+  "profile_absdt": {
+    "answer": null
+  },
+  "profile_elig1": {
+    "answer": {
+      "Yes": false,
+      "No": false
+    },
+    "profile_nohlh": {
+      "answer": null
+    },
+    "profile_hlhnone": {
+      "answer": null
+    }
+  },
+  "profile_icfdt": {
+    "answer": null
+  },
+  "profile_trialyn": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "profile_trialnm": {
+      "answer": null
+    },
+    "profile_trialnmu": {
+      "answer": {
+        "Unknown": false
+      }
+    },
+    "profile_invdrug": {
+      "answer": null
+    },
+    "profile_invdrugu": {
+      "answer": {
+        "Unknown": false
+      }
+    },
+    "profile_trialnum": {
+      "answer": null
+    },
+    "profile_trialnuu": {
+      "answer": {
+        "Unknown": false
+      }
+    },
+    "profile_startdt": {
+      "answer": null
+    },
+    "profile_enddt": {
+      "answer": null
+    }
+  },
+  "profile_eproyn": {
+    "answer": {
+      "Yes": false,
+      "No": false
+    },
+    "profile_email": {
+      "answer": null
+    }
+  },
+  "profile_brthyr": {
+    "answer": null
+  },
+  "profile_sex": {
+    "answer": {
+      "Male": false,
+      "Female": false,
+      "Unknown": false
+    }
+  },
+  "select_the_patient_s_race": {
+    "answer": null
+  },
+  "profile_white": {
+    "answer": {
+      "White": false
+    }
+  },
+  "profile_black": {
+    "answer": {
+      "Black or African American": false
+    }
+  },
+  "profile_mdlestrn": {
+    "answer": {
+      "Middle Eastern": false
+    }
+  },
+  "profile_nafricn": {
+    "answer": {
+      "North African": false
+    }
+  },
+  "profile_asian": {
+    "answer": {
+      "Asian": false
+    }
+  },
+  "profile_native": {
+    "answer": {
+      "American Indian or Alaska Native": false
+    }
+  },
+  "profile_islndr": {
+    "answer": {
+      "Native Hawaiian or Other Pacific Islander": false
+    }
+  },
+  "profile_raceoth": {
+    "answer": {
+      "Other": false
+    },
+    "profile_raceo": {
+      "answer": null
+    }
+  },
+  "profile_raceunk": {
+    "answer": {
+      "Unknown": false
+    }
+  },
+  "profile_ethnic": {
+    "answer": {
+      "Hispanic, Latino or Spanish origin": false,
+      "Not Hispanic or Latino": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "profile_ethnico": {
+      "answer": null
+    }
+  },
+  "profile_cntry": {
+    "answer": {
+      "US": false,
+      "Canada": false,
+      "Unknown": false
+    },
+    "profile_usregn": {
+      "answer": {
+        "Alabama": false,
+        "Alaska": false,
+        "Arizona": false,
+        "Arkansas": false,
+        "California": false,
+        "Colorado": false,
+        "Connecticut": false,
+        "Delaware": false,
+        "Florida": false,
+        "Georgia": false,
+        "Hawaii": false,
+        "Idaho": false,
+        "Illinois": false,
+        "Indiana": false,
+        "Iowa": false,
+        "Kansas": false,
+        "Kentucky": false,
+        "Louisiana": false,
+        "Maine": false,
+        "Maryland": false,
+        "Massachusetts": false,
+        "Michigan": false,
+        "Minnesota": false,
+        "Mississippi": false,
+        "Missouri": false,
+        "Montana": false,
+        "Nebraska": false,
+        "Nevada": false,
+        "New Hampshire": false,
+        "New Jersey": false,
+        "New Mexico": false,
+        "New York": false,
+        "North Carolina": false,
+        "North Dakota": false,
+        "Ohio": false,
+        "Oklahoma": false,
+        "Oregon": false,
+        "Pennsylvania": false,
+        "Rhode Island": false,
+        "South Carolina": false,
+        "South Dakota": false,
+        "Tennessee": false,
+        "Texas": false,
+        "Utah": false,
+        "Vermont": false,
+        "Virginia": false,
+        "Washington": false,
+        "Washington, District of Columbia": false,
+        "West Virginia": false,
+        "Wisconsin": false,
+        "Wyoming": false,
+        "Unknown": false
+      }
+    },
+    "profile_cndaregn": {
+      "answer": {
+        "Alberta": false,
+        "British Columbia": false,
+        "Manitoba": false,
+        "New Brunswick": false,
+        "Newfoundland and Labrador": false,
+        "Northwest Territories": false,
+        "Nova Scotia": false,
+        "Nunavut": false,
+        "Ontario": false,
+        "Prince Edward Island": false,
+        "Quebec": false,
+        "Saskatchewan and Yukon": false,
+        "Unknown": false
+      }
+    }
+  },
+  "profile_fudat": {
+    "answer": null
+  },
+  "profile_missingrecords": {
+    "answer": {
+      "Yes": false,
+      "No": false
+    }
+  },
+  "profile_hlhtrtyn": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    }
+  },
+  "profile_ab_notes": {
+    "answer": null
+  }
+}
+
+GENERAL "OTHER" FALLBACK RULE (applies to ALL fields):
+- For any radio/dropdown/checkbox field:
+  1) First try to map the evidence to one of the allowed option labels (or clear synonyms).
+  2) If the evidence clearly provides a value but it does NOT match any allowed option label/code:
+     - If the field has an "Other" option AND has a nested/branching "Other specify" text field:
+       * Select/check the "Other" option (use its REDCap code)
+       * Put the exact unmatched value phrase from the evidence into the "Other specify" field
+     - If the field has "Other" option but no specify field:
+       * Select/check "Other" and do not invent text
+     - If the field does not have an "Other" option:
+       * Output null and add the variable name to not_found
+- Do NOT use "Other" when the value matches a valid option label or a clear synonym of a valid option.
+
+JSON TEMPLATE (schema + answer placeholders):
+{
+  "Form Name": "eligibility_and_patient_profile",
+  "Questions": {
+    "record_id": {
+      "Variable / Field Name": "record_id",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Record ID",
+      "Field Type": "text",
+      "Field Note": "EDC ID #",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "participant_id": {
+      "Variable / Field Name": "participant_id",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Participant ID",
+      "Field Type": "text",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "guid": {
+      "Variable / Field Name": "guid",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Global Unique Identifier",
+      "Field Type": "text",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "profile_brthcntry": {
+      "Variable / Field Name": "profile_brthcntry",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Country of birth",
+      "Field Type": "dropdown",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Afghanistan",
+        "2": "Albania",
+        "3": "Algeria",
+        "4": "Andorra",
+        "5": "Angola",
+        "6": "Antigua &amp; Deps",
+        "7": "Argentina",
+        "8": "Armenia",
+        "9": "Australia",
+        "10": "Austria",
+        "11": "Azerbaijan",
+        "12": "Bahamas",
+        "13": "Bahrain",
+        "14": "Bangladesh",
+        "15": "Barbados",
+        "16": "Belarus",
+        "17": "Belgium",
+        "18": "Belize",
+        "19": "Benin",
+        "20": "Bhutan",
+        "21": "Bolivia",
+        "22": "Bosnia Herzegovina",
+        "23": "Botswana",
+        "24": "Brazil",
+        "25": "Brunei",
+        "26": "Bulgaria",
+        "27": "Burkina",
+        "28": "Burundi",
+        "29": "Cambodia",
+        "30": "Cameroon",
+        "31": "Canada",
+        "32": "Cape Verde",
+        "33": "Central African Rep",
+        "34": "Chad",
+        "35": "Chile",
+        "36": "China",
+        "37": "Columbia",
+        "38": "Comoros",
+        "39": "Congo",
+        "40": "Congo {Democratic Rep}",
+        "41": "Costa Rica",
+        "42": "Croatia",
+        "43": "Cuba",
+        "44": "Cyprus",
+        "45": "Czech Republic",
+        "46": "Denmark",
+        "47": "Djibouti",
+        "48": "Dominica",
+        "49": "Dominican Republic",
+        "50": "East Timor",
+        "51": "Ecuador",
+        "52": "Egypt",
+        "53": "El Salvador",
+        "54": "Equatorial Guinea",
+        "55": "Eritrea",
+        "56": "Estonia",
+        "57": "Ethiopia",
+        "58": "Fiji",
+        "59": "Finland",
+        "60": "France",
+        "61": "Gabon",
+        "62": "Gambia",
+        "63": "Georgia",
+        "64": "Germany",
+        "65": "Ghana",
+        "66": "Greece",
+        "67": "Grenada",
+        "68": "Guatemala",
+        "69": "Guinea",
+        "70": "Guinea-Bissau",
+        "71": "Guyana",
+        "72": "Haiti",
+        "73": "Honduras",
+        "74": "Hungary",
+        "75": "Iceland",
+        "76": "India",
+        "77": "Indonesia",
+        "78": "Iran",
+        "79": "Iraq",
+        "80": "Ireland {Republic}",
+        "81": "Israel",
+        "82": "Italy",
+        "83": "Ivory Coast",
+        "84": "Jamaica",
+        "85": "Japan",
+        "86": "Jordan",
+        "87": "Kazakhstan",
+        "88": "Kenya",
+        "89": "Kiribati",
+        "90": "Korea North",
+        "91": "Korea South",
+        "92": "Kosovo",
+        "93": "Kuwait",
+        "94": "Kyrgyzstan",
+        "95": "Laos",
+        "96": "Latvia",
+        "97": "Lebanon",
+        "98": "Lesotho",
+        "99": "Liberia",
+        "100": "Libya",
+        "101": "Liechtenstein",
+        "102": "Lithuania",
+        "103": "Luxembourg",
+        "104": "Macedonia",
+        "105": "Madagascar",
+        "106": "Malawi",
+        "107": "Malaysia",
+        "108": "Maldives",
+        "109": "Mali",
+        "110": "Malta",
+        "111": "Marshall Islands",
+        "112": "Mauritania",
+        "113": "Mauritius",
+        "114": "Mexico",
+        "115": "Micronesia",
+        "116": "Moldova",
+        "117": "Monaco",
+        "118": "Mongolia",
+        "119": "Montenegro",
+        "120": "Morocco",
+        "121": "Mozambique",
+        "122": "Myanmar, {Burma}",
+        "123": "Namibia",
+        "124": "Nauru",
+        "125": "Nepal",
+        "126": "Netherlands",
+        "127": "New Zealand",
+        "128": "Nicaragua",
+        "129": "Niger",
+        "130": "Nigeria",
+        "131": "Norway",
+        "132": "Oman",
+        "133": "Pakistan",
+        "134": "Palau",
+        "135": "Panama",
+        "136": "Papua New Guinea",
+        "137": "Paraguay",
+        "138": "Peru",
+        "139": "Philippines",
+        "140": "Poland",
+        "141": "Portugal",
+        "142": "Qatar",
+        "143": "Romania",
+        "144": "Russian Federation",
+        "145": "Rwanda",
+        "146": "St Kitts &amp; Nevis",
+        "147": "St Lucia",
+        "148": "Saint Vincent &amp; the Grenadines",
+        "149": "Samoa",
+        "150": "San Marino",
+        "151": "Sao Tome &amp; Principe",
+        "152": "Saudi Arabia",
+        "153": "Senegal",
+        "154": "Serbia",
+        "155": "Seychelles",
+        "156": "Sierra Leone",
+        "157": "Singapore",
+        "158": "Slovakia",
+        "159": "Slovenia",
+        "160": "Solomon Islands",
+        "161": "Somalia",
+        "162": "South Africa",
+        "163": "South Sudan",
+        "164": "Spain",
+        "165": "Sri Lanka",
+        "166": "Sudan",
+        "167": "Suriname",
+        "168": "Swaziland",
+        "169": "Sweden",
+        "170": "Switzerland",
+        "171": "Syria",
+        "172": "Taiwan",
+        "173": "Tajikistan",
+        "174": "Tanzania",
+        "175": "Thailand",
+        "176": "Togo",
+        "177": "Tonga",
+        "178": "Trinidad &amp; Tobago",
+        "179": "Tunisia",
+        "180": "Turkey",
+        "181": "Turkmenistan",
+        "182": "Tuvalu",
+        "183": "Uganda",
+        "184": "Ukraine",
+        "185": "United Arab Emirates",
+        "186": "United Kingdom",
+        "187": "United States",
+        "188": "Uruguay",
+        "189": "Uzbekistan",
+        "190": "Vanuatu",
+        "191": "Vatican City",
+        "192": "Venezuela",
+        "193": "Vietnam",
+        "194": "Yemen",
+        "195": "Zambia",
+        "196": "Zimbabwe",
+        "197": "Other",
+        "198": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Afghanistan": "True|False",
+        "Albania": "True|False",
+        "Algeria": "True|False",
+        "Andorra": "True|False",
+        "Angola": "True|False",
+        "Antigua &amp; Deps": "True|False",
+        "Argentina": "True|False",
+        "Armenia": "True|False",
+        "Australia": "True|False",
+        "Austria": "True|False",
+        "Azerbaijan": "True|False",
+        "Bahamas": "True|False",
+        "Bahrain": "True|False",
+        "Bangladesh": "True|False",
+        "Barbados": "True|False",
+        "Belarus": "True|False",
+        "Belgium": "True|False",
+        "Belize": "True|False",
+        "Benin": "True|False",
+        "Bhutan": "True|False",
+        "Bolivia": "True|False",
+        "Bosnia Herzegovina": "True|False",
+        "Botswana": "True|False",
+        "Brazil": "True|False",
+        "Brunei": "True|False",
+        "Bulgaria": "True|False",
+        "Burkina": "True|False",
+        "Burundi": "True|False",
+        "Cambodia": "True|False",
+        "Cameroon": "True|False",
+        "Canada": "True|False",
+        "Cape Verde": "True|False",
+        "Central African Rep": "True|False",
+        "Chad": "True|False",
+        "Chile": "True|False",
+        "China": "True|False",
+        "Columbia": "True|False",
+        "Comoros": "True|False",
+        "Congo": "True|False",
+        "Congo {Democratic Rep}": "True|False",
+        "Costa Rica": "True|False",
+        "Croatia": "True|False",
+        "Cuba": "True|False",
+        "Cyprus": "True|False",
+        "Czech Republic": "True|False",
+        "Denmark": "True|False",
+        "Djibouti": "True|False",
+        "Dominica": "True|False",
+        "Dominican Republic": "True|False",
+        "East Timor": "True|False",
+        "Ecuador": "True|False",
+        "Egypt": "True|False",
+        "El Salvador": "True|False",
+        "Equatorial Guinea": "True|False",
+        "Eritrea": "True|False",
+        "Estonia": "True|False",
+        "Ethiopia": "True|False",
+        "Fiji": "True|False",
+        "Finland": "True|False",
+        "France": "True|False",
+        "Gabon": "True|False",
+        "Gambia": "True|False",
+        "Georgia": "True|False",
+        "Germany": "True|False",
+        "Ghana": "True|False",
+        "Greece": "True|False",
+        "Grenada": "True|False",
+        "Guatemala": "True|False",
+        "Guinea": "True|False",
+        "Guinea-Bissau": "True|False",
+        "Guyana": "True|False",
+        "Haiti": "True|False",
+        "Honduras": "True|False",
+        "Hungary": "True|False",
+        "Iceland": "True|False",
+        "India": "True|False",
+        "Indonesia": "True|False",
+        "Iran": "True|False",
+        "Iraq": "True|False",
+        "Ireland {Republic}": "True|False",
+        "Israel": "True|False",
+        "Italy": "True|False",
+        "Ivory Coast": "True|False",
+        "Jamaica": "True|False",
+        "Japan": "True|False",
+        "Jordan": "True|False",
+        "Kazakhstan": "True|False",
+        "Kenya": "True|False",
+        "Kiribati": "True|False",
+        "Korea North": "True|False",
+        "Korea South": "True|False",
+        "Kosovo": "True|False",
+        "Kuwait": "True|False",
+        "Kyrgyzstan": "True|False",
+        "Laos": "True|False",
+        "Latvia": "True|False",
+        "Lebanon": "True|False",
+        "Lesotho": "True|False",
+        "Liberia": "True|False",
+        "Libya": "True|False",
+        "Liechtenstein": "True|False",
+        "Lithuania": "True|False",
+        "Luxembourg": "True|False",
+        "Macedonia": "True|False",
+        "Madagascar": "True|False",
+        "Malawi": "True|False",
+        "Malaysia": "True|False",
+        "Maldives": "True|False",
+        "Mali": "True|False",
+        "Malta": "True|False",
+        "Marshall Islands": "True|False",
+        "Mauritania": "True|False",
+        "Mauritius": "True|False",
+        "Mexico": "True|False",
+        "Micronesia": "True|False",
+        "Moldova": "True|False",
+        "Monaco": "True|False",
+        "Mongolia": "True|False",
+        "Montenegro": "True|False",
+        "Morocco": "True|False",
+        "Mozambique": "True|False",
+        "Myanmar, {Burma}": "True|False",
+        "Namibia": "True|False",
+        "Nauru": "True|False",
+        "Nepal": "True|False",
+        "Netherlands": "True|False",
+        "New Zealand": "True|False",
+        "Nicaragua": "True|False",
+        "Niger": "True|False",
+        "Nigeria": "True|False",
+        "Norway": "True|False",
+        "Oman": "True|False",
+        "Pakistan": "True|False",
+        "Palau": "True|False",
+        "Panama": "True|False",
+        "Papua New Guinea": "True|False",
+        "Paraguay": "True|False",
+        "Peru": "True|False",
+        "Philippines": "True|False",
+        "Poland": "True|False",
+        "Portugal": "True|False",
+        "Qatar": "True|False",
+        "Romania": "True|False",
+        "Russian Federation": "True|False",
+        "Rwanda": "True|False",
+        "St Kitts &amp; Nevis": "True|False",
+        "St Lucia": "True|False",
+        "Saint Vincent &amp; the Grenadines": "True|False",
+        "Samoa": "True|False",
+        "San Marino": "True|False",
+        "Sao Tome &amp; Principe": "True|False",
+        "Saudi Arabia": "True|False",
+        "Senegal": "True|False",
+        "Serbia": "True|False",
+        "Seychelles": "True|False",
+        "Sierra Leone": "True|False",
+        "Singapore": "True|False",
+        "Slovakia": "True|False",
+        "Slovenia": "True|False",
+        "Solomon Islands": "True|False",
+        "Somalia": "True|False",
+        "South Africa": "True|False",
+        "South Sudan": "True|False",
+        "Spain": "True|False",
+        "Sri Lanka": "True|False",
+        "Sudan": "True|False",
+        "Suriname": "True|False",
+        "Swaziland": "True|False",
+        "Sweden": "True|False",
+        "Switzerland": "True|False",
+        "Syria": "True|False",
+        "Taiwan": "True|False",
+        "Tajikistan": "True|False",
+        "Tanzania": "True|False",
+        "Thailand": "True|False",
+        "Togo": "True|False",
+        "Tonga": "True|False",
+        "Trinidad &amp; Tobago": "True|False",
+        "Tunisia": "True|False",
+        "Turkey": "True|False",
+        "Turkmenistan": "True|False",
+        "Tuvalu": "True|False",
+        "Uganda": "True|False",
+        "Ukraine": "True|False",
+        "United Arab Emirates": "True|False",
+        "United Kingdom": "True|False",
+        "United States": "True|False",
+        "Uruguay": "True|False",
+        "Uzbekistan": "True|False",
+        "Vanuatu": "True|False",
+        "Vatican City": "True|False",
+        "Venezuela": "True|False",
+        "Vietnam": "True|False",
+        "Yemen": "True|False",
+        "Zambia": "True|False",
+        "Zimbabwe": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Afghanistan": "1",
+        "Albania": "2",
+        "Algeria": "3",
+        "Andorra": "4",
+        "Angola": "5",
+        "Antigua &amp; Deps": "6",
+        "Argentina": "7",
+        "Armenia": "8",
+        "Australia": "9",
+        "Austria": "10",
+        "Azerbaijan": "11",
+        "Bahamas": "12",
+        "Bahrain": "13",
+        "Bangladesh": "14",
+        "Barbados": "15",
+        "Belarus": "16",
+        "Belgium": "17",
+        "Belize": "18",
+        "Benin": "19",
+        "Bhutan": "20",
+        "Bolivia": "21",
+        "Bosnia Herzegovina": "22",
+        "Botswana": "23",
+        "Brazil": "24",
+        "Brunei": "25",
+        "Bulgaria": "26",
+        "Burkina": "27",
+        "Burundi": "28",
+        "Cambodia": "29",
+        "Cameroon": "30",
+        "Canada": "31",
+        "Cape Verde": "32",
+        "Central African Rep": "33",
+        "Chad": "34",
+        "Chile": "35",
+        "China": "36",
+        "Columbia": "37",
+        "Comoros": "38",
+        "Congo": "39",
+        "Congo {Democratic Rep}": "40",
+        "Costa Rica": "41",
+        "Croatia": "42",
+        "Cuba": "43",
+        "Cyprus": "44",
+        "Czech Republic": "45",
+        "Denmark": "46",
+        "Djibouti": "47",
+        "Dominica": "48",
+        "Dominican Republic": "49",
+        "East Timor": "50",
+        "Ecuador": "51",
+        "Egypt": "52",
+        "El Salvador": "53",
+        "Equatorial Guinea": "54",
+        "Eritrea": "55",
+        "Estonia": "56",
+        "Ethiopia": "57",
+        "Fiji": "58",
+        "Finland": "59",
+        "France": "60",
+        "Gabon": "61",
+        "Gambia": "62",
+        "Georgia": "63",
+        "Germany": "64",
+        "Ghana": "65",
+        "Greece": "66",
+        "Grenada": "67",
+        "Guatemala": "68",
+        "Guinea": "69",
+        "Guinea-Bissau": "70",
+        "Guyana": "71",
+        "Haiti": "72",
+        "Honduras": "73",
+        "Hungary": "74",
+        "Iceland": "75",
+        "India": "76",
+        "Indonesia": "77",
+        "Iran": "78",
+        "Iraq": "79",
+        "Ireland {Republic}": "80",
+        "Israel": "81",
+        "Italy": "82",
+        "Ivory Coast": "83",
+        "Jamaica": "84",
+        "Japan": "85",
+        "Jordan": "86",
+        "Kazakhstan": "87",
+        "Kenya": "88",
+        "Kiribati": "89",
+        "Korea North": "90",
+        "Korea South": "91",
+        "Kosovo": "92",
+        "Kuwait": "93",
+        "Kyrgyzstan": "94",
+        "Laos": "95",
+        "Latvia": "96",
+        "Lebanon": "97",
+        "Lesotho": "98",
+        "Liberia": "99",
+        "Libya": "100",
+        "Liechtenstein": "101",
+        "Lithuania": "102",
+        "Luxembourg": "103",
+        "Macedonia": "104",
+        "Madagascar": "105",
+        "Malawi": "106",
+        "Malaysia": "107",
+        "Maldives": "108",
+        "Mali": "109",
+        "Malta": "110",
+        "Marshall Islands": "111",
+        "Mauritania": "112",
+        "Mauritius": "113",
+        "Mexico": "114",
+        "Micronesia": "115",
+        "Moldova": "116",
+        "Monaco": "117",
+        "Mongolia": "118",
+        "Montenegro": "119",
+        "Morocco": "120",
+        "Mozambique": "121",
+        "Myanmar, {Burma}": "122",
+        "Namibia": "123",
+        "Nauru": "124",
+        "Nepal": "125",
+        "Netherlands": "126",
+        "New Zealand": "127",
+        "Nicaragua": "128",
+        "Niger": "129",
+        "Nigeria": "130",
+        "Norway": "131",
+        "Oman": "132",
+        "Pakistan": "133",
+        "Palau": "134",
+        "Panama": "135",
+        "Papua New Guinea": "136",
+        "Paraguay": "137",
+        "Peru": "138",
+        "Philippines": "139",
+        "Poland": "140",
+        "Portugal": "141",
+        "Qatar": "142",
+        "Romania": "143",
+        "Russian Federation": "144",
+        "Rwanda": "145",
+        "St Kitts &amp; Nevis": "146",
+        "St Lucia": "147",
+        "Saint Vincent &amp; the Grenadines": "148",
+        "Samoa": "149",
+        "San Marino": "150",
+        "Sao Tome &amp; Principe": "151",
+        "Saudi Arabia": "152",
+        "Senegal": "153",
+        "Serbia": "154",
+        "Seychelles": "155",
+        "Sierra Leone": "156",
+        "Singapore": "157",
+        "Slovakia": "158",
+        "Slovenia": "159",
+        "Solomon Islands": "160",
+        "Somalia": "161",
+        "South Africa": "162",
+        "South Sudan": "163",
+        "Spain": "164",
+        "Sri Lanka": "165",
+        "Sudan": "166",
+        "Suriname": "167",
+        "Swaziland": "168",
+        "Sweden": "169",
+        "Switzerland": "170",
+        "Syria": "171",
+        "Taiwan": "172",
+        "Tajikistan": "173",
+        "Tanzania": "174",
+        "Thailand": "175",
+        "Togo": "176",
+        "Tonga": "177",
+        "Trinidad &amp; Tobago": "178",
+        "Tunisia": "179",
+        "Turkey": "180",
+        "Turkmenistan": "181",
+        "Tuvalu": "182",
+        "Uganda": "183",
+        "Ukraine": "184",
+        "United Arab Emirates": "185",
+        "United Kingdom": "186",
+        "United States": "187",
+        "Uruguay": "188",
+        "Uzbekistan": "189",
+        "Vanuatu": "190",
+        "Vatican City": "191",
+        "Venezuela": "192",
+        "Vietnam": "193",
+        "Yemen": "194",
+        "Zambia": "195",
+        "Zimbabwe": "196",
+        "Other": "197",
+        "Unknown": "198"
+      },
+      "Nested Fields": {
+        "profile_cntrysp": {
+          "Variable / Field Name": "profile_cntrysp",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[profile_brthcntry] = '197'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "profile_brthcty": {
+      "Variable / Field Name": "profile_brthcty",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "City of birth",
+      "Field Type": "text",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "profile_arm": {
+      "Variable / Field Name": "profile_arm",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Study Arm",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Patient-Powered Arm",
+        "2": "Physician Powered Arm"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Patient-Powered Arm": "True|False",
+        "Physician Powered Arm": "True|False"
+      },
+      "codes": {
+        "Patient-Powered Arm": "1",
+        "Physician Powered Arm": "2"
+      }
+    },
+    "profile_ptstatus": {
+      "Variable / Field Name": "profile_ptstatus",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Is patient still alive?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "profile_ptdthdt": {
+          "Variable / Field Name": "profile_ptdthdt",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Indicate the date of death:",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "indicate_the_causes_of_dea": {
+          "Variable / Field Name": "indicate_the_causes_of_dea",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Indicate the causes of death (\"X\" all that apply):",
+          "Field Type": "descriptive",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "answer_type": "display_only",
+          "answer_template": null
+        },
+        "proximate_cause_of_death": {
+          "Variable / Field Name": "proximate_cause_of_death",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Proximate cause of death:",
+          "Field Type": "descriptive",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "answer_type": "display_only",
+          "answer_template": null
+        },
+        "profile_orgfaila": {
+          "Variable / Field Name": "profile_orgfaila",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Multi-organ failure",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Multi-organ failure"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Multi-organ failure": "True|False"
+          },
+          "codes": {
+            "Multi-organ failure": "1"
+          }
+        },
+        "profile_infecta": {
+          "Variable / Field Name": "profile_infecta",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Infection",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Infection"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Infection": "True|False"
+          },
+          "codes": {
+            "Infection": "1"
+          },
+          "Nested Fields": {
+            "profile_orgspca": {
+              "Variable / Field Name": "profile_orgspca",
+              "Form Name": "eligibility_and_patient_profile",
+              "Field Label": "Specify the organism",
+              "Field Type": "text",
+              "Branching Logic": "[profile_infecta(1)] = '1' and [profile_ptstatus] = '2'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "profile_infspca": {
+              "Variable / Field Name": "profile_infspca",
+              "Form Name": "eligibility_and_patient_profile",
+              "Field Label": "Specify site of infection",
+              "Field Type": "text",
+              "Branching Logic": "[profile_infecta(1)] = '1' and [profile_ptstatus] = '2'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "profile_orgspcb": {
+              "Variable / Field Name": "profile_orgspcb",
+              "Form Name": "eligibility_and_patient_profile",
+              "Field Label": "Specify the organism",
+              "Field Type": "text",
+              "Branching Logic": "[profile_infecta(1)] = '1' and [profile_ptstatus] = '2'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "profile_infspcb": {
+              "Variable / Field Name": "profile_infspcb",
+              "Form Name": "eligibility_and_patient_profile",
+              "Field Label": "Specify site of infection",
+              "Field Type": "text",
+              "Branching Logic": "[profile_infecta(1)] = '1' and [profile_ptstatus] = '2'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "profile_orgspcc": {
+              "Variable / Field Name": "profile_orgspcc",
+              "Form Name": "eligibility_and_patient_profile",
+              "Field Label": "Specify the organism",
+              "Field Type": "text",
+              "Branching Logic": "[profile_infecta(1)] = '1' and [profile_ptstatus] = '2'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "profile_infspcc": {
+              "Variable / Field Name": "profile_infspcc",
+              "Form Name": "eligibility_and_patient_profile",
+              "Field Label": "Specify site of infection",
+              "Field Type": "text",
+              "Branching Logic": "[profile_infecta(1)] = '1' and [profile_ptstatus] = '2'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "profile_orgspcd": {
+              "Variable / Field Name": "profile_orgspcd",
+              "Form Name": "eligibility_and_patient_profile",
+              "Field Label": "Specify the organism",
+              "Field Type": "text",
+              "Branching Logic": "[profile_infecta(1)] = '1' and [profile_ptstatus] = '2'",
+              "answer_type": "string",
+              "answer_template": "String"
+            },
+            "profile_infspcd": {
+              "Variable / Field Name": "profile_infspcd",
+              "Form Name": "eligibility_and_patient_profile",
+              "Field Label": "Specify site of infection",
+              "Field Type": "text",
+              "Branching Logic": "[profile_infecta(1)] = '1' and [profile_ptstatus] = '2'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "profile_bleeda": {
+          "Variable / Field Name": "profile_bleeda",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Bleeding",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Bleeding"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Bleeding": "True|False"
+          },
+          "codes": {
+            "Bleeding": "1"
+          }
+        },
+        "profile_withdraa": {
+          "Variable / Field Name": "profile_withdraa",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Withdrawal of care",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Withdrawal of care"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Withdrawal of care": "True|False"
+          },
+          "codes": {
+            "Withdrawal of care": "1"
+          }
+        },
+        "profile_severea": {
+          "Variable / Field Name": "profile_severea",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Severe neurologic injury",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Severe neurologic injury"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Severe neurologic injury": "True|False"
+          },
+          "codes": {
+            "Severe neurologic injury": "1"
+          }
+        },
+        "profile_respfaia": {
+          "Variable / Field Name": "profile_respfaia",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Respiratory failure",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Respiratory failure"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Respiratory failure": "True|False"
+          },
+          "codes": {
+            "Respiratory failure": "1"
+          }
+        },
+        "profile_cardioa": {
+          "Variable / Field Name": "profile_cardioa",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Cardiovascular collapse",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Cardiovascular collapse"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Cardiovascular collapse": "True|False"
+          },
+          "codes": {
+            "Cardiovascular collapse": "1"
+          }
+        },
+        "profile_othera": {
+          "Variable / Field Name": "profile_othera",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Other",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Other"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Other": "True|False"
+          },
+          "codes": {
+            "Other": "1"
+          },
+          "Nested Fields": {
+            "profile_dthrsno": {
+              "Variable / Field Name": "profile_dthrsno",
+              "Form Name": "eligibility_and_patient_profile",
+              "Field Label": "Please specify",
+              "Field Type": "text",
+              "Required Field?": "y",
+              "Branching Logic": "[profile_othera(1)] = '1' and [profile_ptstatus] = '2'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "profile_unkrsna": {
+          "Variable / Field Name": "profile_unkrsna",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Unknown",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Unknown"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Unknown": "1"
+          }
+        },
+        "secondary_cause_of_death": {
+          "Variable / Field Name": "secondary_cause_of_death",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Secondary cause of death:",
+          "Field Type": "descriptive",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "answer_type": "display_only",
+          "answer_template": null
+        },
+        "profile_orgfailb": {
+          "Variable / Field Name": "profile_orgfailb",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Multi-organ failure",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Multi-organ failure"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Multi-organ failure": "True|False"
+          },
+          "codes": {
+            "Multi-organ failure": "1"
+          }
+        },
+        "profile_infectb": {
+          "Variable / Field Name": "profile_infectb",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Infection",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Infection"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Infection": "True|False"
+          },
+          "codes": {
+            "Infection": "1"
+          }
+        },
+        "profile_bleedb": {
+          "Variable / Field Name": "profile_bleedb",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Bleeding",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Bleeding"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Bleeding": "True|False"
+          },
+          "codes": {
+            "Bleeding": "1"
+          }
+        },
+        "profile_withdrab": {
+          "Variable / Field Name": "profile_withdrab",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Withdrawal of care",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Withdrawal of care"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Withdrawal of care": "True|False"
+          },
+          "codes": {
+            "Withdrawal of care": "1"
+          }
+        },
+        "profile_severeb": {
+          "Variable / Field Name": "profile_severeb",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Severe neurologic injury",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Severe neurologic injury"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Severe neurologic injury": "True|False"
+          },
+          "codes": {
+            "Severe neurologic injury": "1"
+          }
+        },
+        "profile_respfaib": {
+          "Variable / Field Name": "profile_respfaib",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Respiratory failure",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Respiratory failure"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Respiratory failure": "True|False"
+          },
+          "codes": {
+            "Respiratory failure": "1"
+          }
+        },
+        "profile_cardiob": {
+          "Variable / Field Name": "profile_cardiob",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Cardiovascular collapse",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Cardiovascular collapse"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Cardiovascular collapse": "True|False"
+          },
+          "codes": {
+            "Cardiovascular collapse": "1"
+          }
+        },
+        "profile_otherb": {
+          "Variable / Field Name": "profile_otherb",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Other",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Other"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Other": "True|False"
+          },
+          "codes": {
+            "Other": "1"
+          },
+          "Nested Fields": {
+            "profile_dthrsbno": {
+              "Variable / Field Name": "profile_dthrsbno",
+              "Form Name": "eligibility_and_patient_profile",
+              "Field Label": "Please specify",
+              "Field Type": "text",
+              "Required Field?": "y",
+              "Branching Logic": "[profile_otherb(1)] = '1' and [profile_ptstatus] = '2'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "profile_unkrsnb": {
+          "Variable / Field Name": "profile_unkrsnb",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Unknown",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Unknown"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Unknown": "1"
+          }
+        },
+        "tertiary_cause_of_death": {
+          "Variable / Field Name": "tertiary_cause_of_death",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Tertiary cause of death:",
+          "Field Type": "descriptive",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "answer_type": "display_only",
+          "answer_template": null
+        },
+        "profile_orgfailc": {
+          "Variable / Field Name": "profile_orgfailc",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Multi-organ failure",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Multi-organ failure"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Multi-organ failure": "True|False"
+          },
+          "codes": {
+            "Multi-organ failure": "1"
+          }
+        },
+        "profile_infectc": {
+          "Variable / Field Name": "profile_infectc",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Infection",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Infection"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Infection": "True|False"
+          },
+          "codes": {
+            "Infection": "1"
+          }
+        },
+        "profile_bleedc": {
+          "Variable / Field Name": "profile_bleedc",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Bleeding",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Bleeding"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Bleeding": "True|False"
+          },
+          "codes": {
+            "Bleeding": "1"
+          }
+        },
+        "profile_withdrac": {
+          "Variable / Field Name": "profile_withdrac",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Withdrawal of care",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Withdrawal of care"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Withdrawal of care": "True|False"
+          },
+          "codes": {
+            "Withdrawal of care": "1"
+          }
+        },
+        "profile_severec": {
+          "Variable / Field Name": "profile_severec",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Severe neurologic injury",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Severe neurologic injury"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Severe neurologic injury": "True|False"
+          },
+          "codes": {
+            "Severe neurologic injury": "1"
+          }
+        },
+        "profile_respfaic": {
+          "Variable / Field Name": "profile_respfaic",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Respiratory failure",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Respiratory failure"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Respiratory failure": "True|False"
+          },
+          "codes": {
+            "Respiratory failure": "1"
+          }
+        },
+        "profile_cardioc": {
+          "Variable / Field Name": "profile_cardioc",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Cardiovascular collapse",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Cardiovascular collapse"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Cardiovascular collapse": "True|False"
+          },
+          "codes": {
+            "Cardiovascular collapse": "1"
+          }
+        },
+        "profile_otherc": {
+          "Variable / Field Name": "profile_otherc",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Other",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Other"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Other": "True|False"
+          },
+          "codes": {
+            "Other": "1"
+          },
+          "Nested Fields": {
+            "profile_dthrscno": {
+              "Variable / Field Name": "profile_dthrscno",
+              "Form Name": "eligibility_and_patient_profile",
+              "Field Label": "Please specify",
+              "Field Type": "text",
+              "Required Field?": "y",
+              "Branching Logic": "[profile_otherc(1)] = '1' and [profile_ptstatus] = '2'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "profile_unkrsnc": {
+          "Variable / Field Name": "profile_unkrsnc",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Unknown",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Unknown"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Unknown": "1"
+          }
+        },
+        "quaternary_cause_of_death": {
+          "Variable / Field Name": "quaternary_cause_of_death",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Quaternary cause of death:",
+          "Field Type": "descriptive",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "answer_type": "display_only",
+          "answer_template": null
+        },
+        "profile_orgfaild": {
+          "Variable / Field Name": "profile_orgfaild",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Multi-organ failure",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Multi-organ failure"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Multi-organ failure": "True|False"
+          },
+          "codes": {
+            "Multi-organ failure": "1"
+          }
+        },
+        "profile_infectd": {
+          "Variable / Field Name": "profile_infectd",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Infection",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Infection"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Infection": "True|False"
+          },
+          "codes": {
+            "Infection": "1"
+          }
+        },
+        "profile_bleedd": {
+          "Variable / Field Name": "profile_bleedd",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Bleeding",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Bleeding"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Bleeding": "True|False"
+          },
+          "codes": {
+            "Bleeding": "1"
+          }
+        },
+        "profile_withdrad": {
+          "Variable / Field Name": "profile_withdrad",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Withdrawal of care",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Withdrawal of care"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Withdrawal of care": "True|False"
+          },
+          "codes": {
+            "Withdrawal of care": "1"
+          }
+        },
+        "profile_severed": {
+          "Variable / Field Name": "profile_severed",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Severe neurologic injury",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Severe neurologic injury"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Severe neurologic injury": "True|False"
+          },
+          "codes": {
+            "Severe neurologic injury": "1"
+          }
+        },
+        "profile_respfaid": {
+          "Variable / Field Name": "profile_respfaid",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Respiratory failure",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Respiratory failure"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Respiratory failure": "True|False"
+          },
+          "codes": {
+            "Respiratory failure": "1"
+          }
+        },
+        "profile_cardiod": {
+          "Variable / Field Name": "profile_cardiod",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Cardiovascular collapse",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Cardiovascular collapse"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Cardiovascular collapse": "True|False"
+          },
+          "codes": {
+            "Cardiovascular collapse": "1"
+          }
+        },
+        "profile_otherd": {
+          "Variable / Field Name": "profile_otherd",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Other",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Other"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Other": "True|False"
+          },
+          "codes": {
+            "Other": "1"
+          },
+          "Nested Fields": {
+            "profile_dthrsdno": {
+              "Variable / Field Name": "profile_dthrsdno",
+              "Form Name": "eligibility_and_patient_profile",
+              "Field Label": "Please specify",
+              "Field Type": "text",
+              "Required Field?": "y",
+              "Branching Logic": "[profile_otherd(1)] = '1' and [profile_ptstatus] = '2'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "profile_unkrsnd": {
+          "Variable / Field Name": "profile_unkrsnd",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Unknown",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Unknown"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Unknown": "1"
+          }
+        },
+        "profile_deathrel": {
+          "Variable / Field Name": "profile_deathrel",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Is the chart indicating that the death is directly related to HLH?",
+          "Field Type": "dropdown",
+          "Required Field?": "y",
+          "Branching Logic": "[profile_ptstatus] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Yes",
+            "2": "No",
+            "99": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Yes": "True|False",
+            "No": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Yes": "1",
+            "No": "2",
+            "Unknown": "99"
+          }
+        }
+      }
+    },
+    "profile_absdt": {
+      "Variable / Field Name": "profile_absdt",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Date of Chart Data Abstraction",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "profile_elig1": {
+      "Variable / Field Name": "profile_elig1",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "(1) Does the patient have/had clinically suspected or confirmed HLH, or other forms of HLH (macrophage activation syndrome [MAS], cytokine release syndrome [CRS], etc.)",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2"
+      },
+      "Nested Fields": {
+        "profile_nohlh": {
+          "Variable / Field Name": "profile_nohlh",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "IF THE PATIENT DOES NOT HAVE/HAD CLINICALLY SUSPECTED OR CONFIRMED HLH OR OTHER FORMS OF HLH, STOP AFTER COMPLETING THE ELIGIBILITY AND PATIENT PROFILE CRF, AND NOTIFY THE PI.",
+          "Field Type": "descriptive",
+          "Branching Logic": "[profile_elig1] = '2'",
+          "answer_type": "display_only",
+          "answer_template": null
+        },
+        "profile_hlhnone": {
+          "Variable / Field Name": "profile_hlhnone",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "IF THE PATIENT DOES NOT HAVE/HAD CLINICALLY SUSPECTED OR CONFIRMED HLH OR OTHER FORMS OF HLH, STOP HERE AND NOTIFY THE PI.",
+          "Field Type": "descriptive",
+          "Branching Logic": "[profile_elig1] = '2'",
+          "answer_type": "display_only",
+          "answer_template": null
+        }
+      }
+    },
+    "profile_icfdt": {
+      "Variable / Field Name": "profile_icfdt",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "(2) Date of informed consent and assent (adolescents)",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "profile_trialyn": {
+      "Variable / Field Name": "profile_trialyn",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Did the patient receive HLH-related treatment in a clinical trial setting?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "profile_trialnm": {
+          "Variable / Field Name": "profile_trialnm",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "1. Indicate the name of the trial:",
+          "Field Type": "text",
+          "Branching Logic": "[profile_trialyn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "profile_trialnmu": {
+          "Variable / Field Name": "profile_trialnmu",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Name of the trial unknown",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_trialyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Unknown"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Unknown": "1"
+          }
+        },
+        "profile_invdrug": {
+          "Variable / Field Name": "profile_invdrug",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "2. Indicate the name of the investigated drug:",
+          "Field Type": "text",
+          "Branching Logic": "[profile_trialyn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "profile_invdrugu": {
+          "Variable / Field Name": "profile_invdrugu",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Name of the investigated drug unknown",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_trialyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Unknown"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Unknown": "1"
+          }
+        },
+        "profile_trialnum": {
+          "Variable / Field Name": "profile_trialnum",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "3. Indicate the clinical trial number:",
+          "Field Type": "text",
+          "Branching Logic": "[profile_trialyn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "profile_trialnuu": {
+          "Variable / Field Name": "profile_trialnuu",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Clinical trial number unknown",
+          "Field Type": "checkbox",
+          "Branching Logic": "[profile_trialyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Unknown"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Unknown": "1"
+          }
+        },
+        "profile_startdt": {
+          "Variable / Field Name": "profile_startdt",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "4. Start date (if known):",
+          "Field Type": "text",
+          "Branching Logic": "[profile_trialyn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "profile_enddt": {
+          "Variable / Field Name": "profile_enddt",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "5. End date (if known):",
+          "Field Type": "text",
+          "Branching Logic": "[profile_trialyn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "profile_eproyn": {
+      "Variable / Field Name": "profile_eproyn",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Did the patient/caregiver consent to the ePRO Surveys?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2"
+      },
+      "Nested Fields": {
+        "profile_email": {
+          "Variable / Field Name": "profile_email",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Email",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[profile_eproyn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "profile_brthyr": {
+      "Variable / Field Name": "profile_brthyr",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Date of birth",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "profile_sex": {
+      "Variable / Field Name": "profile_sex",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Sex",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Male",
+        "2": "Female",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Male": "True|False",
+        "Female": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Male": "1",
+        "Female": "2",
+        "Unknown": "98"
+      }
+    },
+    "select_the_patient_s_race": {
+      "Variable / Field Name": "select_the_patient_s_race",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Race:",
+      "Field Type": "descriptive",
+      "answer_type": "display_only",
+      "answer_template": null
+    },
+    "profile_white": {
+      "Variable / Field Name": "profile_white",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "White",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "White"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "White": "True|False"
+      },
+      "codes": {
+        "White": "1"
+      }
+    },
+    "profile_black": {
+      "Variable / Field Name": "profile_black",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Black or African American",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Black or African American"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Black or African American": "True|False"
+      },
+      "codes": {
+        "Black or African American": "1"
+      }
+    },
+    "profile_mdlestrn": {
+      "Variable / Field Name": "profile_mdlestrn",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Middle Eastern",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Middle Eastern"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Middle Eastern": "True|False"
+      },
+      "codes": {
+        "Middle Eastern": "1"
+      }
+    },
+    "profile_nafricn": {
+      "Variable / Field Name": "profile_nafricn",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "North African",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "North African"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "North African": "True|False"
+      },
+      "codes": {
+        "North African": "1"
+      }
+    },
+    "profile_asian": {
+      "Variable / Field Name": "profile_asian",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Asian",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Asian"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Asian": "True|False"
+      },
+      "codes": {
+        "Asian": "1"
+      }
+    },
+    "profile_native": {
+      "Variable / Field Name": "profile_native",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "American Indian or Alaska Native",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "American Indian or Alaska Native"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "American Indian or Alaska Native": "True|False"
+      },
+      "codes": {
+        "American Indian or Alaska Native": "1"
+      }
+    },
+    "profile_islndr": {
+      "Variable / Field Name": "profile_islndr",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Native Hawaiian or Other Pacific Islander",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Native Hawaiian or Other Pacific Islander"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Native Hawaiian or Other Pacific Islander": "True|False"
+      },
+      "codes": {
+        "Native Hawaiian or Other Pacific Islander": "1"
+      }
+    },
+    "profile_raceoth": {
+      "Variable / Field Name": "profile_raceoth",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Other",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Other"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Other": "True|False"
+      },
+      "codes": {
+        "Other": "1"
+      },
+      "Nested Fields": {
+        "profile_raceo": {
+          "Variable / Field Name": "profile_raceo",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[profile_raceoth(1)] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "profile_raceunk": {
+      "Variable / Field Name": "profile_raceunk",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Unknown",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Unknown"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Unknown": "1"
+      }
+    },
+    "profile_ethnic": {
+      "Variable / Field Name": "profile_ethnic",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Ethnicity",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Hispanic, Latino or Spanish origin",
+        "2": "Not Hispanic or Latino",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Hispanic, Latino or Spanish origin": "True|False",
+        "Not Hispanic or Latino": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Hispanic, Latino or Spanish origin": "1",
+        "Not Hispanic or Latino": "2",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "profile_ethnico": {
+          "Variable / Field Name": "profile_ethnico",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[profile_ethnic] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "profile_cntry": {
+      "Variable / Field Name": "profile_cntry",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Country where medical records are from?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "US",
+        "2": "Canada",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "US": "True|False",
+        "Canada": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "US": "1",
+        "Canada": "2",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "profile_usregn": {
+          "Variable / Field Name": "profile_usregn",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "State",
+          "Field Type": "dropdown",
+          "Required Field?": "y",
+          "Branching Logic": "[profile_cntry] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Alabama",
+            "2": "Alaska",
+            "3": "Arizona",
+            "4": "Arkansas",
+            "5": "California",
+            "6": "Colorado",
+            "7": "Connecticut",
+            "8": "Delaware",
+            "9": "Florida",
+            "10": "Georgia",
+            "11": "Hawaii",
+            "12": "Idaho",
+            "13": "Illinois",
+            "14": "Indiana",
+            "15": "Iowa",
+            "16": "Kansas",
+            "17": "Kentucky",
+            "18": "Louisiana",
+            "19": "Maine",
+            "20": "Maryland",
+            "21": "Massachusetts",
+            "22": "Michigan",
+            "23": "Minnesota",
+            "24": "Mississippi",
+            "25": "Missouri",
+            "26": "Montana",
+            "27": "Nebraska",
+            "28": "Nevada",
+            "29": "New Hampshire",
+            "30": "New Jersey",
+            "31": "New Mexico",
+            "32": "New York",
+            "33": "North Carolina",
+            "34": "North Dakota",
+            "35": "Ohio",
+            "36": "Oklahoma",
+            "37": "Oregon",
+            "38": "Pennsylvania",
+            "39": "Rhode Island",
+            "40": "South Carolina",
+            "41": "South Dakota",
+            "42": "Tennessee",
+            "43": "Texas",
+            "44": "Utah",
+            "45": "Vermont",
+            "46": "Virginia",
+            "47": "Washington",
+            "51": "Washington, District of Columbia",
+            "48": "West Virginia",
+            "49": "Wisconsin",
+            "50": "Wyoming",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Alabama": "True|False",
+            "Alaska": "True|False",
+            "Arizona": "True|False",
+            "Arkansas": "True|False",
+            "California": "True|False",
+            "Colorado": "True|False",
+            "Connecticut": "True|False",
+            "Delaware": "True|False",
+            "Florida": "True|False",
+            "Georgia": "True|False",
+            "Hawaii": "True|False",
+            "Idaho": "True|False",
+            "Illinois": "True|False",
+            "Indiana": "True|False",
+            "Iowa": "True|False",
+            "Kansas": "True|False",
+            "Kentucky": "True|False",
+            "Louisiana": "True|False",
+            "Maine": "True|False",
+            "Maryland": "True|False",
+            "Massachusetts": "True|False",
+            "Michigan": "True|False",
+            "Minnesota": "True|False",
+            "Mississippi": "True|False",
+            "Missouri": "True|False",
+            "Montana": "True|False",
+            "Nebraska": "True|False",
+            "Nevada": "True|False",
+            "New Hampshire": "True|False",
+            "New Jersey": "True|False",
+            "New Mexico": "True|False",
+            "New York": "True|False",
+            "North Carolina": "True|False",
+            "North Dakota": "True|False",
+            "Ohio": "True|False",
+            "Oklahoma": "True|False",
+            "Oregon": "True|False",
+            "Pennsylvania": "True|False",
+            "Rhode Island": "True|False",
+            "South Carolina": "True|False",
+            "South Dakota": "True|False",
+            "Tennessee": "True|False",
+            "Texas": "True|False",
+            "Utah": "True|False",
+            "Vermont": "True|False",
+            "Virginia": "True|False",
+            "Washington": "True|False",
+            "Washington, District of Columbia": "True|False",
+            "West Virginia": "True|False",
+            "Wisconsin": "True|False",
+            "Wyoming": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Alabama": "1",
+            "Alaska": "2",
+            "Arizona": "3",
+            "Arkansas": "4",
+            "California": "5",
+            "Colorado": "6",
+            "Connecticut": "7",
+            "Delaware": "8",
+            "Florida": "9",
+            "Georgia": "10",
+            "Hawaii": "11",
+            "Idaho": "12",
+            "Illinois": "13",
+            "Indiana": "14",
+            "Iowa": "15",
+            "Kansas": "16",
+            "Kentucky": "17",
+            "Louisiana": "18",
+            "Maine": "19",
+            "Maryland": "20",
+            "Massachusetts": "21",
+            "Michigan": "22",
+            "Minnesota": "23",
+            "Mississippi": "24",
+            "Missouri": "25",
+            "Montana": "26",
+            "Nebraska": "27",
+            "Nevada": "28",
+            "New Hampshire": "29",
+            "New Jersey": "30",
+            "New Mexico": "31",
+            "New York": "32",
+            "North Carolina": "33",
+            "North Dakota": "34",
+            "Ohio": "35",
+            "Oklahoma": "36",
+            "Oregon": "37",
+            "Pennsylvania": "38",
+            "Rhode Island": "39",
+            "South Carolina": "40",
+            "South Dakota": "41",
+            "Tennessee": "42",
+            "Texas": "43",
+            "Utah": "44",
+            "Vermont": "45",
+            "Virginia": "46",
+            "Washington": "47",
+            "Washington, District of Columbia": "51",
+            "West Virginia": "48",
+            "Wisconsin": "49",
+            "Wyoming": "50",
+            "Unknown": "98"
+          }
+        },
+        "profile_cndaregn": {
+          "Variable / Field Name": "profile_cndaregn",
+          "Form Name": "eligibility_and_patient_profile",
+          "Field Label": "Province",
+          "Field Type": "dropdown",
+          "Required Field?": "y",
+          "Branching Logic": "[profile_cntry] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Alberta",
+            "2": "British Columbia",
+            "3": "Manitoba",
+            "4": "New Brunswick",
+            "5": "Newfoundland and Labrador",
+            "6": "Northwest Territories",
+            "7": "Nova Scotia",
+            "8": "Nunavut",
+            "9": "Ontario",
+            "10": "Prince Edward Island",
+            "11": "Quebec",
+            "12": "Saskatchewan and Yukon",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Alberta": "True|False",
+            "British Columbia": "True|False",
+            "Manitoba": "True|False",
+            "New Brunswick": "True|False",
+            "Newfoundland and Labrador": "True|False",
+            "Northwest Territories": "True|False",
+            "Nova Scotia": "True|False",
+            "Nunavut": "True|False",
+            "Ontario": "True|False",
+            "Prince Edward Island": "True|False",
+            "Quebec": "True|False",
+            "Saskatchewan and Yukon": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Alberta": "1",
+            "British Columbia": "2",
+            "Manitoba": "3",
+            "New Brunswick": "4",
+            "Newfoundland and Labrador": "5",
+            "Northwest Territories": "6",
+            "Nova Scotia": "7",
+            "Nunavut": "8",
+            "Ontario": "9",
+            "Prince Edward Island": "10",
+            "Quebec": "11",
+            "Saskatchewan and Yukon": "12",
+            "Unknown": "98"
+          }
+        }
+      }
+    },
+    "profile_fudat": {
+      "Variable / Field Name": "profile_fudat",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Date of last follow-up",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "profile_missingrecords": {
+      "Variable / Field Name": "profile_missingrecords",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Is this patient missing medical records (partial abstraction)?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2"
+      }
+    },
+    "profile_hlhtrtyn": {
+      "Variable / Field Name": "profile_hlhtrtyn",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Is the patient receiving HLH related treatment at study enrollment?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      }
+    },
+    "profile_ab_notes": {
+      "Variable / Field Name": "profile_ab_notes",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    }
+  }
+}

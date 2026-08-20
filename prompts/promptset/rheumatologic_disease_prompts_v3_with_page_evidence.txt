@@ -1,0 +1,560 @@
+#### PROMPT_SET: rheumatologic_disease
+---RAG---
+REDCap form: rheumatologic_disease
+Retrieve document text needed to answer this form.
+Prefer labeled fields/tables; ignore repetitive footers/headers.
+Additional cues: demographics/face sheet, problem list, assessment & plan, discharge summary, lab results/flowsheets, medication list, imaging/pathology reports.
+Key terms: Did, have, rheumatologic, disease, Abstractor, Notes
+
+---USER---
+You are a clinical information extractor.
+Given a clinical note (or EHR text), extract answers for the REDCap form: eligibility_and_patient_profile.
+
+Instructions:
+- Fill in the JSON TEMPLATE below using ONLY evidence explicitly present in the text. Do not guess.
+- Keep the same JSON keys and nesting.
+- For choice questions: replace 'True|False' with true or false.
+  * Single-choice (radio/dropdown/yes-no): set exactly one option to true if supported.
+  * Multi-choice (checkbox): set all supported options to true.
+- For 'String'/'Number'/'Integer'/'Date' placeholders: replace with the extracted value (or null if not found).
+- Only populate 'Nested Fields' (e.g., 'please specify') when the parent condition is met AND evidence supports it.
+- Output ONLY the filled JSON (no extra commentary).
+
+EVIDENCE / PAGE CITATION RULE (for auditability):
+- The retrieved Context snippets may include headers like [<source> p<page>] or [<source> p<start>-<end>].
+- For every non-null extracted field (any field whose answer is not null and/or any option you set to true), add an evidence line into profile_ab_notes.
+- Evidence line format (one per field): <VariableName>: <EvidenceTag> — <verbatim short phrase>.
+  * Example: profile_elig1: [patient.pdf p3] — "clinically suspected HLH"
+- Use the EvidenceTag exactly as shown in the Context header (including page number).
+- If no page header is present, cite the source header only (e.g., [note]) and still provide a short verbatim phrase.
+- Do NOT add new JSON keys for evidence; record all citations ONLY inside profile_ab_notes.
+
+OUTPUT FORMAT OVERRIDE (CRITICAL):
+- The JSON TEMPLATE below is REFERENCE ONLY (schema/choices/branching). Do NOT output it.
+- Output ONLY an ANSWERS JSON object, where EACH variable is formatted as:
+  "<variable_name>": { "answer": <value> }
+- Do NOT output "Form Name", "Questions", "Variable / Field Name", "Field Label", "Field Type",
+  "Possible Values", "answer_type", "answer_template", or "codes".
+- Keep the same variable names (e.g., record_id, profile_brthyr, profile_cntry, profile_usregn).
+- Output ONLY valid JSON (no commentary, no markdown, no extra keys).
+
+ANSWERS JSON TEMPLATE (THIS IS THE ONLY THING YOU SHOULD OUTPUT):
+{
+  "rheu_rheu": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "rheu_rheutyp": {
+      "answer": {
+        "Systemic juvenile idiopathic arthritis": false,
+        "Rheumatoid Arthritis": false,
+        "Adult-Onset Still's disease": false,
+        "Kawasaki disease": false,
+        "Systemic lupus erythematosus": false,
+        "Seronegative spondyloarthropathies": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "rheu_rheutypo": {
+      "answer": null
+    },
+    "rheu_onstdt": {
+      "answer": null
+    },
+    "rheu_papyn": {
+      "answer": {
+        "Yes": false,
+        "No": false,
+        "Unknown": false
+      }
+    },
+    "rheu_papdt": {
+      "answer": null
+    },
+    "rheu_eosmasyn": {
+      "answer": {
+        "Yes": false,
+        "No": false,
+        "Unknown": false
+      }
+    },
+    "rheu_eosmasdt": {
+      "answer": null
+    },
+    "rheu_prumasyn": {
+      "answer": {
+        "Yes": false,
+        "No": false,
+        "Unknown": false
+      }
+    },
+    "rheu_prumasdt": {
+      "answer": null
+    },
+    "rheu_actvdxyn": {
+      "answer": {
+        "Yes": false,
+        "No": false,
+        "Unknown": false
+      }
+    },
+    "rheu_arthrtc": {
+      "answer": {
+        "Yes": false,
+        "No": false,
+        "Unknown": false
+      }
+    },
+    "rheu_arthdt": {
+      "answer": null
+    },
+    "rheu_fsttrtdt": {
+      "answer": null
+    },
+    "rheu_masyn": {
+      "answer": {
+        "Yes": false,
+        "No": false,
+        "Unknown": false
+      }
+    },
+    "rheu_help1": {
+      "answer": null
+    },
+    "rheu_mas1": {
+      "answer": null
+    },
+    "rheu_mas2": {
+      "answer": null
+    },
+    "rheu_mas3": {
+      "answer": null
+    },
+    "rheu_mas4": {
+      "answer": null
+    },
+    "rheu_mas5": {
+      "answer": null
+    },
+    "rheu_masipyn": {
+      "answer": {
+        "Yes": false,
+        "No": false,
+        "Unknown": false
+      }
+    }
+  },
+  "rheu_notesa": {
+    "answer": null
+  },
+  "profile_ab_notes": {
+    "answer": null
+  }
+}
+
+GENERAL "OTHER" FALLBACK RULE (applies to ALL fields):
+- For any radio/dropdown/checkbox field:
+  1) First try to map the evidence to one of the allowed option labels (or clear synonyms).
+  2) If the evidence clearly provides a value but it does NOT match any allowed option label/code:
+     - If the field has an "Other" option AND has a nested/branching "Other specify" text field:
+       * Select/check the "Other" option (use its REDCap code)
+       * Put the exact unmatched value phrase from the evidence into the "Other specify" field
+     - If the field has "Other" option but no specify field:
+       * Select/check "Other" and do not invent text
+     - If the field does not have an "Other" option:
+       * Output null and add the variable name to not_found
+- Do NOT use "Other" when the value matches a valid option label or a clear synonym of a valid option.
+
+JSON TEMPLATE (schema + answer placeholders):
+{
+  "Form Name": "rheumatologic_disease",
+  "Questions": {
+    "rheu_rheu": {
+      "Variable / Field Name": "rheu_rheu",
+      "Form Name": "rheumatologic_disease",
+      "Field Label": "Did patient have rheumatologic disease at the time of HLH diagnosis?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "rheu_rheutyp": {
+          "Variable / Field Name": "rheu_rheutyp",
+          "Form Name": "rheumatologic_disease",
+          "Field Label": "If yes, indicate type",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_rheu] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Systemic juvenile idiopathic arthritis",
+            "6": "Rheumatoid Arthritis",
+            "2": "Adult-Onset Still's disease",
+            "3": "Kawasaki disease",
+            "4": "Systemic lupus erythematosus",
+            "5": "Seronegative spondyloarthropathies",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Systemic juvenile idiopathic arthritis": "True|False",
+            "Rheumatoid Arthritis": "True|False",
+            "Adult-Onset Still's disease": "True|False",
+            "Kawasaki disease": "True|False",
+            "Systemic lupus erythematosus": "True|False",
+            "Seronegative spondyloarthropathies": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Systemic juvenile idiopathic arthritis": "1",
+            "Rheumatoid Arthritis": "6",
+            "Adult-Onset Still's disease": "2",
+            "Kawasaki disease": "3",
+            "Systemic lupus erythematosus": "4",
+            "Seronegative spondyloarthropathies": "5",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "rheu_rheutypo": {
+          "Variable / Field Name": "rheu_rheutypo",
+          "Form Name": "rheumatologic_disease",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_rheu] = '1' and [rheu_rheutyp] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_onstdt": {
+          "Variable / Field Name": "rheu_onstdt",
+          "Form Name": "rheumatologic_disease",
+          "Field Label": "Please indicate the date of onset of the underlying rheumatologic disease",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_rheu] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_papyn": {
+          "Variable / Field Name": "rheu_papyn",
+          "Form Name": "rheumatologic_disease",
+          "Field Label": "Is there a history of previous Pulmonary Alveolar Proteinosis (PAP)-like parenchymal lung disease?",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_rheu] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes",
+            "2": "No",
+            "99": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Yes": "True|False",
+            "No": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Yes": "1",
+            "No": "2",
+            "Unknown": "99"
+          }
+        },
+        "rheu_papdt": {
+          "Variable / Field Name": "rheu_papdt",
+          "Form Name": "rheumatologic_disease",
+          "Field Label": "Please indicate the date of the first documentation",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_rheu] = '1' and [rheu_papyn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_eosmasyn": {
+          "Variable / Field Name": "rheu_eosmasyn",
+          "Form Name": "rheumatologic_disease",
+          "Field Label": "Is there a history of eosinophilia within 4 weeks prior to the presentation?",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_rheu] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes",
+            "2": "No",
+            "99": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Yes": "True|False",
+            "No": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Yes": "1",
+            "No": "2",
+            "Unknown": "99"
+          }
+        },
+        "rheu_eosmasdt": {
+          "Variable / Field Name": "rheu_eosmasdt",
+          "Form Name": "rheumatologic_disease",
+          "Field Label": "Please indicate the date of the first documentation",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_rheu] = '1' and [rheu_eosmasyn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_prumasyn": {
+          "Variable / Field Name": "rheu_prumasyn",
+          "Form Name": "rheumatologic_disease",
+          "Field Label": "Is there a history of a new/worsening rash within 4 weeks prior to the presentation?",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_rheu] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes",
+            "2": "No",
+            "99": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Yes": "True|False",
+            "No": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Yes": "1",
+            "No": "2",
+            "Unknown": "99"
+          }
+        },
+        "rheu_prumasdt": {
+          "Variable / Field Name": "rheu_prumasdt",
+          "Form Name": "rheumatologic_disease",
+          "Field Label": "Please indicate the date of the first documentation",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_rheu] = '1' and [rheu_prumasyn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_actvdxyn": {
+          "Variable / Field Name": "rheu_actvdxyn",
+          "Form Name": "rheumatologic_disease",
+          "Field Label": "Is there a worsening of the underlying disease at the time of MAS presentation as indicated in the chart?",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_rheu] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes",
+            "2": "No",
+            "99": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Yes": "True|False",
+            "No": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Yes": "1",
+            "No": "2",
+            "Unknown": "99"
+          }
+        },
+        "rheu_arthrtc": {
+          "Variable / Field Name": "rheu_arthrtc",
+          "Form Name": "rheumatologic_disease",
+          "Field Label": "Was the arthritic component active at the time of MAS onset?",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_rheu] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes",
+            "2": "No",
+            "99": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Yes": "True|False",
+            "No": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Yes": "1",
+            "No": "2",
+            "Unknown": "99"
+          }
+        },
+        "rheu_arthdt": {
+          "Variable / Field Name": "rheu_arthdt",
+          "Form Name": "rheumatologic_disease",
+          "Field Label": "Please indicate the date of onset of current arthritis",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_rheu] = '1' and [rheu_arthrtc] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_fsttrtdt": {
+          "Variable / Field Name": "rheu_fsttrtdt",
+          "Form Name": "rheumatologic_disease",
+          "Field Label": "Date the patient was first treated for the rheumatologic disease",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_rheu] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_masyn": {
+          "Variable / Field Name": "rheu_masyn",
+          "Form Name": "rheumatologic_disease",
+          "Field Label": "Did the patient have previous MAS episodes?",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_rheu] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes",
+            "2": "No",
+            "99": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Yes": "True|False",
+            "No": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Yes": "1",
+            "No": "2",
+            "Unknown": "99"
+          }
+        },
+        "rheu_help1": {
+          "Variable / Field Name": "rheu_help1",
+          "Form Name": "rheumatologic_disease",
+          "Field Label": "Please indicate the dates of previous MAS episodes:",
+          "Field Type": "descriptive",
+          "Branching Logic": "[rheu_rheu] = '1' and [rheu_masyn] = '1'",
+          "answer_type": "display_only",
+          "answer_template": null
+        },
+        "rheu_mas1": {
+          "Variable / Field Name": "rheu_mas1",
+          "Form Name": "rheumatologic_disease",
+          "Field Label": "Episode 1",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_rheu] = '1' and [rheu_masyn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_mas2": {
+          "Variable / Field Name": "rheu_mas2",
+          "Form Name": "rheumatologic_disease",
+          "Field Label": "Episode 2",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Branching Logic": "[rheu_rheu] = '1' and [rheu_masyn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_mas3": {
+          "Variable / Field Name": "rheu_mas3",
+          "Form Name": "rheumatologic_disease",
+          "Field Label": "Episode 3",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Branching Logic": "[rheu_rheu] = '1' and [rheu_masyn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_mas4": {
+          "Variable / Field Name": "rheu_mas4",
+          "Form Name": "rheumatologic_disease",
+          "Field Label": "Episode 4",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Branching Logic": "[rheu_rheu] = '1' and [rheu_masyn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_mas5": {
+          "Variable / Field Name": "rheu_mas5",
+          "Form Name": "rheumatologic_disease",
+          "Field Label": "Episode 5",
+          "Field Type": "text",
+          "Field Note": "Ex: 03-Mar-2026",
+          "Branching Logic": "[rheu_rheu] = '1' and [rheu_masyn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "rheu_masipyn": {
+          "Variable / Field Name": "rheu_masipyn",
+          "Form Name": "rheumatologic_disease",
+          "Field Label": "Was MAS the initial presenting feature of the disease?",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[rheu_rheu] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes",
+            "2": "No",
+            "99": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Yes": "True|False",
+            "No": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Yes": "1",
+            "No": "2",
+            "Unknown": "99"
+          }
+        }
+      }
+    },
+    "rheu_notesa": {
+      "Variable / Field Name": "rheu_notesa",
+      "Form Name": "rheumatologic_disease",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    },
+    "profile_ab_notes": {
+      "Variable / Field Name": "profile_ab_notes",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    }
+  }
+}

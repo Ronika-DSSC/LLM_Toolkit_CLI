@@ -1,0 +1,1512 @@
+#### PROMPT_SET: inflammatory_markers_around_hlh_diagnosis
+---RAG---
+REDCap form: inflammatory_markers_around_hlh_diagnosis
+Retrieve document text needed to answer this form.
+Prefer labeled fields/tables; ignore repetitive footers/headers.
+Additional cues: demographics/face sheet, problem list, assessment & plan, discharge summary, lab results/flowsheets, medication list, imaging/pathology reports.
+Key terms: Sequence, number, cytokines, evaluated, during, this, timeframe, Soluble, CD25, not, available, date, value, unit, Normal, Abnormal, Name, Lab, Performing, Ferritin, CXCL9, IFN, IL-6, IL-18, CD163, IL-2, IL-18BP, TNF-
+
+---USER---
+You are a clinical information extractor.
+Given a clinical note (or EHR text), extract answers for the REDCap form: eligibility_and_patient_profile.
+
+Instructions:
+- Fill in the JSON TEMPLATE below using ONLY evidence explicitly present in the text. Do not guess.
+- Keep the same JSON keys and nesting.
+- For choice questions: replace 'True|False' with true or false.
+  * Single-choice (radio/dropdown/yes-no): set exactly one option to true if supported.
+  * Multi-choice (checkbox): set all supported options to true.
+- For 'String'/'Number'/'Integer'/'Date' placeholders: replace with the extracted value (or null if not found).
+- Only populate 'Nested Fields' (e.g., 'please specify') when the parent condition is met AND evidence supports it.
+- Output ONLY the filled JSON (no extra commentary).
+
+EVIDENCE / PAGE CITATION RULE (for auditability):
+- The retrieved Context snippets may include headers like [<source> p<page>] or [<source> p<start>-<end>].
+- For every non-null extracted field (any field whose answer is not null and/or any option you set to true), add an evidence line into profile_ab_notes.
+- Evidence line format (one per field): <VariableName>: <EvidenceTag> — <verbatim short phrase>.
+  * Example: profile_elig1: [patient.pdf p3] — "clinically suspected HLH"
+- Use the EvidenceTag exactly as shown in the Context header (including page number).
+- If no page header is present, cite the source header only (e.g., [note]) and still provide a short verbatim phrase.
+- Do NOT add new JSON keys for evidence; record all citations ONLY inside profile_ab_notes.
+
+OUTPUT FORMAT OVERRIDE (CRITICAL):
+- The JSON TEMPLATE below is REFERENCE ONLY (schema/choices/branching). Do NOT output it.
+- Output ONLY an ANSWERS JSON object, where EACH variable is formatted as:
+  "<variable_name>": { "answer": <value> }
+- Do NOT output "Form Name", "Questions", "Variable / Field Name", "Field Label", "Field Type",
+  "Possible Values", "answer_type", "answer_template", or "codes".
+- Keep the same variable names (e.g., record_id, profile_brthyr, profile_cntry, profile_usregn).
+- Output ONLY valid JSON (no commentary, no markdown, no extra keys).
+
+ANSWERS JSON TEMPLATE (THIS IS THE ONLY THING YOU SHOULD OUTPUT):
+{
+  "labc_labcseq": {
+    "answer": null
+  },
+  "labc_none": {
+    "answer": {
+      "No cytokines evaluated during this timeframe": false
+    }
+  },
+  "labc_cd25nd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labc_cd25dt": {
+    "answer": null
+  },
+  "labc_cd25v": {
+    "answer": null
+  },
+  "labc_cd25u": {
+    "answer": {
+      "pg/ML": false,
+      "U/mL": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labc_cd25us": {
+      "answer": null
+    }
+  },
+  "labc_cd25nl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labc_cd25lab": {
+    "answer": null
+  },
+  "labc_frtnnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labc_frtndt": {
+    "answer": null
+  },
+  "labc_frtnv": {
+    "answer": null
+  },
+  "labc_frtnu": {
+    "answer": {
+      "µg/L": false,
+      "ng/mL": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labc_frtnus": {
+      "answer": null
+    }
+  },
+  "labc_frtnnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labc_frtlab": {
+    "answer": null
+  },
+  "labc_cxcl9nd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labc_cxcl9dt": {
+    "answer": null
+  },
+  "labc_cxcl9v": {
+    "answer": null
+  },
+  "labc_cxcl9u": {
+    "answer": {
+      "pg/ML": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labc_cxcl9us": {
+      "answer": null
+    }
+  },
+  "labc_cxcl9nl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labc_cxcl9lab": {
+    "answer": null
+  },
+  "labc_ifnynd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labc_ifnydt": {
+    "answer": null
+  },
+  "labc_ifnyv": {
+    "answer": null
+  },
+  "labc_ifnyu": {
+    "answer": {
+      "pg/ML": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labc_ifnyus": {
+      "answer": null
+    }
+  },
+  "labc_ifny9nl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labc_ifnylab": {
+    "answer": null
+  },
+  "labc_il6nd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labc_il6dt": {
+    "answer": null
+  },
+  "labc_il6v": {
+    "answer": null
+  },
+  "labc_il6u": {
+    "answer": {
+      "pg/ML": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labc_il6us": {
+      "answer": null
+    }
+  },
+  "labc_il6nl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labc_il6lab": {
+    "answer": null
+  },
+  "labc_il18nd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labc_il18dt": {
+    "answer": null
+  },
+  "labc_il18v": {
+    "answer": null
+  },
+  "labc_il18u": {
+    "answer": {
+      "pg/ML": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labc_il18us": {
+      "answer": null
+    }
+  },
+  "labc_il18nl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labc_il18lab": {
+    "answer": null
+  },
+  "labc_s163nd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labc_s163dt": {
+    "answer": null
+  },
+  "labc_s163v": {
+    "answer": null
+  },
+  "labc_s163u": {
+    "answer": {
+      "pg/ML": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labc_s163us": {
+      "answer": null
+    }
+  },
+  "labc_s163nl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labc_s163lab": {
+    "answer": null
+  },
+  "labc_il2nd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labc_il2dt": {
+    "answer": null
+  },
+  "labc_il2v": {
+    "answer": null
+  },
+  "labc_il2u": {
+    "answer": {
+      "pg/ML": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labc_il2us": {
+      "answer": null
+    }
+  },
+  "labc_il2nl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labc_il2lab": {
+    "answer": null
+  },
+  "labc_il18bpnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labc_il18bpdt": {
+    "answer": null
+  },
+  "labc_il18bpv": {
+    "answer": null
+  },
+  "labc_il18bpu": {
+    "answer": {
+      "pg/ML": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labc_il18bpus": {
+      "answer": null
+    }
+  },
+  "labc_il18bpnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labc_il18bplab": {
+    "answer": null
+  },
+  "labc_tnfand": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labc_tnfadt": {
+    "answer": null
+  },
+  "labc_tnfav": {
+    "answer": null
+  },
+  "labc_tnfau": {
+    "answer": {
+      "pg/ML": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labc_tnfaus": {
+      "answer": null
+    }
+  },
+  "labc_tnfanl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labc_tnflab": {
+    "answer": null
+  },
+  "labc_sc59nd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labc_sc59dt": {
+    "answer": null
+  },
+  "labc_sc59v": {
+    "answer": null
+  },
+  "labc_sc59u": {
+    "answer": {
+      "ng/mL": false
+    }
+  },
+  "labc_sc59nl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labc_sc59lab": {
+    "answer": null
+  },
+  "labc_notes": {
+    "answer": null
+  },
+  "profile_ab_notes": {
+    "answer": null
+  }
+}
+
+GENERAL "OTHER" FALLBACK RULE (applies to ALL fields):
+- For any radio/dropdown/checkbox field:
+  1) First try to map the evidence to one of the allowed option labels (or clear synonyms).
+  2) If the evidence clearly provides a value but it does NOT match any allowed option label/code:
+     - If the field has an "Other" option AND has a nested/branching "Other specify" text field:
+       * Select/check the "Other" option (use its REDCap code)
+       * Put the exact unmatched value phrase from the evidence into the "Other specify" field
+     - If the field has "Other" option but no specify field:
+       * Select/check "Other" and do not invent text
+     - If the field does not have an "Other" option:
+       * Output null and add the variable name to not_found
+- Do NOT use "Other" when the value matches a valid option label or a clear synonym of a valid option.
+
+JSON TEMPLATE (schema + answer placeholders):
+{
+  "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+  "Questions": {
+    "labc_labcseq": {
+      "Variable / Field Name": "labc_labcseq",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "Sequence number",
+      "Field Type": "text",
+      "Field Note": "Ex: 1",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_none": {
+      "Variable / Field Name": "labc_none",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "No cytokines evaluated during this timeframe",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "No cytokines evaluated during this timeframe"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "No cytokines evaluated during this timeframe": "True|False"
+      },
+      "codes": {
+        "No cytokines evaluated during this timeframe": "1"
+      }
+    },
+    "labc_cd25nd": {
+      "Variable / Field Name": "labc_cd25nd",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "Soluble CD25 not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labc_cd25dt": {
+      "Variable / Field Name": "labc_cd25dt",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "Soluble CD25 date",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_cd25v": {
+      "Variable / Field Name": "labc_cd25v",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "Soluble CD25 value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_cd25u": {
+      "Variable / Field Name": "labc_cd25u",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "Soluble CD25 unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "pg/ML",
+        "2": "U/mL",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "pg/ML": "True|False",
+        "U/mL": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "pg/ML": "1",
+        "U/mL": "2",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labc_cd25us": {
+          "Variable / Field Name": "labc_cd25us",
+          "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+          "Field Label": "Soluble CD25 unit Other, specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labc_cd25u] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labc_cd25nl": {
+      "Variable / Field Name": "labc_cd25nl",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "Soluble CD25 Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labc_cd25lab": {
+      "Variable / Field Name": "labc_cd25lab",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "Name of the Lab Performing the Assay",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_frtnnd": {
+      "Variable / Field Name": "labc_frtnnd",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "Ferritin not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labc_frtndt": {
+      "Variable / Field Name": "labc_frtndt",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "Ferritin date",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_frtnv": {
+      "Variable / Field Name": "labc_frtnv",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "Ferritin value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_frtnu": {
+      "Variable / Field Name": "labc_frtnu",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "Ferritin unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "µg/L",
+        "2": "ng/mL",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "µg/L": "True|False",
+        "ng/mL": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "µg/L": "1",
+        "ng/mL": "2",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labc_frtnus": {
+          "Variable / Field Name": "labc_frtnus",
+          "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+          "Field Label": "Ferritin unit Other, specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labc_frtnu] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labc_frtnnl": {
+      "Variable / Field Name": "labc_frtnnl",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "Ferritin Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labc_frtlab": {
+      "Variable / Field Name": "labc_frtlab",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "Name of the Lab Performing the Assay",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_cxcl9nd": {
+      "Variable / Field Name": "labc_cxcl9nd",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "CXCL9 not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labc_cxcl9dt": {
+      "Variable / Field Name": "labc_cxcl9dt",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "CXCL9 date",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_cxcl9v": {
+      "Variable / Field Name": "labc_cxcl9v",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "CXCL9 value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_cxcl9u": {
+      "Variable / Field Name": "labc_cxcl9u",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "CXCL9 unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "pg/ML",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "pg/ML": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "pg/ML": "1",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labc_cxcl9us": {
+          "Variable / Field Name": "labc_cxcl9us",
+          "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+          "Field Label": "CXCL9 unit Other, specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labc_cxcl9u] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labc_cxcl9nl": {
+      "Variable / Field Name": "labc_cxcl9nl",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "CXCL9 Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labc_cxcl9lab": {
+      "Variable / Field Name": "labc_cxcl9lab",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "Name of the Lab Performing the Assay",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_ifnynd": {
+      "Variable / Field Name": "labc_ifnynd",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "IFNγ not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labc_ifnydt": {
+      "Variable / Field Name": "labc_ifnydt",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "IFNγ date",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_ifnyv": {
+      "Variable / Field Name": "labc_ifnyv",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "IFNγ value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_ifnyu": {
+      "Variable / Field Name": "labc_ifnyu",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "IFNγ unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "pg/ML",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "pg/ML": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "pg/ML": "1",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labc_ifnyus": {
+          "Variable / Field Name": "labc_ifnyus",
+          "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+          "Field Label": "IFNγ unit Other, specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labc_ifnyu] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labc_ifny9nl": {
+      "Variable / Field Name": "labc_ifny9nl",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "IFNγ Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labc_ifnylab": {
+      "Variable / Field Name": "labc_ifnylab",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "Name of the Lab Performing the Assay",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_il6nd": {
+      "Variable / Field Name": "labc_il6nd",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "IL-6 not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labc_il6dt": {
+      "Variable / Field Name": "labc_il6dt",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "IL-6 date",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_il6v": {
+      "Variable / Field Name": "labc_il6v",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "IL-6 value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_il6u": {
+      "Variable / Field Name": "labc_il6u",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "IL-6 unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "pg/ML",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "pg/ML": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "pg/ML": "1",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labc_il6us": {
+          "Variable / Field Name": "labc_il6us",
+          "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+          "Field Label": "IL-6 unit Other, specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labc_il6u] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labc_il6nl": {
+      "Variable / Field Name": "labc_il6nl",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "IL-6 Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labc_il6lab": {
+      "Variable / Field Name": "labc_il6lab",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "Name of the Lab Performing the Assay",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_il18nd": {
+      "Variable / Field Name": "labc_il18nd",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "IL-18 not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labc_il18dt": {
+      "Variable / Field Name": "labc_il18dt",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "IL-18 date",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_il18v": {
+      "Variable / Field Name": "labc_il18v",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "IL-18 value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_il18u": {
+      "Variable / Field Name": "labc_il18u",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "IL-18 unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "pg/ML",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "pg/ML": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "pg/ML": "1",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labc_il18us": {
+          "Variable / Field Name": "labc_il18us",
+          "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+          "Field Label": "IL-18 unit Other, specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labc_il18u] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labc_il18nl": {
+      "Variable / Field Name": "labc_il18nl",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "IL-18 Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labc_il18lab": {
+      "Variable / Field Name": "labc_il18lab",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "Name of the Lab Performing the Assay",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_s163nd": {
+      "Variable / Field Name": "labc_s163nd",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "Soluble CD163 not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labc_s163dt": {
+      "Variable / Field Name": "labc_s163dt",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "Soluble CD163 date",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_s163v": {
+      "Variable / Field Name": "labc_s163v",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "Soluble CD163 value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_s163u": {
+      "Variable / Field Name": "labc_s163u",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "Soluble CD163 unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "pg/ML",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "pg/ML": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "pg/ML": "1",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labc_s163us": {
+          "Variable / Field Name": "labc_s163us",
+          "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+          "Field Label": "Soluble CD163 unit Other, specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labc_s163u] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labc_s163nl": {
+      "Variable / Field Name": "labc_s163nl",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "Soluble CD163 Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labc_s163lab": {
+      "Variable / Field Name": "labc_s163lab",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "Name of the Lab Performing the Assay",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_il2nd": {
+      "Variable / Field Name": "labc_il2nd",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "IL-2 not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labc_il2dt": {
+      "Variable / Field Name": "labc_il2dt",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "IL-2 date",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_il2v": {
+      "Variable / Field Name": "labc_il2v",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "IL-2 value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_il2u": {
+      "Variable / Field Name": "labc_il2u",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "IL-2 unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "pg/ML",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "pg/ML": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "pg/ML": "1",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labc_il2us": {
+          "Variable / Field Name": "labc_il2us",
+          "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+          "Field Label": "IL-2 unit Other, specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labc_il2u] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labc_il2nl": {
+      "Variable / Field Name": "labc_il2nl",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "IL-2 Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labc_il2lab": {
+      "Variable / Field Name": "labc_il2lab",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "Name of the Lab Performing the Assay",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_il18bpnd": {
+      "Variable / Field Name": "labc_il18bpnd",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "IL-18BP not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labc_il18bpdt": {
+      "Variable / Field Name": "labc_il18bpdt",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "IL-18BP date",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_il18bpv": {
+      "Variable / Field Name": "labc_il18bpv",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "IL-18BP value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_il18bpu": {
+      "Variable / Field Name": "labc_il18bpu",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "IL-18BP unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "pg/ML",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "pg/ML": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "pg/ML": "1",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labc_il18bpus": {
+          "Variable / Field Name": "labc_il18bpus",
+          "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+          "Field Label": "IL-18BP unit Other, specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labc_il18bpu] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labc_il18bpnl": {
+      "Variable / Field Name": "labc_il18bpnl",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "IL-18BP Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labc_il18bplab": {
+      "Variable / Field Name": "labc_il18bplab",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "Name of the Lab Performing the Assay",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_tnfand": {
+      "Variable / Field Name": "labc_tnfand",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "TNF- α not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labc_tnfadt": {
+      "Variable / Field Name": "labc_tnfadt",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "TNF- α date",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_tnfav": {
+      "Variable / Field Name": "labc_tnfav",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "TNF- α value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_tnfau": {
+      "Variable / Field Name": "labc_tnfau",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "TNF- α unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "pg/ML",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "pg/ML": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "pg/ML": "1",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labc_tnfaus": {
+          "Variable / Field Name": "labc_tnfaus",
+          "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+          "Field Label": "TNF- α unit Other, specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labc_tnfau] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labc_tnfanl": {
+      "Variable / Field Name": "labc_tnfanl",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "TNF- α Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labc_tnflab": {
+      "Variable / Field Name": "labc_tnflab",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "Name of the Lab Performing the Assay",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_sc59nd": {
+      "Variable / Field Name": "labc_sc59nd",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "sC5-9 not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labc_sc59dt": {
+      "Variable / Field Name": "labc_sc59dt",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "sC5-9 date",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_sc59v": {
+      "Variable / Field Name": "labc_sc59v",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "sC5-9 value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_sc59u": {
+      "Variable / Field Name": "labc_sc59u",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "sC5-9 unit",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "ng/mL"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "ng/mL": "True|False"
+      },
+      "codes": {
+        "ng/mL": "1"
+      }
+    },
+    "labc_sc59nl": {
+      "Variable / Field Name": "labc_sc59nl",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "sC5-9 Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labc_sc59lab": {
+      "Variable / Field Name": "labc_sc59lab",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "Name of the Lab Performing the Assay",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labc_notes": {
+      "Variable / Field Name": "labc_notes",
+      "Form Name": "inflammatory_markers_around_hlh_diagnosis",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    },
+    "profile_ab_notes": {
+      "Variable / Field Name": "profile_ab_notes",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    }
+  }
+}

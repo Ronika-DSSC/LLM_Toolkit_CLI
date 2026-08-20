@@ -1,0 +1,965 @@
+#### PROMPT_SET: physicians_portal
+---RAG---
+REDCap form: physicians_portal
+Retrieve document text needed to answer this form.
+Prefer labeled fields/tables; ignore repetitive footers/headers.
+Additional cues: demographics/face sheet, problem list, assessment & plan, discharge summary, lab results/flowsheets, medication list, imaging/pathology reports.
+Key terms: Does, currently, have, being, treated, Did, you, reduce, hold, intensify, back, receive, HSCT, What, are, major, clinical, complications, HLH, contribute, any, reactivate, after, collect, research, blood, Physician, Notes, Abstractor
+
+---USER---
+You are a clinical information extractor.
+Given a clinical note (or EHR text), extract answers for the REDCap form: eligibility_and_patient_profile.
+
+Instructions:
+- Fill in the JSON TEMPLATE below using ONLY evidence explicitly present in the text. Do not guess.
+- Keep the same JSON keys and nesting.
+- For choice questions: replace 'True|False' with true or false.
+  * Single-choice (radio/dropdown/yes-no): set exactly one option to true if supported.
+  * Multi-choice (checkbox): set all supported options to true.
+- For 'String'/'Number'/'Integer'/'Date' placeholders: replace with the extracted value (or null if not found).
+- Only populate 'Nested Fields' (e.g., 'please specify') when the parent condition is met AND evidence supports it.
+- Output ONLY the filled JSON (no extra commentary).
+
+EVIDENCE / PAGE CITATION RULE (for auditability):
+- The retrieved Context snippets may include headers like [<source> p<page>] or [<source> p<start>-<end>].
+- For every non-null extracted field (any field whose answer is not null and/or any option you set to true), add an evidence line into profile_ab_notes.
+- Evidence line format (one per field): <VariableName>: <EvidenceTag> — <verbatim short phrase>.
+  * Example: profile_elig1: [patient.pdf p3] — "clinically suspected HLH"
+- Use the EvidenceTag exactly as shown in the Context header (including page number).
+- If no page header is present, cite the source header only (e.g., [note]) and still provide a short verbatim phrase.
+- Do NOT add new JSON keys for evidence; record all citations ONLY inside profile_ab_notes.
+
+OUTPUT FORMAT OVERRIDE (CRITICAL):
+- The JSON TEMPLATE below is REFERENCE ONLY (schema/choices/branching). Do NOT output it.
+- Output ONLY an ANSWERS JSON object, where EACH variable is formatted as:
+  "<variable_name>": { "answer": <value> }
+- Do NOT output "Form Name", "Questions", "Variable / Field Name", "Field Label", "Field Type",
+  "Possible Values", "answer_type", "answer_template", or "codes".
+- Keep the same variable names (e.g., record_id, profile_brthyr, profile_cntry, profile_usregn).
+- Output ONLY valid JSON (no commentary, no markdown, no extra keys).
+
+ANSWERS JSON TEMPLATE (THIS IS THE ONLY THING YOU SHOULD OUTPUT):
+{
+  "pi_actvdx": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "pi_dxstat": {
+      "answer": {
+        "Responding": false,
+        "Non-responding": false,
+        "Refractory": false,
+        "Relapsing": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "pi_dxstatsp": {
+      "answer": null
+    }
+  },
+  "pi_trtyn": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "pi_trtline": {
+      "answer": {
+        "First line": false,
+        "Subsequent treatment": false,
+        "Unknown": false
+      }
+    },
+    "pi_trtrsn": {
+      "answer": {
+        "Refractory disease": false,
+        "Recurrent disease": false,
+        "Progressive disease": false,
+        "Intolerance": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "pi_fltrt": {
+      "answer": {
+        "Resolution or remission of HLH": false,
+        "Refractory disease": false,
+        "Recurrent disease": false,
+        "Progressive disease": false,
+        "Intolerance": false,
+        "Patient proceeded to HSCT": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "pi_fltrtsp": {
+      "answer": null
+    }
+  },
+  "pi_doshold": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Not applicable": false,
+      "Unknown": false
+    },
+    "pi_holdrsn": {
+      "answer": {
+        "HLH improvement": false,
+        "Drug toxicity": false,
+        "Drug interaction": false,
+        "Renal/liver failure": false,
+        "Other": false,
+        "Unknown": false
+      },
+      "pi_holdsp": {
+        "answer": null
+      }
+    }
+  },
+  "pi_intnsfy": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    }
+  },
+  "pi_hlh94tmp": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "pi_altrtn": {
+      "answer": {
+        "No response": false,
+        "Clinical deterioration": false,
+        "HLH recurrence": false,
+        "Other": false,
+        "Unknown": false
+      },
+      "pi_altrtnsp": {
+        "answer": null
+      }
+    }
+  },
+  "pi_hsctstat": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "pi_hsctyn": {
+      "answer": {
+        "Yes": false,
+        "No": false,
+        "Not Applicable": false,
+        "Unknown": false
+      },
+      "pi_nohsct": {
+        "answer": {
+          "Non-active disease": false,
+          "Not indicated": false,
+          "Inadequate clinical condition": false,
+          "Parents/patients refuse": false,
+          "Other": false,
+          "Unknown": false
+        },
+        "pi_nohsctsp": {
+          "answer": null
+        }
+      }
+    },
+    "pi_hsctnd": {
+      "answer": {
+        "Better disease status": false,
+        "Well-matched donor": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "pi_hsctndsp": {
+      "answer": null
+    }
+  },
+  "pi_hsctcomp": {
+    "answer": {
+      "GVHD": false,
+      "VOD": false,
+      "Idiopathic IPS": false,
+      "Graft rejection": false,
+      "Life-threatening infections": false,
+      "Other": false,
+      "None": false,
+      "Unknown": false
+    },
+    "pi_gvhdgrd": {
+      "answer": {
+        "Grade 1": false,
+        "Grade 2": false,
+        "Grade 3": false,
+        "Grade 4": false,
+        "Unknown": false
+      }
+    },
+    "pi_othsp": {
+      "answer": null
+    }
+  },
+  "pi_hlhcontrib": {
+    "answer": {
+      "GVHD": false,
+      "VOD": false,
+      "Idiopathic IPS": false,
+      "Graft rejection": false,
+      "Life-threatening infections": false,
+      "Other": false,
+      "None": false,
+      "Unknown": false
+    },
+    "pi_othspc": {
+      "answer": null
+    }
+  },
+  "pi_reactvt": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    }
+  },
+  "pi_bloodyn": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "pi_blooddt": {
+      "answer": null
+    }
+  },
+  "pi_notes": {
+    "answer": null
+  },
+  "profile_ab_notes": {
+    "answer": null
+  }
+}
+
+GENERAL "OTHER" FALLBACK RULE (applies to ALL fields):
+- For any radio/dropdown/checkbox field:
+  1) First try to map the evidence to one of the allowed option labels (or clear synonyms).
+  2) If the evidence clearly provides a value but it does NOT match any allowed option label/code:
+     - If the field has an "Other" option AND has a nested/branching "Other specify" text field:
+       * Select/check the "Other" option (use its REDCap code)
+       * Put the exact unmatched value phrase from the evidence into the "Other specify" field
+     - If the field has "Other" option but no specify field:
+       * Select/check "Other" and do not invent text
+     - If the field does not have an "Other" option:
+       * Output null and add the variable name to not_found
+- Do NOT use "Other" when the value matches a valid option label or a clear synonym of a valid option.
+
+JSON TEMPLATE (schema + answer placeholders):
+{
+  "Form Name": "physicians_portal",
+  "Questions": {
+    "pi_actvdx": {
+      "Variable / Field Name": "pi_actvdx",
+      "Form Name": "physicians_portal",
+      "Field Label": "Does the patient currently have an active disease?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "pi_dxstat": {
+          "Variable / Field Name": "pi_dxstat",
+          "Form Name": "physicians_portal",
+          "Field Label": "How would you define the disease status of the patient?",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[pi_actvdx] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Responding",
+            "2": "Non-responding",
+            "3": "Refractory",
+            "4": "Relapsing",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Responding": "True|False",
+            "Non-responding": "True|False",
+            "Refractory": "True|False",
+            "Relapsing": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Responding": "1",
+            "Non-responding": "2",
+            "Refractory": "3",
+            "Relapsing": "4",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "pi_dxstatsp": {
+          "Variable / Field Name": "pi_dxstatsp",
+          "Form Name": "physicians_portal",
+          "Field Label": "Other, please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[pi_actvdx] = '1' and [pi_dxstat] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "pi_trtyn": {
+      "Variable / Field Name": "pi_trtyn",
+      "Form Name": "physicians_portal",
+      "Field Label": "Is the patient currently being treated for HLH?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "pi_trtline": {
+          "Variable / Field Name": "pi_trtline",
+          "Form Name": "physicians_portal",
+          "Field Label": "As what line of therapy would you define this treatment?",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[pi_trtyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "First line",
+            "2": "Subsequent treatment",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "First line": "True|False",
+            "Subsequent treatment": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "First line": "1",
+            "Subsequent treatment": "2",
+            "Unknown": "98"
+          }
+        },
+        "pi_trtrsn": {
+          "Variable / Field Name": "pi_trtrsn",
+          "Form Name": "physicians_portal",
+          "Field Label": "If subsequent line, Indicate the reason for initiating treatment:",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[pi_trtyn] = '1' and [pi_trtline] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Refractory disease",
+            "2": "Recurrent disease",
+            "3": "Progressive disease",
+            "4": "Intolerance",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Refractory disease": "True|False",
+            "Recurrent disease": "True|False",
+            "Progressive disease": "True|False",
+            "Intolerance": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Refractory disease": "1",
+            "Recurrent disease": "2",
+            "Progressive disease": "3",
+            "Intolerance": "4",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "pi_fltrt": {
+          "Variable / Field Name": "pi_fltrt",
+          "Form Name": "physicians_portal",
+          "Field Label": "Indicate the reason for ending the first-line treatment:",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[pi_trtyn] = '1' and [pi_trtline] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Resolution or remission of HLH",
+            "2": "Refractory disease",
+            "3": "Recurrent disease",
+            "4": "Progressive disease",
+            "5": "Intolerance",
+            "6": "Patient proceeded to HSCT",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Resolution or remission of HLH": "True|False",
+            "Refractory disease": "True|False",
+            "Recurrent disease": "True|False",
+            "Progressive disease": "True|False",
+            "Intolerance": "True|False",
+            "Patient proceeded to HSCT": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Resolution or remission of HLH": "1",
+            "Refractory disease": "2",
+            "Recurrent disease": "3",
+            "Progressive disease": "4",
+            "Intolerance": "5",
+            "Patient proceeded to HSCT": "6",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "pi_fltrtsp": {
+          "Variable / Field Name": "pi_fltrtsp",
+          "Form Name": "physicians_portal",
+          "Field Label": "Other, please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[pi_trtyn] = '1' and [pi_trtline] = '1' and [pi_trtrsn] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "pi_doshold": {
+      "Variable / Field Name": "pi_doshold",
+      "Form Name": "physicians_portal",
+      "Field Label": "Did you have to reduce/hold the dose differently than the schedule?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "97": "Not applicable",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Not applicable": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Not applicable": "97",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "pi_holdrsn": {
+          "Variable / Field Name": "pi_holdrsn",
+          "Form Name": "physicians_portal",
+          "Field Label": "If yes, please indicate why?",
+          "Field Type": "radio",
+          "Branching Logic": "[pi_doshold] = '1'",
+          "Possible Values (code->label)": {
+            "1": "HLH improvement",
+            "2": "Drug toxicity",
+            "3": "Drug interaction",
+            "4": "Renal/liver failure",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "HLH improvement": "True|False",
+            "Drug toxicity": "True|False",
+            "Drug interaction": "True|False",
+            "Renal/liver failure": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "HLH improvement": "1",
+            "Drug toxicity": "2",
+            "Drug interaction": "3",
+            "Renal/liver failure": "4",
+            "Other": "99",
+            "Unknown": "98"
+          },
+          "Nested Fields": {
+            "pi_holdsp": {
+              "Variable / Field Name": "pi_holdsp",
+              "Form Name": "physicians_portal",
+              "Field Label": "Other, please specify",
+              "Field Type": "text",
+              "Required Field?": "y",
+              "Branching Logic": "[pi_holdrsn] = '99'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        }
+      }
+    },
+    "pi_intnsfy": {
+      "Variable / Field Name": "pi_intnsfy",
+      "Form Name": "physicians_portal",
+      "Field Label": "Did you have to intensify the planned therapy?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      }
+    },
+    "pi_hlh94tmp": {
+      "Variable / Field Name": "pi_hlh94tmp",
+      "Form Name": "physicians_portal",
+      "Field Label": "Did you go back to the beginning of the HLH94/2004 template?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "pi_altrtn": {
+          "Variable / Field Name": "pi_altrtn",
+          "Form Name": "physicians_portal",
+          "Field Label": "Indicate the reason for treatment alteration:",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[pi_hlh94tmp] = '1'",
+          "Possible Values (code->label)": {
+            "1": "No response",
+            "2": "Clinical deterioration",
+            "3": "HLH recurrence",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "No response": "True|False",
+            "Clinical deterioration": "True|False",
+            "HLH recurrence": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "No response": "1",
+            "Clinical deterioration": "2",
+            "HLH recurrence": "3",
+            "Other": "99",
+            "Unknown": "98"
+          },
+          "Nested Fields": {
+            "pi_altrtnsp": {
+              "Variable / Field Name": "pi_altrtnsp",
+              "Form Name": "physicians_portal",
+              "Field Label": "Other, please specify",
+              "Field Type": "text",
+              "Required Field?": "y",
+              "Branching Logic": "[pi_altrtn] = '99'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        }
+      }
+    },
+    "pi_hsctstat": {
+      "Variable / Field Name": "pi_hsctstat",
+      "Form Name": "physicians_portal",
+      "Field Label": "Did the patient receive HSCT?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "pi_hsctyn": {
+          "Variable / Field Name": "pi_hsctyn",
+          "Form Name": "physicians_portal",
+          "Field Label": "Do you plan to proceed to HSCT in this patient?",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[pi_hsctstat] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Yes",
+            "2": "No",
+            "97": "Not Applicable",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Yes": "True|False",
+            "No": "True|False",
+            "Not Applicable": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Yes": "1",
+            "No": "2",
+            "Not Applicable": "97",
+            "Unknown": "98"
+          },
+          "Nested Fields": {
+            "pi_nohsct": {
+              "Variable / Field Name": "pi_nohsct",
+              "Form Name": "physicians_portal",
+              "Field Label": "Indicate the reason why the patient is not a candidate for HSCT",
+              "Field Type": "radio",
+              "Required Field?": "y",
+              "Branching Logic": "[pi_hsctyn] = '2'",
+              "Possible Values (code->label)": {
+                "1": "Non-active disease",
+                "2": "Not indicated",
+                "3": "Inadequate clinical condition",
+                "4": "Parents/patients refuse",
+                "99": "Other",
+                "98": "Unknown"
+              },
+              "answer_type": "single_choice",
+              "answer_template": {
+                "Non-active disease": "True|False",
+                "Not indicated": "True|False",
+                "Inadequate clinical condition": "True|False",
+                "Parents/patients refuse": "True|False",
+                "Other": "True|False",
+                "Unknown": "True|False"
+              },
+              "codes": {
+                "Non-active disease": "1",
+                "Not indicated": "2",
+                "Inadequate clinical condition": "3",
+                "Parents/patients refuse": "4",
+                "Other": "99",
+                "Unknown": "98"
+              },
+              "Nested Fields": {
+                "pi_nohsctsp": {
+                  "Variable / Field Name": "pi_nohsctsp",
+                  "Form Name": "physicians_portal",
+                  "Field Label": "Other, please specify",
+                  "Field Type": "notes",
+                  "Required Field?": "y",
+                  "Branching Logic": "[pi_nohsct] = '99'",
+                  "answer_type": "string",
+                  "answer_template": "String (free text)"
+                }
+              }
+            }
+          }
+        },
+        "pi_hsctnd": {
+          "Variable / Field Name": "pi_hsctnd",
+          "Form Name": "physicians_portal",
+          "Field Label": "What is needed to proceed to HSCT?",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[pi_hsctstat] = '2' and [pi_hsctyn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Better disease status",
+            "2": "Well-matched donor",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Better disease status": "True|False",
+            "Well-matched donor": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Better disease status": "1",
+            "Well-matched donor": "2",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "pi_hsctndsp": {
+          "Variable / Field Name": "pi_hsctndsp",
+          "Form Name": "physicians_portal",
+          "Field Label": "Other, please specify",
+          "Field Type": "notes",
+          "Required Field?": "y",
+          "Branching Logic": "[pi_hsctstat] = '2' and [pi_hsctstat] = '1' and [pi_hsctnd] = '99'",
+          "answer_type": "string",
+          "answer_template": "String (free text)"
+        }
+      }
+    },
+    "pi_hsctcomp": {
+      "Variable / Field Name": "pi_hsctcomp",
+      "Form Name": "physicians_portal",
+      "Field Label": "What are the major clinical complications related to HSCT (choose all appropriate options)?",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "GVHD",
+        "2": "VOD",
+        "3": "Idiopathic IPS",
+        "4": "Graft rejection",
+        "5": "Life-threatening infections",
+        "6": "Other",
+        "7": "None",
+        "8": "Unknown"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "GVHD": "True|False",
+        "VOD": "True|False",
+        "Idiopathic IPS": "True|False",
+        "Graft rejection": "True|False",
+        "Life-threatening infections": "True|False",
+        "Other": "True|False",
+        "None": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "GVHD": "1",
+        "VOD": "2",
+        "Idiopathic IPS": "3",
+        "Graft rejection": "4",
+        "Life-threatening infections": "5",
+        "Other": "6",
+        "None": "7",
+        "Unknown": "8"
+      },
+      "Nested Fields": {
+        "pi_gvhdgrd": {
+          "Variable / Field Name": "pi_gvhdgrd",
+          "Form Name": "physicians_portal",
+          "Field Label": "Indicate the grade of GVHD",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[pi_hsctcomp(1)] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Grade 1",
+            "2": "Grade 2",
+            "3": "Grade 3",
+            "4": "Grade 4",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Grade 1": "True|False",
+            "Grade 2": "True|False",
+            "Grade 3": "True|False",
+            "Grade 4": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Grade 1": "1",
+            "Grade 2": "2",
+            "Grade 3": "3",
+            "Grade 4": "4",
+            "Unknown": "98"
+          }
+        },
+        "pi_othsp": {
+          "Variable / Field Name": "pi_othsp",
+          "Form Name": "physicians_portal",
+          "Field Label": "Other, please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[pi_hsctcomp(6)] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "pi_hlhcontrib": {
+      "Variable / Field Name": "pi_hlhcontrib",
+      "Form Name": "physicians_portal",
+      "Field Label": "Did HLH contribute to any of these?",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "GVHD",
+        "2": "VOD",
+        "3": "Idiopathic IPS",
+        "4": "Graft rejection",
+        "5": "Life-threatening infections",
+        "6": "Other",
+        "7": "None",
+        "8": "Unknown"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "GVHD": "True|False",
+        "VOD": "True|False",
+        "Idiopathic IPS": "True|False",
+        "Graft rejection": "True|False",
+        "Life-threatening infections": "True|False",
+        "Other": "True|False",
+        "None": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "GVHD": "1",
+        "VOD": "2",
+        "Idiopathic IPS": "3",
+        "Graft rejection": "4",
+        "Life-threatening infections": "5",
+        "Other": "6",
+        "None": "7",
+        "Unknown": "8"
+      },
+      "Nested Fields": {
+        "pi_othspc": {
+          "Variable / Field Name": "pi_othspc",
+          "Form Name": "physicians_portal",
+          "Field Label": "Other, please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[pi_hlhcontrib(6)] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "pi_reactvt": {
+      "Variable / Field Name": "pi_reactvt",
+      "Form Name": "physicians_portal",
+      "Field Label": "Did the HLH reactivate after HSCT?",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      }
+    },
+    "pi_bloodyn": {
+      "Variable / Field Name": "pi_bloodyn",
+      "Form Name": "physicians_portal",
+      "Field Label": "Did you collect research blood?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "pi_blooddt": {
+          "Variable / Field Name": "pi_blooddt",
+          "Form Name": "physicians_portal",
+          "Field Label": "Collection date",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[pi_bloodyn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "pi_notes": {
+      "Variable / Field Name": "pi_notes",
+      "Form Name": "physicians_portal",
+      "Field Label": "Physician Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    },
+    "profile_ab_notes": {
+      "Variable / Field Name": "profile_ab_notes",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    }
+  }
+}

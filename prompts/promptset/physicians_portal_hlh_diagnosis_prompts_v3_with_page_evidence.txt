@@ -1,0 +1,676 @@
+#### PROMPT_SET: physicians_portal_hlh_diagnosis
+---RAG---
+REDCap form: physicians_portal_hlh_diagnosis
+Retrieve document text needed to answer this form.
+Prefer labeled fields/tables; ignore repetitive footers/headers.
+Additional cues: demographics/face sheet, problem list, assessment & plan, discharge summary, lab results/flowsheets, medication list, imaging/pathology reports.
+Key terms: When, you, think, disease, did, receive, What, was, specialty, First, Second, Third, number, treating-physician, are, diagnoses, were, considered, your, there, delay, diagnosis, collect, research, blood, Physician, Notes, Abstractor
+
+---USER---
+You are a clinical information extractor.
+Given a clinical note (or EHR text), extract answers for the REDCap form: eligibility_and_patient_profile.
+
+Instructions:
+- Fill in the JSON TEMPLATE below using ONLY evidence explicitly present in the text. Do not guess.
+- Keep the same JSON keys and nesting.
+- For choice questions: replace 'True|False' with true or false.
+  * Single-choice (radio/dropdown/yes-no): set exactly one option to true if supported.
+  * Multi-choice (checkbox): set all supported options to true.
+- For 'String'/'Number'/'Integer'/'Date' placeholders: replace with the extracted value (or null if not found).
+- Only populate 'Nested Fields' (e.g., 'please specify') when the parent condition is met AND evidence supports it.
+- Output ONLY the filled JSON (no extra commentary).
+
+EVIDENCE / PAGE CITATION RULE (for auditability):
+- The retrieved Context snippets may include headers like [<source> p<page>] or [<source> p<start>-<end>].
+- For every non-null extracted field (any field whose answer is not null and/or any option you set to true), add an evidence line into profile_ab_notes.
+- Evidence line format (one per field): <VariableName>: <EvidenceTag> — <verbatim short phrase>.
+  * Example: profile_elig1: [patient.pdf p3] — "clinically suspected HLH"
+- Use the EvidenceTag exactly as shown in the Context header (including page number).
+- If no page header is present, cite the source header only (e.g., [note]) and still provide a short verbatim phrase.
+- Do NOT add new JSON keys for evidence; record all citations ONLY inside profile_ab_notes.
+
+OUTPUT FORMAT OVERRIDE (CRITICAL):
+- The JSON TEMPLATE below is REFERENCE ONLY (schema/choices/branching). Do NOT output it.
+- Output ONLY an ANSWERS JSON object, where EACH variable is formatted as:
+  "<variable_name>": { "answer": <value> }
+- Do NOT output "Form Name", "Questions", "Variable / Field Name", "Field Label", "Field Type",
+  "Possible Values", "answer_type", "answer_template", or "codes".
+- Keep the same variable names (e.g., record_id, profile_brthyr, profile_cntry, profile_usregn).
+- Output ONLY valid JSON (no commentary, no markdown, no extra keys).
+
+ANSWERS JSON TEMPLATE (THIS IS THE ONLY THING YOU SHOULD OUTPUT):
+{
+  "pi_hlhstdt": {
+    "answer": null
+  },
+  "pi_hlhdiag": {
+    "answer": null
+  },
+  "what_was_the_specialty_of": {
+    "answer": null
+  },
+  "pi_frstspcl": {
+    "answer": {
+      "General practitioner/pediatrician": false,
+      "Emergency room doctor": false,
+      "Internal medicine specialists": false,
+      "Rheumatologist": false,
+      "Hematologist": false,
+      "Unknown": false,
+      "Other": false
+    },
+    "pi_frstoth": {
+      "answer": null
+    }
+  },
+  "pi_scndspcl": {
+    "answer": {
+      "General practitioner/pediatrician": false,
+      "Emergency room doctor": false,
+      "Internal medicine specialists": false,
+      "Rheumatologist": false,
+      "Hematologist": false,
+      "Unknown": false,
+      "Other": false
+    },
+    "pi_scndoth": {
+      "answer": null
+    }
+  },
+  "pi_thrdspcl": {
+    "answer": {
+      "General practitioner/pediatrician": false,
+      "Emergency room doctor": false,
+      "Internal medicine specialists": false,
+      "Rheumatologist": false,
+      "Hematologist": false,
+      "Unknown": false,
+      "Other": false
+    },
+    "pi_thrdoth": {
+      "answer": null
+    }
+  },
+  "pi_phynum": {
+    "answer": {
+      "First": false,
+      "Second": false,
+      "Third": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "pi_phynumsp": {
+      "answer": null
+    }
+  },
+  "pi_diff": {
+    "answer": {
+      "HLH": false,
+      "Infection": false,
+      "Sepsis": false,
+      "Malignancy": false,
+      "Kawasaki": false,
+      "Unknown": false,
+      "Other": false
+    },
+    "pi_diffhlht": {
+      "answer": {
+        "Primary/familial HLH": false,
+        "Malignancy-associated HLH": false,
+        "Drug reaction and Eosinophilia and Systemic symptoms (DRESS)": false,
+        "Macrophage Activation Syndrome (MAS)": false,
+        "Cytokine releasing syndrome related to immune activating agents": false,
+        "Other secondary": false,
+        "Unknown": false
+      }
+    },
+    "pi_diffhlho": {
+      "answer": null
+    },
+    "pi_diffinfo": {
+      "answer": null
+    },
+    "pi_diffoths": {
+      "answer": null
+    }
+  },
+  "pi_diagdely": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "pi_delydys": {
+      "answer": null
+    },
+    "pi_delyrsn": {
+      "answer": {
+        "Misdiagnosis": false,
+        "Did not seek medical attention": false,
+        "Delay or slowness of specialized tests": false,
+        "Other": false,
+        "Unknown": false
+      },
+      "pi_diagdelysp": {
+        "answer": null
+      }
+    },
+    "pi_misdiag": {
+      "answer": null
+    },
+    "pi_actnble": {
+      "answer": {
+        "Yes": false,
+        "No": false,
+        "Unknown": false
+      }
+    }
+  },
+  "pi_blooddyn": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Unknown": false
+    },
+    "pi_bloodddt": {
+      "answer": null
+    }
+  },
+  "pi_diagnotes": {
+    "answer": null
+  },
+  "profile_ab_notes": {
+    "answer": null
+  }
+}
+
+GENERAL "OTHER" FALLBACK RULE (applies to ALL fields):
+- For any radio/dropdown/checkbox field:
+  1) First try to map the evidence to one of the allowed option labels (or clear synonyms).
+  2) If the evidence clearly provides a value but it does NOT match any allowed option label/code:
+     - If the field has an "Other" option AND has a nested/branching "Other specify" text field:
+       * Select/check the "Other" option (use its REDCap code)
+       * Put the exact unmatched value phrase from the evidence into the "Other specify" field
+     - If the field has "Other" option but no specify field:
+       * Select/check "Other" and do not invent text
+     - If the field does not have an "Other" option:
+       * Output null and add the variable name to not_found
+- Do NOT use "Other" when the value matches a valid option label or a clear synonym of a valid option.
+
+JSON TEMPLATE (schema + answer placeholders):
+{
+  "Form Name": "physicians_portal_hlh_diagnosis",
+  "Questions": {
+    "pi_hlhstdt": {
+      "Variable / Field Name": "pi_hlhstdt",
+      "Form Name": "physicians_portal_hlh_diagnosis",
+      "Field Label": "When do you think the disease started?",
+      "Field Type": "text",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "pi_hlhdiag": {
+      "Variable / Field Name": "pi_hlhdiag",
+      "Form Name": "physicians_portal_hlh_diagnosis",
+      "Field Label": "When did the patient receive the original HLH diagnosis?",
+      "Field Type": "text",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "what_was_the_specialty_of": {
+      "Variable / Field Name": "what_was_the_specialty_of",
+      "Form Name": "physicians_portal_hlh_diagnosis",
+      "Field Label": "What was the specialty of the physicians that the patient initially encountered?",
+      "Field Type": "descriptive",
+      "answer_type": "display_only",
+      "answer_template": null
+    },
+    "pi_frstspcl": {
+      "Variable / Field Name": "pi_frstspcl",
+      "Form Name": "physicians_portal_hlh_diagnosis",
+      "Field Label": "First",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "General practitioner/pediatrician",
+        "2": "Emergency room doctor",
+        "3": "Internal medicine specialists",
+        "4": "Rheumatologist",
+        "5": "Hematologist",
+        "98": "Unknown",
+        "99": "Other"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "General practitioner/pediatrician": "True|False",
+        "Emergency room doctor": "True|False",
+        "Internal medicine specialists": "True|False",
+        "Rheumatologist": "True|False",
+        "Hematologist": "True|False",
+        "Unknown": "True|False",
+        "Other": "True|False"
+      },
+      "codes": {
+        "General practitioner/pediatrician": "1",
+        "Emergency room doctor": "2",
+        "Internal medicine specialists": "3",
+        "Rheumatologist": "4",
+        "Hematologist": "5",
+        "Unknown": "98",
+        "Other": "99"
+      },
+      "Nested Fields": {
+        "pi_frstoth": {
+          "Variable / Field Name": "pi_frstoth",
+          "Form Name": "physicians_portal_hlh_diagnosis",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[pi_frstspcl] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "pi_scndspcl": {
+      "Variable / Field Name": "pi_scndspcl",
+      "Form Name": "physicians_portal_hlh_diagnosis",
+      "Field Label": "Second",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "General practitioner/pediatrician",
+        "2": "Emergency room doctor",
+        "3": "Internal medicine specialists",
+        "4": "Rheumatologist",
+        "5": "Hematologist",
+        "98": "Unknown",
+        "99": "Other"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "General practitioner/pediatrician": "True|False",
+        "Emergency room doctor": "True|False",
+        "Internal medicine specialists": "True|False",
+        "Rheumatologist": "True|False",
+        "Hematologist": "True|False",
+        "Unknown": "True|False",
+        "Other": "True|False"
+      },
+      "codes": {
+        "General practitioner/pediatrician": "1",
+        "Emergency room doctor": "2",
+        "Internal medicine specialists": "3",
+        "Rheumatologist": "4",
+        "Hematologist": "5",
+        "Unknown": "98",
+        "Other": "99"
+      },
+      "Nested Fields": {
+        "pi_scndoth": {
+          "Variable / Field Name": "pi_scndoth",
+          "Form Name": "physicians_portal_hlh_diagnosis",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[pi_scndspcl] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "pi_thrdspcl": {
+      "Variable / Field Name": "pi_thrdspcl",
+      "Form Name": "physicians_portal_hlh_diagnosis",
+      "Field Label": "Third",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "General practitioner/pediatrician",
+        "2": "Emergency room doctor",
+        "3": "Internal medicine specialists",
+        "4": "Rheumatologist",
+        "5": "Hematologist",
+        "98": "Unknown",
+        "99": "Other"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "General practitioner/pediatrician": "True|False",
+        "Emergency room doctor": "True|False",
+        "Internal medicine specialists": "True|False",
+        "Rheumatologist": "True|False",
+        "Hematologist": "True|False",
+        "Unknown": "True|False",
+        "Other": "True|False"
+      },
+      "codes": {
+        "General practitioner/pediatrician": "1",
+        "Emergency room doctor": "2",
+        "Internal medicine specialists": "3",
+        "Rheumatologist": "4",
+        "Hematologist": "5",
+        "Unknown": "98",
+        "Other": "99"
+      },
+      "Nested Fields": {
+        "pi_thrdoth": {
+          "Variable / Field Name": "pi_thrdoth",
+          "Form Name": "physicians_portal_hlh_diagnosis",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[pi_thrdspcl] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "pi_phynum": {
+      "Variable / Field Name": "pi_phynum",
+      "Form Name": "physicians_portal_hlh_diagnosis",
+      "Field Label": "What number of treating-physician are you?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "First",
+        "2": "Second",
+        "3": "Third",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "First": "True|False",
+        "Second": "True|False",
+        "Third": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "First": "1",
+        "Second": "2",
+        "Third": "3",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "pi_phynumsp": {
+          "Variable / Field Name": "pi_phynumsp",
+          "Form Name": "physicians_portal_hlh_diagnosis",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[pi_phynum] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "pi_diff": {
+      "Variable / Field Name": "pi_diff",
+      "Form Name": "physicians_portal_hlh_diagnosis",
+      "Field Label": "What diagnoses were considered in your differential diagnosis?",
+      "Field Type": "checkbox",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "HLH",
+        "2": "Infection",
+        "3": "Sepsis",
+        "4": "Malignancy",
+        "5": "Kawasaki",
+        "6": "Unknown",
+        "7": "Other"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "HLH": "True|False",
+        "Infection": "True|False",
+        "Sepsis": "True|False",
+        "Malignancy": "True|False",
+        "Kawasaki": "True|False",
+        "Unknown": "True|False",
+        "Other": "True|False"
+      },
+      "codes": {
+        "HLH": "1",
+        "Infection": "2",
+        "Sepsis": "3",
+        "Malignancy": "4",
+        "Kawasaki": "5",
+        "Unknown": "6",
+        "Other": "7"
+      },
+      "Nested Fields": {
+        "pi_diffhlht": {
+          "Variable / Field Name": "pi_diffhlht",
+          "Form Name": "physicians_portal_hlh_diagnosis",
+          "Field Label": "If HLH was eventually diagnosed, please specify the exact type:",
+          "Field Type": "checkbox",
+          "Required Field?": "y",
+          "Branching Logic": "[pi_diff(1)] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Primary/familial HLH",
+            "2": "Malignancy-associated HLH",
+            "3": "Drug reaction and Eosinophilia and Systemic symptoms (DRESS)",
+            "4": "Macrophage Activation Syndrome (MAS)",
+            "5": "Cytokine releasing syndrome related to immune activating agents",
+            "99": "Other secondary",
+            "98": "Unknown"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Primary/familial HLH": "True|False",
+            "Malignancy-associated HLH": "True|False",
+            "Drug reaction and Eosinophilia and Systemic symptoms (DRESS)": "True|False",
+            "Macrophage Activation Syndrome (MAS)": "True|False",
+            "Cytokine releasing syndrome related to immune activating agents": "True|False",
+            "Other secondary": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Primary/familial HLH": "1",
+            "Malignancy-associated HLH": "2",
+            "Drug reaction and Eosinophilia and Systemic symptoms (DRESS)": "3",
+            "Macrophage Activation Syndrome (MAS)": "4",
+            "Cytokine releasing syndrome related to immune activating agents": "5",
+            "Other secondary": "99",
+            "Unknown": "98"
+          }
+        },
+        "pi_diffhlho": {
+          "Variable / Field Name": "pi_diffhlho",
+          "Form Name": "physicians_portal_hlh_diagnosis",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[pi_diff(1)] = '1' and [pi_diffhlht(99)] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "pi_diffinfo": {
+          "Variable / Field Name": "pi_diffinfo",
+          "Form Name": "physicians_portal_hlh_diagnosis",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[pi_diff(2)] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "pi_diffoths": {
+          "Variable / Field Name": "pi_diffoths",
+          "Form Name": "physicians_portal_hlh_diagnosis",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[pi_diff(7)] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "pi_diagdely": {
+      "Variable / Field Name": "pi_diagdely",
+      "Form Name": "physicians_portal_hlh_diagnosis",
+      "Field Label": "Was there a delay in diagnosis?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "pi_delydys": {
+          "Variable / Field Name": "pi_delydys",
+          "Form Name": "physicians_portal_hlh_diagnosis",
+          "Field Label": "How long was the delay in diagnosis (days)?",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[pi_diagdely] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "pi_delyrsn": {
+          "Variable / Field Name": "pi_delyrsn",
+          "Form Name": "physicians_portal_hlh_diagnosis",
+          "Field Label": "Why was the diagnosis delayed?",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[pi_diagdely] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Misdiagnosis",
+            "2": "Did not seek medical attention",
+            "3": "Delay or slowness of specialized tests",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Misdiagnosis": "True|False",
+            "Did not seek medical attention": "True|False",
+            "Delay or slowness of specialized tests": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Misdiagnosis": "1",
+            "Did not seek medical attention": "2",
+            "Delay or slowness of specialized tests": "3",
+            "Other": "99",
+            "Unknown": "98"
+          },
+          "Nested Fields": {
+            "pi_diagdelysp": {
+              "Variable / Field Name": "pi_diagdelysp",
+              "Form Name": "physicians_portal_hlh_diagnosis",
+              "Field Label": "Please specify",
+              "Field Type": "text",
+              "Required Field?": "y",
+              "Branching Logic": "[pi_delyrsn] = '99' and [pi_diagdely] = '1'",
+              "answer_type": "string",
+              "answer_template": "String"
+            }
+          }
+        },
+        "pi_misdiag": {
+          "Variable / Field Name": "pi_misdiag",
+          "Form Name": "physicians_portal_hlh_diagnosis",
+          "Field Label": "What was the misdiagnosis?",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[pi_diagdely] = '1' and [pi_delyrsn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "pi_actnble": {
+          "Variable / Field Name": "pi_actnble",
+          "Form Name": "physicians_portal_hlh_diagnosis",
+          "Field Label": "Is it potentially actionable for the patient's welfare?",
+          "Field Type": "radio",
+          "Required Field?": "y",
+          "Branching Logic": "[pi_diagdely] = '1' and [pi_delyrsn] = '1'",
+          "Possible Values (code->label)": {
+            "1": "Yes",
+            "2": "No",
+            "99": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Yes": "True|False",
+            "No": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Yes": "1",
+            "No": "2",
+            "Unknown": "99"
+          }
+        }
+      }
+    },
+    "pi_blooddyn": {
+      "Variable / Field Name": "pi_blooddyn",
+      "Form Name": "physicians_portal_hlh_diagnosis",
+      "Field Label": "Did you collect research blood?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "pi_bloodddt": {
+          "Variable / Field Name": "pi_bloodddt",
+          "Form Name": "physicians_portal_hlh_diagnosis",
+          "Field Label": "Collection date",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[pi_blooddyn] = '1'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "pi_diagnotes": {
+      "Variable / Field Name": "pi_diagnotes",
+      "Form Name": "physicians_portal_hlh_diagnosis",
+      "Field Label": "Physician Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    },
+    "profile_ab_notes": {
+      "Variable / Field Name": "profile_ab_notes",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    }
+  }
+}

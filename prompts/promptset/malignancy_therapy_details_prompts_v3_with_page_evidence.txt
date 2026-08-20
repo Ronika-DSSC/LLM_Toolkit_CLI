@@ -1,0 +1,339 @@
+#### PROMPT_SET: malignancy_therapy_details
+---RAG---
+REDCap form: malignancy_therapy_details
+Retrieve document text needed to answer this form.
+Prefer labeled fields/tables; ignore repetitive footers/headers.
+Additional cues: demographics/face sheet, problem list, assessment & plan, discharge summary, lab results/flowsheets, medication list, imaging/pathology reports.
+Key terms: Sequence, number, Drug, Name, Date, regimen, was, first, administered, last, day, treatment, administration, Route, Indication, Abstractor, Notes
+
+---USER---
+You are a clinical information extractor.
+Given a clinical note (or EHR text), extract answers for the REDCap form: eligibility_and_patient_profile.
+
+Instructions:
+- Fill in the JSON TEMPLATE below using ONLY evidence explicitly present in the text. Do not guess.
+- Keep the same JSON keys and nesting.
+- For choice questions: replace 'True|False' with true or false.
+  * Single-choice (radio/dropdown/yes-no): set exactly one option to true if supported.
+  * Multi-choice (checkbox): set all supported options to true.
+- For 'String'/'Number'/'Integer'/'Date' placeholders: replace with the extracted value (or null if not found).
+- Only populate 'Nested Fields' (e.g., 'please specify') when the parent condition is met AND evidence supports it.
+- Output ONLY the filled JSON (no extra commentary).
+
+EVIDENCE / PAGE CITATION RULE (for auditability):
+- The retrieved Context snippets may include headers like [<source> p<page>] or [<source> p<start>-<end>].
+- For every non-null extracted field (any field whose answer is not null and/or any option you set to true), add an evidence line into profile_ab_notes.
+- Evidence line format (one per field): <VariableName>: <EvidenceTag> — <verbatim short phrase>.
+  * Example: profile_elig1: [patient.pdf p3] — "clinically suspected HLH"
+- Use the EvidenceTag exactly as shown in the Context header (including page number).
+- If no page header is present, cite the source header only (e.g., [note]) and still provide a short verbatim phrase.
+- Do NOT add new JSON keys for evidence; record all citations ONLY inside profile_ab_notes.
+
+OUTPUT FORMAT OVERRIDE (CRITICAL):
+- The JSON TEMPLATE below is REFERENCE ONLY (schema/choices/branching). Do NOT output it.
+- Output ONLY an ANSWERS JSON object, where EACH variable is formatted as:
+  "<variable_name>": { "answer": <value> }
+- Do NOT output "Form Name", "Questions", "Variable / Field Name", "Field Label", "Field Type",
+  "Possible Values", "answer_type", "answer_template", or "codes".
+- Keep the same variable names (e.g., record_id, profile_brthyr, profile_cntry, profile_usregn).
+- Output ONLY valid JSON (no commentary, no markdown, no extra keys).
+
+ANSWERS JSON TEMPLATE (THIS IS THE ONLY THING YOU SHOULD OUTPUT):
+{
+  "malig_seq": {
+    "answer": null
+  },
+  "malig_regmn": {
+    "answer": {
+      "R-CHOP": false,
+      "Brentuximab": false,
+      "Gazyva": false,
+      "R-CHOEP": false,
+      "CHOEP": false,
+      "FCR": false,
+      "Methotrexate": false,
+      "Lenalidomide": false,
+      "Dexamethasone": false,
+      "Azacitidine": false,
+      "3+7 regimen": false,
+      "ICE": false,
+      "Ipilimumab": false,
+      "Alemtuzumab": false,
+      "Cyclophosphamide": false,
+      "Romidepsin": false,
+      "Ibrutinib": false,
+      "Bendamustine": false,
+      "Vidaza": false,
+      "Other": false
+    },
+    "malig_regmnsp": {
+      "answer": null
+    }
+  },
+  "malig_stdt": {
+    "answer": null
+  },
+  "malig_eddt": {
+    "answer": null
+  },
+  "malig_route": {
+    "answer": {
+      "Oral": false,
+      "IV": false,
+      "Subcutaneous": false,
+      "Intrathecal": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "malig_routeo": {
+      "answer": null
+    }
+  },
+  "malig_indctn": {
+    "answer": {
+      "The underlying malignancy": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "malig_indctno": {
+      "answer": null
+    }
+  },
+  "malig_notesb": {
+    "answer": null
+  },
+  "profile_ab_notes": {
+    "answer": null
+  }
+}
+
+GENERAL "OTHER" FALLBACK RULE (applies to ALL fields):
+- For any radio/dropdown/checkbox field:
+  1) First try to map the evidence to one of the allowed option labels (or clear synonyms).
+  2) If the evidence clearly provides a value but it does NOT match any allowed option label/code:
+     - If the field has an "Other" option AND has a nested/branching "Other specify" text field:
+       * Select/check the "Other" option (use its REDCap code)
+       * Put the exact unmatched value phrase from the evidence into the "Other specify" field
+     - If the field has "Other" option but no specify field:
+       * Select/check "Other" and do not invent text
+     - If the field does not have an "Other" option:
+       * Output null and add the variable name to not_found
+- Do NOT use "Other" when the value matches a valid option label or a clear synonym of a valid option.
+
+JSON TEMPLATE (schema + answer placeholders):
+{
+  "Form Name": "malignancy_therapy_details",
+  "Questions": {
+    "malig_seq": {
+      "Variable / Field Name": "malig_seq",
+      "Form Name": "malignancy_therapy_details",
+      "Field Label": "Sequence number",
+      "Field Type": "text",
+      "Field Note": "Ex: 1",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "malig_regmn": {
+      "Variable / Field Name": "malig_regmn",
+      "Form Name": "malignancy_therapy_details",
+      "Field Label": "Drug Name",
+      "Field Type": "dropdown",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "R-CHOP",
+        "2": "Brentuximab",
+        "3": "Gazyva",
+        "4": "R-CHOEP",
+        "5": "CHOEP",
+        "6": "FCR",
+        "7": "Methotrexate",
+        "8": "Lenalidomide",
+        "9": "Dexamethasone",
+        "10": "Azacitidine",
+        "11": "3+7 regimen",
+        "12": "ICE",
+        "13": "Ipilimumab",
+        "14": "Alemtuzumab",
+        "15": "Cyclophosphamide",
+        "16": "Romidepsin",
+        "17": "Ibrutinib",
+        "18": "Bendamustine",
+        "19": "Vidaza",
+        "99": "Other"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "R-CHOP": "True|False",
+        "Brentuximab": "True|False",
+        "Gazyva": "True|False",
+        "R-CHOEP": "True|False",
+        "CHOEP": "True|False",
+        "FCR": "True|False",
+        "Methotrexate": "True|False",
+        "Lenalidomide": "True|False",
+        "Dexamethasone": "True|False",
+        "Azacitidine": "True|False",
+        "3+7 regimen": "True|False",
+        "ICE": "True|False",
+        "Ipilimumab": "True|False",
+        "Alemtuzumab": "True|False",
+        "Cyclophosphamide": "True|False",
+        "Romidepsin": "True|False",
+        "Ibrutinib": "True|False",
+        "Bendamustine": "True|False",
+        "Vidaza": "True|False",
+        "Other": "True|False"
+      },
+      "codes": {
+        "R-CHOP": "1",
+        "Brentuximab": "2",
+        "Gazyva": "3",
+        "R-CHOEP": "4",
+        "CHOEP": "5",
+        "FCR": "6",
+        "Methotrexate": "7",
+        "Lenalidomide": "8",
+        "Dexamethasone": "9",
+        "Azacitidine": "10",
+        "3+7 regimen": "11",
+        "ICE": "12",
+        "Ipilimumab": "13",
+        "Alemtuzumab": "14",
+        "Cyclophosphamide": "15",
+        "Romidepsin": "16",
+        "Ibrutinib": "17",
+        "Bendamustine": "18",
+        "Vidaza": "19",
+        "Other": "99"
+      },
+      "Nested Fields": {
+        "malig_regmnsp": {
+          "Variable / Field Name": "malig_regmnsp",
+          "Form Name": "malignancy_therapy_details",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[malig_regmn] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "malig_stdt": {
+      "Variable / Field Name": "malig_stdt",
+      "Form Name": "malignancy_therapy_details",
+      "Field Label": "Date the regimen was first administered",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "malig_eddt": {
+      "Variable / Field Name": "malig_eddt",
+      "Form Name": "malignancy_therapy_details",
+      "Field Label": "The last day of treatment administration",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "malig_route": {
+      "Variable / Field Name": "malig_route",
+      "Form Name": "malignancy_therapy_details",
+      "Field Label": "Route",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Oral",
+        "2": "IV",
+        "3": "Subcutaneous",
+        "4": "Intrathecal",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Oral": "True|False",
+        "IV": "True|False",
+        "Subcutaneous": "True|False",
+        "Intrathecal": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Oral": "1",
+        "IV": "2",
+        "Subcutaneous": "3",
+        "Intrathecal": "4",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "malig_routeo": {
+          "Variable / Field Name": "malig_routeo",
+          "Form Name": "malignancy_therapy_details",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[malig_route] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "malig_indctn": {
+      "Variable / Field Name": "malig_indctn",
+      "Form Name": "malignancy_therapy_details",
+      "Field Label": "Indication",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "3": "The underlying malignancy",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "The underlying malignancy": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "The underlying malignancy": "3",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "malig_indctno": {
+          "Variable / Field Name": "malig_indctno",
+          "Form Name": "malignancy_therapy_details",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[malig_indctn] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "malig_notesb": {
+      "Variable / Field Name": "malig_notesb",
+      "Form Name": "malignancy_therapy_details",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    },
+    "profile_ab_notes": {
+      "Variable / Field Name": "profile_ab_notes",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    }
+  }
+}

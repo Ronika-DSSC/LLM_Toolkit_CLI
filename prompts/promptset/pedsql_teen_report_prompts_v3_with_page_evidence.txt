@@ -1,0 +1,958 @@
+#### PROMPT_SET: pedsql_teen_report
+---RAG---
+REDCap form: pedsql_teen_report
+Retrieve document text needed to answer this form.
+Prefer labeled fields/tables; ignore repetitive footers/headers.
+Additional cues: demographics/face sheet, problem list, assessment & plan, discharge summary, lab results/flowsheets, medication list, imaging/pathology reports.
+Key terms: ePRO, Date, Time, PedsQL, hard, hurt, ache, have, low, energy, feel, afraid, scared, sad, blue, angry, trouble, sleeping, worry, about, what, will, happen, getting, along, with, other, teens, not, want
+
+---USER---
+You are a clinical information extractor.
+Given a clinical note (or EHR text), extract answers for the REDCap form: eligibility_and_patient_profile.
+
+Instructions:
+- Fill in the JSON TEMPLATE below using ONLY evidence explicitly present in the text. Do not guess.
+- Keep the same JSON keys and nesting.
+- For choice questions: replace 'True|False' with true or false.
+  * Single-choice (radio/dropdown/yes-no): set exactly one option to true if supported.
+  * Multi-choice (checkbox): set all supported options to true.
+- For 'String'/'Number'/'Integer'/'Date' placeholders: replace with the extracted value (or null if not found).
+- Only populate 'Nested Fields' (e.g., 'please specify') when the parent condition is met AND evidence supports it.
+- Output ONLY the filled JSON (no extra commentary).
+
+EVIDENCE / PAGE CITATION RULE (for auditability):
+- The retrieved Context snippets may include headers like [<source> p<page>] or [<source> p<start>-<end>].
+- For every non-null extracted field (any field whose answer is not null and/or any option you set to true), add an evidence line into profile_ab_notes.
+- Evidence line format (one per field): <VariableName>: <EvidenceTag> — <verbatim short phrase>.
+  * Example: profile_elig1: [patient.pdf p3] — "clinically suspected HLH"
+- Use the EvidenceTag exactly as shown in the Context header (including page number).
+- If no page header is present, cite the source header only (e.g., [note]) and still provide a short verbatim phrase.
+- Do NOT add new JSON keys for evidence; record all citations ONLY inside profile_ab_notes.
+
+OUTPUT FORMAT OVERRIDE (CRITICAL):
+- The JSON TEMPLATE below is REFERENCE ONLY (schema/choices/branching). Do NOT output it.
+- Output ONLY an ANSWERS JSON object, where EACH variable is formatted as:
+  "<variable_name>": { "answer": <value> }
+- Do NOT output "Form Name", "Questions", "Variable / Field Name", "Field Label", "Field Type",
+  "Possible Values", "answer_type", "answer_template", or "codes".
+- Keep the same variable names (e.g., record_id, profile_brthyr, profile_cntry, profile_usregn).
+- Output ONLY valid JSON (no commentary, no markdown, no extra keys).
+
+ANSWERS JSON TEMPLATE (THIS IS THE ONLY THING YOU SHOULD OUTPUT):
+{
+  "pedstn_pedstndt": {
+    "answer": null
+  },
+  "pedstn_pedstntm": {
+    "answer": null
+  },
+  "pedsql_help_teen": {
+    "answer": null
+  },
+  "pedstn_act1": {
+    "answer": {
+      "0- Never": false,
+      "1- Almost Never": false,
+      "2- Sometimes": false,
+      "3- Often": false,
+      "4- Almost Always": false
+    }
+  },
+  "pedstn_act2": {
+    "answer": {
+      "0- Never": false,
+      "1- Almost Never": false,
+      "2- Sometimes": false,
+      "3- Often": false,
+      "4- Almost Always": false
+    }
+  },
+  "pedstn_act3": {
+    "answer": {
+      "0- Never": false,
+      "1- Almost Never": false,
+      "2- Sometimes": false,
+      "3- Often": false,
+      "4- Almost Always": false
+    }
+  },
+  "pedstn_act4": {
+    "answer": {
+      "0- Never": false,
+      "1- Almost Never": false,
+      "2- Sometimes": false,
+      "3- Often": false,
+      "4- Almost Always": false
+    }
+  },
+  "pedstn_act5": {
+    "answer": {
+      "0- Never": false,
+      "1- Almost Never": false,
+      "2- Sometimes": false,
+      "3- Often": false,
+      "4- Almost Always": false
+    }
+  },
+  "pedstn_act6": {
+    "answer": {
+      "0- Never": false,
+      "1- Almost Never": false,
+      "2- Sometimes": false,
+      "3- Often": false,
+      "4- Almost Always": false
+    }
+  },
+  "pedstn_act7": {
+    "answer": {
+      "0- Never": false,
+      "1- Almost Never": false,
+      "2- Sometimes": false,
+      "3- Often": false,
+      "4- Almost Always": false
+    }
+  },
+  "pedstn_act8": {
+    "answer": {
+      "0- Never": false,
+      "1- Almost Never": false,
+      "2- Sometimes": false,
+      "3- Often": false,
+      "4- Almost Always": false
+    }
+  },
+  "pedstn_feel1": {
+    "answer": {
+      "0- Never": false,
+      "1- Almost Never": false,
+      "2- Sometimes": false,
+      "3- Often": false,
+      "4- Almost Always": false
+    }
+  },
+  "pedstn_feel2": {
+    "answer": {
+      "0- Never": false,
+      "1- Almost Never": false,
+      "2- Sometimes": false,
+      "3- Often": false,
+      "4- Almost Always": false
+    }
+  },
+  "pedstn_feel3": {
+    "answer": {
+      "0- Never": false,
+      "1- Almost Never": false,
+      "2- Sometimes": false,
+      "3- Often": false,
+      "4- Almost Always": false
+    }
+  },
+  "pedstn_feel4": {
+    "answer": {
+      "0- Never": false,
+      "1- Almost Never": false,
+      "2- Sometimes": false,
+      "3- Often": false,
+      "4- Almost Always": false
+    }
+  },
+  "pedstn_feel5": {
+    "answer": {
+      "0- Never": false,
+      "1- Almost Never": false,
+      "2- Sometimes": false,
+      "3- Often": false,
+      "4- Almost Always": false
+    }
+  },
+  "pedstn_alng1": {
+    "answer": {
+      "0- Never": false,
+      "1- Almost Never": false,
+      "2- Sometimes": false,
+      "3- Often": false,
+      "4- Almost Always": false
+    }
+  },
+  "pedstn_alng2": {
+    "answer": {
+      "0- Never": false,
+      "1- Almost Never": false,
+      "2- Sometimes": false,
+      "3- Often": false,
+      "4- Almost Always": false
+    }
+  },
+  "pedstn_alng3": {
+    "answer": {
+      "0- Never": false,
+      "1- Almost Never": false,
+      "2- Sometimes": false,
+      "3- Often": false,
+      "4- Almost Always": false
+    }
+  },
+  "pedstn_alng4": {
+    "answer": {
+      "0- Never": false,
+      "1- Almost Never": false,
+      "2- Sometimes": false,
+      "3- Often": false,
+      "4- Almost Always": false
+    }
+  },
+  "pedstn_alng5": {
+    "answer": {
+      "0- Never": false,
+      "1- Almost Never": false,
+      "2- Sometimes": false,
+      "3- Often": false,
+      "4- Almost Always": false
+    }
+  },
+  "pedstn_schl1": {
+    "answer": {
+      "0- Never": false,
+      "1- Almost Never": false,
+      "2- Sometimes": false,
+      "3- Often": false,
+      "4- Almost Always": false
+    }
+  },
+  "pedstn_schl2": {
+    "answer": {
+      "0- Never": false,
+      "1- Almost Never": false,
+      "2- Sometimes": false,
+      "3- Often": false,
+      "4- Almost Always": false
+    }
+  },
+  "pedstn_schl3": {
+    "answer": {
+      "0- Never": false,
+      "1- Almost Never": false,
+      "2- Sometimes": false,
+      "3- Often": false,
+      "4- Almost Always": false
+    }
+  },
+  "pedstn_schl4": {
+    "answer": {
+      "0- Never": false,
+      "1- Almost Never": false,
+      "2- Sometimes": false,
+      "3- Often": false,
+      "4- Almost Always": false
+    }
+  },
+  "pedstn_schl5": {
+    "answer": {
+      "0- Never": false,
+      "1- Almost Never": false,
+      "2- Sometimes": false,
+      "3- Often": false,
+      "4- Almost Always": false
+    }
+  },
+  "profile_ab_notes": {
+    "answer": null
+  }
+}
+
+GENERAL "OTHER" FALLBACK RULE (applies to ALL fields):
+- For any radio/dropdown/checkbox field:
+  1) First try to map the evidence to one of the allowed option labels (or clear synonyms).
+  2) If the evidence clearly provides a value but it does NOT match any allowed option label/code:
+     - If the field has an "Other" option AND has a nested/branching "Other specify" text field:
+       * Select/check the "Other" option (use its REDCap code)
+       * Put the exact unmatched value phrase from the evidence into the "Other specify" field
+     - If the field has "Other" option but no specify field:
+       * Select/check "Other" and do not invent text
+     - If the field does not have an "Other" option:
+       * Output null and add the variable name to not_found
+- Do NOT use "Other" when the value matches a valid option label or a clear synonym of a valid option.
+
+JSON TEMPLATE (schema + answer placeholders):
+{
+  "Form Name": "pedsql_teen_report",
+  "Questions": {
+    "pedstn_pedstndt": {
+      "Variable / Field Name": "pedstn_pedstndt",
+      "Form Name": "pedsql_teen_report",
+      "Field Label": "ePRO Date",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "pedstn_pedstntm": {
+      "Variable / Field Name": "pedstn_pedstntm",
+      "Form Name": "pedsql_teen_report",
+      "Field Label": "ePRO Time",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "pedsql_help_teen": {
+      "Variable / Field Name": "pedsql_help_teen",
+      "Form Name": "pedsql_teen_report",
+      "Field Label": "\"PedsQL™",
+      "Field Type": "descriptive",
+      "answer_type": "display_only",
+      "answer_template": null
+    },
+    "pedstn_act1": {
+      "Variable / Field Name": "pedstn_act1",
+      "Form Name": "pedsql_teen_report",
+      "Field Label": "It is hard for me to walk more than one block",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "0": "0- Never",
+        "1": "1- Almost Never",
+        "2": "2- Sometimes",
+        "3": "3- Often",
+        "4": "4- Almost Always"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "0- Never": "True|False",
+        "1- Almost Never": "True|False",
+        "2- Sometimes": "True|False",
+        "3- Often": "True|False",
+        "4- Almost Always": "True|False"
+      },
+      "codes": {
+        "0- Never": "0",
+        "1- Almost Never": "1",
+        "2- Sometimes": "2",
+        "3- Often": "3",
+        "4- Almost Always": "4"
+      }
+    },
+    "pedstn_act2": {
+      "Variable / Field Name": "pedstn_act2",
+      "Form Name": "pedsql_teen_report",
+      "Field Label": "It is hard for me to run",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "0": "0- Never",
+        "1": "1- Almost Never",
+        "2": "2- Sometimes",
+        "3": "3- Often",
+        "4": "4- Almost Always"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "0- Never": "True|False",
+        "1- Almost Never": "True|False",
+        "2- Sometimes": "True|False",
+        "3- Often": "True|False",
+        "4- Almost Always": "True|False"
+      },
+      "codes": {
+        "0- Never": "0",
+        "1- Almost Never": "1",
+        "2- Sometimes": "2",
+        "3- Often": "3",
+        "4- Almost Always": "4"
+      }
+    },
+    "pedstn_act3": {
+      "Variable / Field Name": "pedstn_act3",
+      "Form Name": "pedsql_teen_report",
+      "Field Label": "It is hard for me to do sports activity or exercise",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "0": "0- Never",
+        "1": "1- Almost Never",
+        "2": "2- Sometimes",
+        "3": "3- Often",
+        "4": "4- Almost Always"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "0- Never": "True|False",
+        "1- Almost Never": "True|False",
+        "2- Sometimes": "True|False",
+        "3- Often": "True|False",
+        "4- Almost Always": "True|False"
+      },
+      "codes": {
+        "0- Never": "0",
+        "1- Almost Never": "1",
+        "2- Sometimes": "2",
+        "3- Often": "3",
+        "4- Almost Always": "4"
+      }
+    },
+    "pedstn_act4": {
+      "Variable / Field Name": "pedstn_act4",
+      "Form Name": "pedsql_teen_report",
+      "Field Label": "It is hard for me to lift something heavy",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "0": "0- Never",
+        "1": "1- Almost Never",
+        "2": "2- Sometimes",
+        "3": "3- Often",
+        "4": "4- Almost Always"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "0- Never": "True|False",
+        "1- Almost Never": "True|False",
+        "2- Sometimes": "True|False",
+        "3- Often": "True|False",
+        "4- Almost Always": "True|False"
+      },
+      "codes": {
+        "0- Never": "0",
+        "1- Almost Never": "1",
+        "2- Sometimes": "2",
+        "3- Often": "3",
+        "4- Almost Always": "4"
+      }
+    },
+    "pedstn_act5": {
+      "Variable / Field Name": "pedstn_act5",
+      "Form Name": "pedsql_teen_report",
+      "Field Label": "It is hard for me to take a bath or shower by myself",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "0": "0- Never",
+        "1": "1- Almost Never",
+        "2": "2- Sometimes",
+        "3": "3- Often",
+        "4": "4- Almost Always"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "0- Never": "True|False",
+        "1- Almost Never": "True|False",
+        "2- Sometimes": "True|False",
+        "3- Often": "True|False",
+        "4- Almost Always": "True|False"
+      },
+      "codes": {
+        "0- Never": "0",
+        "1- Almost Never": "1",
+        "2- Sometimes": "2",
+        "3- Often": "3",
+        "4- Almost Always": "4"
+      }
+    },
+    "pedstn_act6": {
+      "Variable / Field Name": "pedstn_act6",
+      "Form Name": "pedsql_teen_report",
+      "Field Label": "It is hard for me to do chores around the house",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "0": "0- Never",
+        "1": "1- Almost Never",
+        "2": "2- Sometimes",
+        "3": "3- Often",
+        "4": "4- Almost Always"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "0- Never": "True|False",
+        "1- Almost Never": "True|False",
+        "2- Sometimes": "True|False",
+        "3- Often": "True|False",
+        "4- Almost Always": "True|False"
+      },
+      "codes": {
+        "0- Never": "0",
+        "1- Almost Never": "1",
+        "2- Sometimes": "2",
+        "3- Often": "3",
+        "4- Almost Always": "4"
+      }
+    },
+    "pedstn_act7": {
+      "Variable / Field Name": "pedstn_act7",
+      "Form Name": "pedsql_teen_report",
+      "Field Label": "I hurt or ache",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "0": "0- Never",
+        "1": "1- Almost Never",
+        "2": "2- Sometimes",
+        "3": "3- Often",
+        "4": "4- Almost Always"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "0- Never": "True|False",
+        "1- Almost Never": "True|False",
+        "2- Sometimes": "True|False",
+        "3- Often": "True|False",
+        "4- Almost Always": "True|False"
+      },
+      "codes": {
+        "0- Never": "0",
+        "1- Almost Never": "1",
+        "2- Sometimes": "2",
+        "3- Often": "3",
+        "4- Almost Always": "4"
+      }
+    },
+    "pedstn_act8": {
+      "Variable / Field Name": "pedstn_act8",
+      "Form Name": "pedsql_teen_report",
+      "Field Label": "I have low energy",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "0": "0- Never",
+        "1": "1- Almost Never",
+        "2": "2- Sometimes",
+        "3": "3- Often",
+        "4": "4- Almost Always"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "0- Never": "True|False",
+        "1- Almost Never": "True|False",
+        "2- Sometimes": "True|False",
+        "3- Often": "True|False",
+        "4- Almost Always": "True|False"
+      },
+      "codes": {
+        "0- Never": "0",
+        "1- Almost Never": "1",
+        "2- Sometimes": "2",
+        "3- Often": "3",
+        "4- Almost Always": "4"
+      }
+    },
+    "pedstn_feel1": {
+      "Variable / Field Name": "pedstn_feel1",
+      "Form Name": "pedsql_teen_report",
+      "Field Label": "I feel afraid or scared",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "0": "0- Never",
+        "1": "1- Almost Never",
+        "2": "2- Sometimes",
+        "3": "3- Often",
+        "4": "4- Almost Always"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "0- Never": "True|False",
+        "1- Almost Never": "True|False",
+        "2- Sometimes": "True|False",
+        "3- Often": "True|False",
+        "4- Almost Always": "True|False"
+      },
+      "codes": {
+        "0- Never": "0",
+        "1- Almost Never": "1",
+        "2- Sometimes": "2",
+        "3- Often": "3",
+        "4- Almost Always": "4"
+      }
+    },
+    "pedstn_feel2": {
+      "Variable / Field Name": "pedstn_feel2",
+      "Form Name": "pedsql_teen_report",
+      "Field Label": "I feel sad or blue",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "0": "0- Never",
+        "1": "1- Almost Never",
+        "2": "2- Sometimes",
+        "3": "3- Often",
+        "4": "4- Almost Always"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "0- Never": "True|False",
+        "1- Almost Never": "True|False",
+        "2- Sometimes": "True|False",
+        "3- Often": "True|False",
+        "4- Almost Always": "True|False"
+      },
+      "codes": {
+        "0- Never": "0",
+        "1- Almost Never": "1",
+        "2- Sometimes": "2",
+        "3- Often": "3",
+        "4- Almost Always": "4"
+      }
+    },
+    "pedstn_feel3": {
+      "Variable / Field Name": "pedstn_feel3",
+      "Form Name": "pedsql_teen_report",
+      "Field Label": "I feel angry",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "0": "0- Never",
+        "1": "1- Almost Never",
+        "2": "2- Sometimes",
+        "3": "3- Often",
+        "4": "4- Almost Always"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "0- Never": "True|False",
+        "1- Almost Never": "True|False",
+        "2- Sometimes": "True|False",
+        "3- Often": "True|False",
+        "4- Almost Always": "True|False"
+      },
+      "codes": {
+        "0- Never": "0",
+        "1- Almost Never": "1",
+        "2- Sometimes": "2",
+        "3- Often": "3",
+        "4- Almost Always": "4"
+      }
+    },
+    "pedstn_feel4": {
+      "Variable / Field Name": "pedstn_feel4",
+      "Form Name": "pedsql_teen_report",
+      "Field Label": "I have trouble sleeping",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "0": "0- Never",
+        "1": "1- Almost Never",
+        "2": "2- Sometimes",
+        "3": "3- Often",
+        "4": "4- Almost Always"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "0- Never": "True|False",
+        "1- Almost Never": "True|False",
+        "2- Sometimes": "True|False",
+        "3- Often": "True|False",
+        "4- Almost Always": "True|False"
+      },
+      "codes": {
+        "0- Never": "0",
+        "1- Almost Never": "1",
+        "2- Sometimes": "2",
+        "3- Often": "3",
+        "4- Almost Always": "4"
+      }
+    },
+    "pedstn_feel5": {
+      "Variable / Field Name": "pedstn_feel5",
+      "Form Name": "pedsql_teen_report",
+      "Field Label": "I worry about what will happen to me",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "0": "0- Never",
+        "1": "1- Almost Never",
+        "2": "2- Sometimes",
+        "3": "3- Often",
+        "4": "4- Almost Always"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "0- Never": "True|False",
+        "1- Almost Never": "True|False",
+        "2- Sometimes": "True|False",
+        "3- Often": "True|False",
+        "4- Almost Always": "True|False"
+      },
+      "codes": {
+        "0- Never": "0",
+        "1- Almost Never": "1",
+        "2- Sometimes": "2",
+        "3- Often": "3",
+        "4- Almost Always": "4"
+      }
+    },
+    "pedstn_alng1": {
+      "Variable / Field Name": "pedstn_alng1",
+      "Form Name": "pedsql_teen_report",
+      "Field Label": "I have trouble getting along with other teens",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "0": "0- Never",
+        "1": "1- Almost Never",
+        "2": "2- Sometimes",
+        "3": "3- Often",
+        "4": "4- Almost Always"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "0- Never": "True|False",
+        "1- Almost Never": "True|False",
+        "2- Sometimes": "True|False",
+        "3- Often": "True|False",
+        "4- Almost Always": "True|False"
+      },
+      "codes": {
+        "0- Never": "0",
+        "1- Almost Never": "1",
+        "2- Sometimes": "2",
+        "3- Often": "3",
+        "4- Almost Always": "4"
+      }
+    },
+    "pedstn_alng2": {
+      "Variable / Field Name": "pedstn_alng2",
+      "Form Name": "pedsql_teen_report",
+      "Field Label": "Other teens do not want to be my friend",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "0": "0- Never",
+        "1": "1- Almost Never",
+        "2": "2- Sometimes",
+        "3": "3- Often",
+        "4": "4- Almost Always"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "0- Never": "True|False",
+        "1- Almost Never": "True|False",
+        "2- Sometimes": "True|False",
+        "3- Often": "True|False",
+        "4- Almost Always": "True|False"
+      },
+      "codes": {
+        "0- Never": "0",
+        "1- Almost Never": "1",
+        "2- Sometimes": "2",
+        "3- Often": "3",
+        "4- Almost Always": "4"
+      }
+    },
+    "pedstn_alng3": {
+      "Variable / Field Name": "pedstn_alng3",
+      "Form Name": "pedsql_teen_report",
+      "Field Label": "Other teens tease me",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "0": "0- Never",
+        "1": "1- Almost Never",
+        "2": "2- Sometimes",
+        "3": "3- Often",
+        "4": "4- Almost Always"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "0- Never": "True|False",
+        "1- Almost Never": "True|False",
+        "2- Sometimes": "True|False",
+        "3- Often": "True|False",
+        "4- Almost Always": "True|False"
+      },
+      "codes": {
+        "0- Never": "0",
+        "1- Almost Never": "1",
+        "2- Sometimes": "2",
+        "3- Often": "3",
+        "4- Almost Always": "4"
+      }
+    },
+    "pedstn_alng4": {
+      "Variable / Field Name": "pedstn_alng4",
+      "Form Name": "pedsql_teen_report",
+      "Field Label": "I cannot do things that other teens my age can do",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "0": "0- Never",
+        "1": "1- Almost Never",
+        "2": "2- Sometimes",
+        "3": "3- Often",
+        "4": "4- Almost Always"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "0- Never": "True|False",
+        "1- Almost Never": "True|False",
+        "2- Sometimes": "True|False",
+        "3- Often": "True|False",
+        "4- Almost Always": "True|False"
+      },
+      "codes": {
+        "0- Never": "0",
+        "1- Almost Never": "1",
+        "2- Sometimes": "2",
+        "3- Often": "3",
+        "4- Almost Always": "4"
+      }
+    },
+    "pedstn_alng5": {
+      "Variable / Field Name": "pedstn_alng5",
+      "Form Name": "pedsql_teen_report",
+      "Field Label": "It is hard to keep up with my peers",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "0": "0- Never",
+        "1": "1- Almost Never",
+        "2": "2- Sometimes",
+        "3": "3- Often",
+        "4": "4- Almost Always"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "0- Never": "True|False",
+        "1- Almost Never": "True|False",
+        "2- Sometimes": "True|False",
+        "3- Often": "True|False",
+        "4- Almost Always": "True|False"
+      },
+      "codes": {
+        "0- Never": "0",
+        "1- Almost Never": "1",
+        "2- Sometimes": "2",
+        "3- Often": "3",
+        "4- Almost Always": "4"
+      }
+    },
+    "pedstn_schl1": {
+      "Variable / Field Name": "pedstn_schl1",
+      "Form Name": "pedsql_teen_report",
+      "Field Label": "It is hard to pay attention in class",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "0": "0- Never",
+        "1": "1- Almost Never",
+        "2": "2- Sometimes",
+        "3": "3- Often",
+        "4": "4- Almost Always"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "0- Never": "True|False",
+        "1- Almost Never": "True|False",
+        "2- Sometimes": "True|False",
+        "3- Often": "True|False",
+        "4- Almost Always": "True|False"
+      },
+      "codes": {
+        "0- Never": "0",
+        "1- Almost Never": "1",
+        "2- Sometimes": "2",
+        "3- Often": "3",
+        "4- Almost Always": "4"
+      }
+    },
+    "pedstn_schl2": {
+      "Variable / Field Name": "pedstn_schl2",
+      "Form Name": "pedsql_teen_report",
+      "Field Label": "I forget things",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "0": "0- Never",
+        "1": "1- Almost Never",
+        "2": "2- Sometimes",
+        "3": "3- Often",
+        "4": "4- Almost Always"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "0- Never": "True|False",
+        "1- Almost Never": "True|False",
+        "2- Sometimes": "True|False",
+        "3- Often": "True|False",
+        "4- Almost Always": "True|False"
+      },
+      "codes": {
+        "0- Never": "0",
+        "1- Almost Never": "1",
+        "2- Sometimes": "2",
+        "3- Often": "3",
+        "4- Almost Always": "4"
+      }
+    },
+    "pedstn_schl3": {
+      "Variable / Field Name": "pedstn_schl3",
+      "Form Name": "pedsql_teen_report",
+      "Field Label": "I have trouble keeping up with my schoolwork",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "0": "0- Never",
+        "1": "1- Almost Never",
+        "2": "2- Sometimes",
+        "3": "3- Often",
+        "4": "4- Almost Always"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "0- Never": "True|False",
+        "1- Almost Never": "True|False",
+        "2- Sometimes": "True|False",
+        "3- Often": "True|False",
+        "4- Almost Always": "True|False"
+      },
+      "codes": {
+        "0- Never": "0",
+        "1- Almost Never": "1",
+        "2- Sometimes": "2",
+        "3- Often": "3",
+        "4- Almost Always": "4"
+      }
+    },
+    "pedstn_schl4": {
+      "Variable / Field Name": "pedstn_schl4",
+      "Form Name": "pedsql_teen_report",
+      "Field Label": "I miss school because of not feeling well",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "0": "0- Never",
+        "1": "1- Almost Never",
+        "2": "2- Sometimes",
+        "3": "3- Often",
+        "4": "4- Almost Always"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "0- Never": "True|False",
+        "1- Almost Never": "True|False",
+        "2- Sometimes": "True|False",
+        "3- Often": "True|False",
+        "4- Almost Always": "True|False"
+      },
+      "codes": {
+        "0- Never": "0",
+        "1- Almost Never": "1",
+        "2- Sometimes": "2",
+        "3- Often": "3",
+        "4- Almost Always": "4"
+      }
+    },
+    "pedstn_schl5": {
+      "Variable / Field Name": "pedstn_schl5",
+      "Form Name": "pedsql_teen_report",
+      "Field Label": "I miss school to go to the doctor or hospital",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "0": "0- Never",
+        "1": "1- Almost Never",
+        "2": "2- Sometimes",
+        "3": "3- Often",
+        "4": "4- Almost Always"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "0- Never": "True|False",
+        "1- Almost Never": "True|False",
+        "2- Sometimes": "True|False",
+        "3- Often": "True|False",
+        "4- Almost Always": "True|False"
+      },
+      "codes": {
+        "0- Never": "0",
+        "1- Almost Never": "1",
+        "2- Sometimes": "2",
+        "3- Often": "3",
+        "4- Almost Always": "4"
+      }
+    },
+    "profile_ab_notes": {
+      "Variable / Field Name": "profile_ab_notes",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    }
+  }
+}

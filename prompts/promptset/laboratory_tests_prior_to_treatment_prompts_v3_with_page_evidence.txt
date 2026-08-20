@@ -1,0 +1,2551 @@
+#### PROMPT_SET: laboratory_tests_prior_to_treatment
+---RAG---
+REDCap form: laboratory_tests_prior_to_treatment
+Retrieve document text needed to answer this form.
+Prefer labeled fields/tables; ignore repetitive footers/headers.
+Additional cues: demographics/face sheet, problem list, assessment & plan, discharge summary, lab results/flowsheets, medication list, imaging/pathology reports.
+Key terms: Sequence, number, additional, labs, collected, between, Initial, Date, Test, Absolute, neutrophil, count, ANC, not, available, value, unit, Normal, lymphocyte, ALC, eosinophil, AEC, monocyte, AMC, Platelets, Abnormal, Hemoglobin, D-dimer, Fibrinogen, Triglycerides
+
+---USER---
+You are a clinical information extractor.
+Given a clinical note (or EHR text), extract answers for the REDCap form: eligibility_and_patient_profile.
+
+Instructions:
+- Fill in the JSON TEMPLATE below using ONLY evidence explicitly present in the text. Do not guess.
+- Keep the same JSON keys and nesting.
+- For choice questions: replace 'True|False' with true or false.
+  * Single-choice (radio/dropdown/yes-no): set exactly one option to true if supported.
+  * Multi-choice (checkbox): set all supported options to true.
+- For 'String'/'Number'/'Integer'/'Date' placeholders: replace with the extracted value (or null if not found).
+- Only populate 'Nested Fields' (e.g., 'please specify') when the parent condition is met AND evidence supports it.
+- Output ONLY the filled JSON (no extra commentary).
+
+EVIDENCE / PAGE CITATION RULE (for auditability):
+- The retrieved Context snippets may include headers like [<source> p<page>] or [<source> p<start>-<end>].
+- For every non-null extracted field (any field whose answer is not null and/or any option you set to true), add an evidence line into profile_ab_notes.
+- Evidence line format (one per field): <VariableName>: <EvidenceTag> — <verbatim short phrase>.
+  * Example: profile_elig1: [patient.pdf p3] — "clinically suspected HLH"
+- Use the EvidenceTag exactly as shown in the Context header (including page number).
+- If no page header is present, cite the source header only (e.g., [note]) and still provide a short verbatim phrase.
+- Do NOT add new JSON keys for evidence; record all citations ONLY inside profile_ab_notes.
+
+OUTPUT FORMAT OVERRIDE (CRITICAL):
+- The JSON TEMPLATE below is REFERENCE ONLY (schema/choices/branching). Do NOT output it.
+- Output ONLY an ANSWERS JSON object, where EACH variable is formatted as:
+  "<variable_name>": { "answer": <value> }
+- Do NOT output "Form Name", "Questions", "Variable / Field Name", "Field Label", "Field Type",
+  "Possible Values", "answer_type", "answer_template", or "codes".
+- Keep the same variable names (e.g., record_id, profile_brthyr, profile_cntry, profile_usregn).
+- Output ONLY valid JSON (no commentary, no markdown, no extra keys).
+
+ANSWERS JSON TEMPLATE (THIS IS THE ONLY THING YOU SHOULD OUTPUT):
+{
+  "labptt_seqnum": {
+    "answer": null
+  },
+  "labptt_none": {
+    "answer": {
+      "No additional labs collected between Initial Presentation and Start of Treatment": false
+    }
+  },
+  "labptt_date": {
+    "answer": null
+  },
+  "labptt_ancnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labptt_ancv": {
+    "answer": null
+  },
+  "labptt_ancu": {
+    "answer": {
+      "cells/L": false,
+      "cells/µL": false,
+      "cells/mm^3": false,
+      "x10^9 cells/L": false,
+      "x10^3 cells/mm^3": false,
+      "x10^3 cells/µL": false,
+      "x10^3/mcL": false,
+      "x10(3)/mcL": false,
+      "K/uL": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labptt_ancuo": {
+      "answer": null
+    }
+  },
+  "labptt_ancnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labptt_alcnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labptt_alcv": {
+    "answer": null
+  },
+  "labptt_alcu": {
+    "answer": {
+      "cells/L": false,
+      "cells/µL": false,
+      "cells/mm^3": false,
+      "x10^9 cells/L": false,
+      "x10^3 cells/mm^3": false,
+      "x10^3 cells/µL": false,
+      "x10^3/mcL": false,
+      "x10(3)/mcL": false,
+      "K/uL": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labptt_alcuo": {
+      "answer": null
+    }
+  },
+  "labptt_alcnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labptt_aecnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labptt_aecv": {
+    "answer": null
+  },
+  "labptt_aecu": {
+    "answer": {
+      "cells/L": false,
+      "cells/µL": false,
+      "cells/mm^3": false,
+      "x10^9 cells/L": false,
+      "x10^3 cells/mm^3": false,
+      "x10^3 cells/µL": false,
+      "x10^3/mcL": false,
+      "x10(3)/mcL": false,
+      "K/uL": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labptt_aecuo": {
+      "answer": null
+    }
+  },
+  "labptt_aecunl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labptt_amcnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labptt_amcv": {
+    "answer": null
+  },
+  "labptt_amcu": {
+    "answer": {
+      "cells/L": false,
+      "cells/µL": false,
+      "cells/mm^3": false,
+      "x10^9 cells/L": false,
+      "x10^3 cells/mm^3": false,
+      "x10^3 cells/µL": false,
+      "x10^3/mcL": false,
+      "x10(3)/mcL": false,
+      "K/uL": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labptt_amcuo": {
+      "answer": null
+    }
+  },
+  "labptt_amcnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labptt_pltnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labptt_pltv": {
+    "answer": null
+  },
+  "labptt_pltu": {
+    "answer": {
+      "cells/L": false,
+      "cells/µL": false,
+      "cells/mm^3": false,
+      "x10^9 cells/L": false,
+      "x10^3 cells/mm^3": false,
+      "x10^3 cells/µL": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labptt_pltuo": {
+      "answer": null
+    }
+  },
+  "labptt_pltnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labptt_hemond": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labptt_hemov": {
+    "answer": null
+  },
+  "labptt_hemou": {
+    "answer": {
+      "g/L": false,
+      "g/dL": false,
+      "g/100mL": false,
+      "mg/mL": false,
+      "g%": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labptt_hemouo": {
+      "answer": null
+    }
+  },
+  "labptt_hemonl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labptt_ddmrnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labptt_ddmrv": {
+    "answer": null
+  },
+  "labptt_ddmru": {
+    "answer": {
+      "ng/ml (DDU)": false,
+      "µg/mL (FEU)": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labptt_ddmruo": {
+      "answer": null
+    }
+  },
+  "labptt_ddmrnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labptt_fbrgnnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labptt_fbrgnv": {
+    "answer": null
+  },
+  "labptt_fbrgnu": {
+    "answer": {
+      "g/L": false,
+      "mg/dL": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labptt_fbrgnuo": {
+      "answer": null
+    }
+  },
+  "labptt_fbrgnnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labptt_trind": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labptt_triv": {
+    "answer": null
+  },
+  "labptt_triu": {
+    "answer": {
+      "mg/dL": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labptt_triuo": {
+      "answer": null
+    }
+  },
+  "labptt_trinl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labptt_ptnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labptt_ptv": {
+    "answer": null
+  },
+  "labptt_ptu": {
+    "answer": {
+      "secs (s)": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labptt_ptuo": {
+      "answer": null
+    }
+  },
+  "labptt_ptunl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labptt_inrnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labptt_inrv": {
+    "answer": null
+  },
+  "labptt_inru": {
+    "answer": {
+      "No units as it is a ratio": false
+    }
+  },
+  "labptt_inrnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labptt_crtnnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labptt_crtnv": {
+    "answer": null
+  },
+  "labptt_crtnu": {
+    "answer": {
+      "mg/L": false,
+      "mg/dL": false,
+      "mmol/L": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labptt_crtnuo": {
+      "answer": null
+    }
+  },
+  "labptt_crtnnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labptt_sdumnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labptt_sdumnv": {
+    "answer": null
+  },
+  "labptt_sdumu": {
+    "answer": {
+      "mEq/L (milliequivalents per liter)": false,
+      "mmol/L": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labptt_sdumuo": {
+      "answer": null
+    }
+  },
+  "labptt_sdumnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labptt_bunnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labptt_bunv": {
+    "answer": null
+  },
+  "labptt_bunu": {
+    "answer": {
+      "mmol/L": false,
+      "mg/dL": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labptt_bunuo": {
+      "answer": null
+    }
+  },
+  "labptt_bunnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labptt_dbilind": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labptt_dbiliv": {
+    "answer": null
+  },
+  "labptt_dbiliu": {
+    "answer": {
+      "mg/dL": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labptt_dbiliuo": {
+      "answer": null
+    }
+  },
+  "labptt_dbilinl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labptt_astnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labptt_astv": {
+    "answer": null
+  },
+  "labptt_astu": {
+    "answer": {
+      "U/L": false,
+      "IU/L": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labptt_astuo": {
+      "answer": null
+    }
+  },
+  "labptt_astnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labptt_altnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labptt_altv": {
+    "answer": null
+  },
+  "labptt_altu": {
+    "answer": {
+      "U/L": false,
+      "IU/L": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labptt_altuo": {
+      "answer": null
+    }
+  },
+  "labptt_altnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labptt_crpnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labptt_crpv": {
+    "answer": null
+  },
+  "labptt_crpu": {
+    "answer": {
+      "mg/L": false,
+      "mg/dL": false,
+      "mmol/L": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labptt_crpuo": {
+      "answer": null
+    }
+  },
+  "labptt_crpnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labptt_esrnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labptt_esrv": {
+    "answer": null
+  },
+  "labptt_esru": {
+    "answer": {
+      "mm/hour": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labptt_esruo": {
+      "answer": null
+    }
+  },
+  "labptt_esrnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labptt_albmnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labptt_albmv": {
+    "answer": null
+  },
+  "labptt_albmu": {
+    "answer": {
+      "g/dL": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labptt_albmuo": {
+      "answer": null
+    }
+  },
+  "labptt_albmnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labptt_ldhnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labptt_ldhv": {
+    "answer": null
+  },
+  "labptt_ldhu": {
+    "answer": {
+      "U/ml": false,
+      "U/L": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labptt_ldhuo": {
+      "answer": null
+    }
+  },
+  "labptt_ldhnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labptt_sccbcyn": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Not Available": false
+    }
+  },
+  "labptt_notes": {
+    "answer": null
+  },
+  "profile_ab_notes": {
+    "answer": null
+  }
+}
+
+GENERAL "OTHER" FALLBACK RULE (applies to ALL fields):
+- For any radio/dropdown/checkbox field:
+  1) First try to map the evidence to one of the allowed option labels (or clear synonyms).
+  2) If the evidence clearly provides a value but it does NOT match any allowed option label/code:
+     - If the field has an "Other" option AND has a nested/branching "Other specify" text field:
+       * Select/check the "Other" option (use its REDCap code)
+       * Put the exact unmatched value phrase from the evidence into the "Other specify" field
+     - If the field has "Other" option but no specify field:
+       * Select/check "Other" and do not invent text
+     - If the field does not have an "Other" option:
+       * Output null and add the variable name to not_found
+- Do NOT use "Other" when the value matches a valid option label or a clear synonym of a valid option.
+
+JSON TEMPLATE (schema + answer placeholders):
+{
+  "Form Name": "laboratory_tests_prior_to_treatment",
+  "Questions": {
+    "labptt_seqnum": {
+      "Variable / Field Name": "labptt_seqnum",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Sequence number:",
+      "Field Type": "text",
+      "Field Note": "Ex: 1",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labptt_none": {
+      "Variable / Field Name": "labptt_none",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "No additional labs collected between Initial Presentation and Start of Treatment",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "No additional labs collected between Initial Presentation and Start of Treatment"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "No additional labs collected between Initial Presentation and Start of Treatment": "True|False"
+      },
+      "codes": {
+        "No additional labs collected between Initial Presentation and Start of Treatment": "1"
+      }
+    },
+    "labptt_date": {
+      "Variable / Field Name": "labptt_date",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Date of Test",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labptt_ancnd": {
+      "Variable / Field Name": "labptt_ancnd",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Absolute neutrophil count (ANC) not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labptt_ancv": {
+      "Variable / Field Name": "labptt_ancv",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Absolute neutrophil count (ANC) value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labptt_ancu": {
+      "Variable / Field Name": "labptt_ancu",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Absolute neutrophil count (ANC) unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "cells/L",
+        "2": "cells/µL",
+        "3": "cells/mm^3",
+        "6": "x10^9 cells/L",
+        "8": "x10^3 cells/mm^3",
+        "10": "x10^3 cells/µL",
+        "11": "x10^3/mcL",
+        "12": "x10(3)/mcL",
+        "13": "K/uL",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "cells/L": "True|False",
+        "cells/µL": "True|False",
+        "cells/mm^3": "True|False",
+        "x10^9 cells/L": "True|False",
+        "x10^3 cells/mm^3": "True|False",
+        "x10^3 cells/µL": "True|False",
+        "x10^3/mcL": "True|False",
+        "x10(3)/mcL": "True|False",
+        "K/uL": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "cells/L": "1",
+        "cells/µL": "2",
+        "cells/mm^3": "3",
+        "x10^9 cells/L": "6",
+        "x10^3 cells/mm^3": "8",
+        "x10^3 cells/µL": "10",
+        "x10^3/mcL": "11",
+        "x10(3)/mcL": "12",
+        "K/uL": "13",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labptt_ancuo": {
+          "Variable / Field Name": "labptt_ancuo",
+          "Form Name": "laboratory_tests_prior_to_treatment",
+          "Field Label": "Absolute neutrophil count (ANC) Other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labptt_ancu] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labptt_ancnl": {
+      "Variable / Field Name": "labptt_ancnl",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Absolute neutrophil count (ANC) Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labptt_alcnd": {
+      "Variable / Field Name": "labptt_alcnd",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Absolute lymphocyte count (ALC) not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labptt_alcv": {
+      "Variable / Field Name": "labptt_alcv",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Absolute lymphocyte count (ALC) value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labptt_alcu": {
+      "Variable / Field Name": "labptt_alcu",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Absolute lymphocyte count (ALC) unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "cells/L",
+        "2": "cells/µL",
+        "3": "cells/mm^3",
+        "6": "x10^9 cells/L",
+        "8": "x10^3 cells/mm^3",
+        "10": "x10^3 cells/µL",
+        "11": "x10^3/mcL",
+        "12": "x10(3)/mcL",
+        "13": "K/uL",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "cells/L": "True|False",
+        "cells/µL": "True|False",
+        "cells/mm^3": "True|False",
+        "x10^9 cells/L": "True|False",
+        "x10^3 cells/mm^3": "True|False",
+        "x10^3 cells/µL": "True|False",
+        "x10^3/mcL": "True|False",
+        "x10(3)/mcL": "True|False",
+        "K/uL": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "cells/L": "1",
+        "cells/µL": "2",
+        "cells/mm^3": "3",
+        "x10^9 cells/L": "6",
+        "x10^3 cells/mm^3": "8",
+        "x10^3 cells/µL": "10",
+        "x10^3/mcL": "11",
+        "x10(3)/mcL": "12",
+        "K/uL": "13",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labptt_alcuo": {
+          "Variable / Field Name": "labptt_alcuo",
+          "Form Name": "laboratory_tests_prior_to_treatment",
+          "Field Label": "Absolute lymphocyte count (ALC) Other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labptt_alcu] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labptt_alcnl": {
+      "Variable / Field Name": "labptt_alcnl",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Absolute lymphocyte count (ALC) Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labptt_aecnd": {
+      "Variable / Field Name": "labptt_aecnd",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Absolute eosinophil count (AEC) not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labptt_aecv": {
+      "Variable / Field Name": "labptt_aecv",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Absolute eosinophil count (AEC) value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labptt_aecu": {
+      "Variable / Field Name": "labptt_aecu",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Absolute eosinophil count (AEC) unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "cells/L",
+        "2": "cells/µL",
+        "3": "cells/mm^3",
+        "6": "x10^9 cells/L",
+        "8": "x10^3 cells/mm^3",
+        "10": "x10^3 cells/µL",
+        "11": "x10^3/mcL",
+        "12": "x10(3)/mcL",
+        "13": "K/uL",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "cells/L": "True|False",
+        "cells/µL": "True|False",
+        "cells/mm^3": "True|False",
+        "x10^9 cells/L": "True|False",
+        "x10^3 cells/mm^3": "True|False",
+        "x10^3 cells/µL": "True|False",
+        "x10^3/mcL": "True|False",
+        "x10(3)/mcL": "True|False",
+        "K/uL": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "cells/L": "1",
+        "cells/µL": "2",
+        "cells/mm^3": "3",
+        "x10^9 cells/L": "6",
+        "x10^3 cells/mm^3": "8",
+        "x10^3 cells/µL": "10",
+        "x10^3/mcL": "11",
+        "x10(3)/mcL": "12",
+        "K/uL": "13",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labptt_aecuo": {
+          "Variable / Field Name": "labptt_aecuo",
+          "Form Name": "laboratory_tests_prior_to_treatment",
+          "Field Label": "Absolute eosinophil count (AEC) Other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labptt_aecu] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labptt_aecunl": {
+      "Variable / Field Name": "labptt_aecunl",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Absolute eosinophil count (AEC) Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labptt_amcnd": {
+      "Variable / Field Name": "labptt_amcnd",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Absolute monocyte count (AMC) not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labptt_amcv": {
+      "Variable / Field Name": "labptt_amcv",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Absolute monocyte count (AMC) value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labptt_amcu": {
+      "Variable / Field Name": "labptt_amcu",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Absolute monocyte count (AMC) unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "cells/L",
+        "2": "cells/µL",
+        "3": "cells/mm^3",
+        "6": "x10^9 cells/L",
+        "8": "x10^3 cells/mm^3",
+        "10": "x10^3 cells/µL",
+        "11": "x10^3/mcL",
+        "12": "x10(3)/mcL",
+        "13": "K/uL",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "cells/L": "True|False",
+        "cells/µL": "True|False",
+        "cells/mm^3": "True|False",
+        "x10^9 cells/L": "True|False",
+        "x10^3 cells/mm^3": "True|False",
+        "x10^3 cells/µL": "True|False",
+        "x10^3/mcL": "True|False",
+        "x10(3)/mcL": "True|False",
+        "K/uL": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "cells/L": "1",
+        "cells/µL": "2",
+        "cells/mm^3": "3",
+        "x10^9 cells/L": "6",
+        "x10^3 cells/mm^3": "8",
+        "x10^3 cells/µL": "10",
+        "x10^3/mcL": "11",
+        "x10(3)/mcL": "12",
+        "K/uL": "13",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labptt_amcuo": {
+          "Variable / Field Name": "labptt_amcuo",
+          "Form Name": "laboratory_tests_prior_to_treatment",
+          "Field Label": "Absolute monocyte count (AMC) Other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labptt_amcu] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labptt_amcnl": {
+      "Variable / Field Name": "labptt_amcnl",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Absolute monocyte count (AMC) Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labptt_pltnd": {
+      "Variable / Field Name": "labptt_pltnd",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Platelets not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labptt_pltv": {
+      "Variable / Field Name": "labptt_pltv",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Platelets value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labptt_pltu": {
+      "Variable / Field Name": "labptt_pltu",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Platelets unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "cells/L",
+        "2": "cells/µL",
+        "3": "cells/mm^3",
+        "6": "x10^9 cells/L",
+        "8": "x10^3 cells/mm^3",
+        "10": "x10^3 cells/µL",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "cells/L": "True|False",
+        "cells/µL": "True|False",
+        "cells/mm^3": "True|False",
+        "x10^9 cells/L": "True|False",
+        "x10^3 cells/mm^3": "True|False",
+        "x10^3 cells/µL": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "cells/L": "1",
+        "cells/µL": "2",
+        "cells/mm^3": "3",
+        "x10^9 cells/L": "6",
+        "x10^3 cells/mm^3": "8",
+        "x10^3 cells/µL": "10",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labptt_pltuo": {
+          "Variable / Field Name": "labptt_pltuo",
+          "Form Name": "laboratory_tests_prior_to_treatment",
+          "Field Label": "Platelets Other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labptt_pltu] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labptt_pltnl": {
+      "Variable / Field Name": "labptt_pltnl",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Platelets Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labptt_hemond": {
+      "Variable / Field Name": "labptt_hemond",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Hemoglobin not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labptt_hemov": {
+      "Variable / Field Name": "labptt_hemov",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Hemoglobin value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labptt_hemou": {
+      "Variable / Field Name": "labptt_hemou",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Hemoglobin unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "g/L",
+        "2": "g/dL",
+        "3": "g/100mL",
+        "4": "mg/mL",
+        "5": "g%",
+        "98": "Other",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "g/L": "True|False",
+        "g/dL": "True|False",
+        "g/100mL": "True|False",
+        "mg/mL": "True|False",
+        "g%": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "g/L": "1",
+        "g/dL": "2",
+        "g/100mL": "3",
+        "mg/mL": "4",
+        "g%": "5",
+        "Other": "98",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "labptt_hemouo": {
+          "Variable / Field Name": "labptt_hemouo",
+          "Form Name": "laboratory_tests_prior_to_treatment",
+          "Field Label": "Hemoglobin Other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labptt_hemou] = '98'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labptt_hemonl": {
+      "Variable / Field Name": "labptt_hemonl",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Hemoglobin Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labptt_ddmrnd": {
+      "Variable / Field Name": "labptt_ddmrnd",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "D-dimer not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labptt_ddmrv": {
+      "Variable / Field Name": "labptt_ddmrv",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "D-dimer value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labptt_ddmru": {
+      "Variable / Field Name": "labptt_ddmru",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "D-dimer unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "ng/ml (DDU)",
+        "2": "µg/mL (FEU)",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "ng/ml (DDU)": "True|False",
+        "µg/mL (FEU)": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "ng/ml (DDU)": "1",
+        "µg/mL (FEU)": "2",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labptt_ddmruo": {
+          "Variable / Field Name": "labptt_ddmruo",
+          "Form Name": "laboratory_tests_prior_to_treatment",
+          "Field Label": "D-dimer Other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labptt_ddmru] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labptt_ddmrnl": {
+      "Variable / Field Name": "labptt_ddmrnl",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "D-dimer Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labptt_fbrgnnd": {
+      "Variable / Field Name": "labptt_fbrgnnd",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Fibrinogen not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labptt_fbrgnv": {
+      "Variable / Field Name": "labptt_fbrgnv",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Fibrinogen value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labptt_fbrgnu": {
+      "Variable / Field Name": "labptt_fbrgnu",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Fibrinogen unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "g/L",
+        "2": "mg/dL",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "g/L": "True|False",
+        "mg/dL": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "g/L": "1",
+        "mg/dL": "2",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labptt_fbrgnuo": {
+          "Variable / Field Name": "labptt_fbrgnuo",
+          "Form Name": "laboratory_tests_prior_to_treatment",
+          "Field Label": "Fibrinogen Other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labptt_fbrgnu] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labptt_fbrgnnl": {
+      "Variable / Field Name": "labptt_fbrgnnl",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Fibrinogen Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labptt_trind": {
+      "Variable / Field Name": "labptt_trind",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Triglycerides not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labptt_triv": {
+      "Variable / Field Name": "labptt_triv",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Triglycerides value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labptt_triu": {
+      "Variable / Field Name": "labptt_triu",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Triglycerides unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "mg/dL",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "mg/dL": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "mg/dL": "1",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labptt_triuo": {
+          "Variable / Field Name": "labptt_triuo",
+          "Form Name": "laboratory_tests_prior_to_treatment",
+          "Field Label": "Triglycerides Other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labptt_triu] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labptt_trinl": {
+      "Variable / Field Name": "labptt_trinl",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Triglycerides Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labptt_ptnd": {
+      "Variable / Field Name": "labptt_ptnd",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Prothrombin time (PT) not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labptt_ptv": {
+      "Variable / Field Name": "labptt_ptv",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Prothrombin time (PT) value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labptt_ptu": {
+      "Variable / Field Name": "labptt_ptu",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Prothrombin time (PT) unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "secs (s)",
+        "98": "Other",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "secs (s)": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "secs (s)": "1",
+        "Other": "98",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "labptt_ptuo": {
+          "Variable / Field Name": "labptt_ptuo",
+          "Form Name": "laboratory_tests_prior_to_treatment",
+          "Field Label": "Prothrombin time (PT) Other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labptt_ptu] = '98'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labptt_ptunl": {
+      "Variable / Field Name": "labptt_ptunl",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Prothrombin time (PT) Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labptt_inrnd": {
+      "Variable / Field Name": "labptt_inrnd",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "International Normalized Ratio (INR) not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labptt_inrv": {
+      "Variable / Field Name": "labptt_inrv",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "International Normalized Ratio (INR) value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labptt_inru": {
+      "Variable / Field Name": "labptt_inru",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "International Normalized Ratio (INR) unit",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "No units as it is a ratio"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "No units as it is a ratio": "True|False"
+      },
+      "codes": {
+        "No units as it is a ratio": "1"
+      }
+    },
+    "labptt_inrnl": {
+      "Variable / Field Name": "labptt_inrnl",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "International Normalized Ratio (INR) Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labptt_crtnnd": {
+      "Variable / Field Name": "labptt_crtnnd",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Creatinine not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labptt_crtnv": {
+      "Variable / Field Name": "labptt_crtnv",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Creatinine value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labptt_crtnu": {
+      "Variable / Field Name": "labptt_crtnu",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Creatinine unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "mg/L",
+        "2": "mg/dL",
+        "3": "mmol/L",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "mg/L": "True|False",
+        "mg/dL": "True|False",
+        "mmol/L": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "mg/L": "1",
+        "mg/dL": "2",
+        "mmol/L": "3",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labptt_crtnuo": {
+          "Variable / Field Name": "labptt_crtnuo",
+          "Form Name": "laboratory_tests_prior_to_treatment",
+          "Field Label": "Creatinine Other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labptt_crtnu] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labptt_crtnnl": {
+      "Variable / Field Name": "labptt_crtnnl",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Creatinine Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labptt_sdumnd": {
+      "Variable / Field Name": "labptt_sdumnd",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Sodium not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labptt_sdumnv": {
+      "Variable / Field Name": "labptt_sdumnv",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Sodium value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labptt_sdumu": {
+      "Variable / Field Name": "labptt_sdumu",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Sodium unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "mEq/L (milliequivalents per liter)",
+        "2": "mmol/L",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "mEq/L (milliequivalents per liter)": "True|False",
+        "mmol/L": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "mEq/L (milliequivalents per liter)": "1",
+        "mmol/L": "2",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labptt_sdumuo": {
+          "Variable / Field Name": "labptt_sdumuo",
+          "Form Name": "laboratory_tests_prior_to_treatment",
+          "Field Label": "Sodium Other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labptt_sdumu] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labptt_sdumnl": {
+      "Variable / Field Name": "labptt_sdumnl",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Sodium Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labptt_bunnd": {
+      "Variable / Field Name": "labptt_bunnd",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Blood Urea Nitrogen not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labptt_bunv": {
+      "Variable / Field Name": "labptt_bunv",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Blood Urea Nitrogen value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labptt_bunu": {
+      "Variable / Field Name": "labptt_bunu",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Blood Urea Nitrogen unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "mmol/L",
+        "2": "mg/dL",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "mmol/L": "True|False",
+        "mg/dL": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "mmol/L": "1",
+        "mg/dL": "2",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labptt_bunuo": {
+          "Variable / Field Name": "labptt_bunuo",
+          "Form Name": "laboratory_tests_prior_to_treatment",
+          "Field Label": "Blood Urea Nitrogen Other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labptt_bunu] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labptt_bunnl": {
+      "Variable / Field Name": "labptt_bunnl",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Blood Urea Nitrogen Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labptt_dbilind": {
+      "Variable / Field Name": "labptt_dbilind",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Direct Bilirubin not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labptt_dbiliv": {
+      "Variable / Field Name": "labptt_dbiliv",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Direct Bilirubin value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labptt_dbiliu": {
+      "Variable / Field Name": "labptt_dbiliu",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Direct Bilirubin unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "mg/dL",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "mg/dL": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "mg/dL": "1",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labptt_dbiliuo": {
+          "Variable / Field Name": "labptt_dbiliuo",
+          "Form Name": "laboratory_tests_prior_to_treatment",
+          "Field Label": "Direct Bilirubin Other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labptt_dbiliu] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labptt_dbilinl": {
+      "Variable / Field Name": "labptt_dbilinl",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Direct Bilirubin Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labptt_astnd": {
+      "Variable / Field Name": "labptt_astnd",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Aspartate transaminase (AST) not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labptt_astv": {
+      "Variable / Field Name": "labptt_astv",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Aspartate transaminase (AST) value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labptt_astu": {
+      "Variable / Field Name": "labptt_astu",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Aspartate transaminase (AST) unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "U/L",
+        "2": "IU/L",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "U/L": "True|False",
+        "IU/L": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "U/L": "1",
+        "IU/L": "2",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labptt_astuo": {
+          "Variable / Field Name": "labptt_astuo",
+          "Form Name": "laboratory_tests_prior_to_treatment",
+          "Field Label": "Aspartate transaminase (AST) Other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labptt_astu] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labptt_astnl": {
+      "Variable / Field Name": "labptt_astnl",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Aspartate transaminase (AST) Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labptt_altnd": {
+      "Variable / Field Name": "labptt_altnd",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Alanine transaminase (ALT) not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labptt_altv": {
+      "Variable / Field Name": "labptt_altv",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Alanine transaminase (ALT) value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labptt_altu": {
+      "Variable / Field Name": "labptt_altu",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Alanine transaminase (ALT) unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "U/L",
+        "2": "IU/L",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "U/L": "True|False",
+        "IU/L": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "U/L": "1",
+        "IU/L": "2",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labptt_altuo": {
+          "Variable / Field Name": "labptt_altuo",
+          "Form Name": "laboratory_tests_prior_to_treatment",
+          "Field Label": "Alanine transaminase (ALT) Other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labptt_altu] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labptt_altnl": {
+      "Variable / Field Name": "labptt_altnl",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Alanine transaminase (ALT) Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labptt_crpnd": {
+      "Variable / Field Name": "labptt_crpnd",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "C-reactive protein (CRP) not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labptt_crpv": {
+      "Variable / Field Name": "labptt_crpv",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "C-reactive protein (CRP) value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labptt_crpu": {
+      "Variable / Field Name": "labptt_crpu",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "C-reactive protein (CRP) unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "mg/L",
+        "2": "mg/dL",
+        "3": "mmol/L",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "mg/L": "True|False",
+        "mg/dL": "True|False",
+        "mmol/L": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "mg/L": "1",
+        "mg/dL": "2",
+        "mmol/L": "3",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labptt_crpuo": {
+          "Variable / Field Name": "labptt_crpuo",
+          "Form Name": "laboratory_tests_prior_to_treatment",
+          "Field Label": "C-reactive protein (CRP) Other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labptt_crpu] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labptt_crpnl": {
+      "Variable / Field Name": "labptt_crpnl",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "C-reactive protein (CRP) Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labptt_esrnd": {
+      "Variable / Field Name": "labptt_esrnd",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Erythrocyte Sedimentation Rate (ESR) not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labptt_esrv": {
+      "Variable / Field Name": "labptt_esrv",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Erythrocyte Sedimentation Rate (ESR) value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labptt_esru": {
+      "Variable / Field Name": "labptt_esru",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Erythrocyte Sedimentation Rate (ESR) unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "mm/hour",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "mm/hour": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "mm/hour": "1",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labptt_esruo": {
+          "Variable / Field Name": "labptt_esruo",
+          "Form Name": "laboratory_tests_prior_to_treatment",
+          "Field Label": "Erythrocyte Sedimentation Rate (ESR) Other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labptt_esru] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labptt_esrnl": {
+      "Variable / Field Name": "labptt_esrnl",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Erythrocyte Sedimentation Rate (ESR) Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labptt_albmnd": {
+      "Variable / Field Name": "labptt_albmnd",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Albumin not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labptt_albmv": {
+      "Variable / Field Name": "labptt_albmv",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Albumin value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labptt_albmu": {
+      "Variable / Field Name": "labptt_albmu",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Albumin unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "g/dL",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "g/dL": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "g/dL": "1",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labptt_albmuo": {
+          "Variable / Field Name": "labptt_albmuo",
+          "Form Name": "laboratory_tests_prior_to_treatment",
+          "Field Label": "Albumin Other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labptt_albmu] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labptt_albmnl": {
+      "Variable / Field Name": "labptt_albmnl",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Albumin Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labptt_ldhnd": {
+      "Variable / Field Name": "labptt_ldhnd",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Lactate dehydrogenase (LDH) not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labptt_ldhv": {
+      "Variable / Field Name": "labptt_ldhv",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Lactate dehydrogenase (LDH) value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labptt_ldhu": {
+      "Variable / Field Name": "labptt_ldhu",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Lactate dehydrogenase (LDH) unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "U/ml",
+        "2": "U/L",
+        "98": "Other",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "U/ml": "True|False",
+        "U/L": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "U/ml": "1",
+        "U/L": "2",
+        "Other": "98",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "labptt_ldhuo": {
+          "Variable / Field Name": "labptt_ldhuo",
+          "Form Name": "laboratory_tests_prior_to_treatment",
+          "Field Label": "Lactate dehydrogenase (LDH) Other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labptt_ldhu] = '98'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labptt_ldhnl": {
+      "Variable / Field Name": "labptt_ldhnl",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Lactate dehydrogenase (LDH) Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labptt_sccbcyn": {
+      "Variable / Field Name": "labptt_sccbcyn",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Schistocytes on CBC smear",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "3": "Not Available"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Not Available": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Not Available": "3"
+      }
+    },
+    "labptt_notes": {
+      "Variable / Field Name": "labptt_notes",
+      "Form Name": "laboratory_tests_prior_to_treatment",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    },
+    "profile_ab_notes": {
+      "Variable / Field Name": "profile_ab_notes",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    }
+  }
+}

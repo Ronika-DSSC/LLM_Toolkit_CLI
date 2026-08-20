@@ -206,7 +206,7 @@ def _validate_cleaned_table(
     return True, ""
 
 
-def _score_csv(ragged_ratio: float, llm_cleaned: bool) -> float:
+def _score_csv(ragged_ratio: float) -> float:
     """
     Confidence Score for a CSV.
     """

@@ -1,0 +1,485 @@
+#### PROMPT_SET: infection_details
+---RAG---
+REDCap form: infection_details
+Retrieve document text needed to answer this form.
+Prefer labeled fields/tables; ignore repetitive footers/headers.
+Additional cues: demographics/face sheet, problem list, assessment & plan, discharge summary, lab results/flowsheets, medication list, imaging/pathology reports.
+Key terms: Sequence, number, infections, reported, this, Date, confirmed, infection, Type, location, organism, unknown, Abstractor, Notes
+
+---USER---
+You are a clinical information extractor.
+Given a clinical note (or EHR text), extract answers for the REDCap form: eligibility_and_patient_profile.
+
+Instructions:
+- Fill in the JSON TEMPLATE below using ONLY evidence explicitly present in the text. Do not guess.
+- Keep the same JSON keys and nesting.
+- For choice questions: replace 'True|False' with true or false.
+  * Single-choice (radio/dropdown/yes-no): set exactly one option to true if supported.
+  * Multi-choice (checkbox): set all supported options to true.
+- For 'String'/'Number'/'Integer'/'Date' placeholders: replace with the extracted value (or null if not found).
+- Only populate 'Nested Fields' (e.g., 'please specify') when the parent condition is met AND evidence supports it.
+- Output ONLY the filled JSON (no extra commentary).
+
+EVIDENCE / PAGE CITATION RULE (for auditability):
+- The retrieved Context snippets may include headers like [<source> p<page>] or [<source> p<start>-<end>].
+- For every non-null extracted field (any field whose answer is not null and/or any option you set to true), add an evidence line into profile_ab_notes.
+- Evidence line format (one per field): <VariableName>: <EvidenceTag> — <verbatim short phrase>.
+  * Example: profile_elig1: [patient.pdf p3] — "clinically suspected HLH"
+- Use the EvidenceTag exactly as shown in the Context header (including page number).
+- If no page header is present, cite the source header only (e.g., [note]) and still provide a short verbatim phrase.
+- Do NOT add new JSON keys for evidence; record all citations ONLY inside profile_ab_notes.
+
+OUTPUT FORMAT OVERRIDE (CRITICAL):
+- The JSON TEMPLATE below is REFERENCE ONLY (schema/choices/branching). Do NOT output it.
+- Output ONLY an ANSWERS JSON object, where EACH variable is formatted as:
+  "<variable_name>": { "answer": <value> }
+- Do NOT output "Form Name", "Questions", "Variable / Field Name", "Field Label", "Field Type",
+  "Possible Values", "answer_type", "answer_template", or "codes".
+- Keep the same variable names (e.g., record_id, profile_brthyr, profile_cntry, profile_usregn).
+- Output ONLY valid JSON (no commentary, no markdown, no extra keys).
+
+ANSWERS JSON TEMPLATE (THIS IS THE ONLY THING YOU SHOULD OUTPUT):
+{
+  "infect_seq": {
+    "answer": null
+  },
+  "infect_infectno": {
+    "answer": {
+      "No infections reported for this patient": false
+    }
+  },
+  "infect_infectdt": {
+    "answer": null
+  },
+  "infect_infttyp": {
+    "answer": {
+      "Virus": false,
+      "Bacteria": false,
+      "Fungi": false,
+      "Parasites": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "infect_inftv": {
+      "answer": {
+        "EBV": false,
+        "CMV": false,
+        "HHV6": false,
+        "HIV": false,
+        "COVID-19": false,
+        "Mononucleosis": false,
+        "Influenza A": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "infect_inftvo": {
+      "answer": null
+    },
+    "infect_inftbfp": {
+      "answer": null
+    },
+    "infect_fungi": {
+      "answer": {
+        "Histoplasma": false,
+        "Aspergillus": false,
+        "Other": false,
+        "Unknown": false
+      }
+    },
+    "infect_fungio": {
+      "answer": null
+    },
+    "infect_dchinfc": {
+      "answer": {
+        "Escherichia coli": false,
+        "Clostridium difficile": false,
+        "Haemophilus influenzae": false,
+        "Listeria monocytogenes": false,
+        "Neisseria meningitidi": false,
+        "Pseudomonas aeruginosa": false,
+        "Staphylococcus aureus": false,
+        "Streptococcus pneumonia": false,
+        "Streptococcus pyogenes": false,
+        "Other": false
+      }
+    },
+    "infect_dchinfco": {
+      "answer": null
+    },
+    "infect_dchinfcu": {
+      "answer": {
+        "Unknown": false
+      }
+    }
+  },
+  "infect_infcloc": {
+    "answer": {
+      "Skin": false,
+      "CNS": false,
+      "Blood": false,
+      "Lungs": false,
+      "Urinary system": false,
+      "Tonsils": false,
+      "Nasopharyngeal": false,
+      "Stool": false,
+      "Other": false
+    },
+    "infect_infcloco": {
+      "answer": null
+    }
+  },
+  "infect_infclocu": {
+    "answer": {
+      "Unknown": false
+    }
+  },
+  "infect_notes": {
+    "answer": null
+  },
+  "profile_ab_notes": {
+    "answer": null
+  }
+}
+
+GENERAL "OTHER" FALLBACK RULE (applies to ALL fields):
+- For any radio/dropdown/checkbox field:
+  1) First try to map the evidence to one of the allowed option labels (or clear synonyms).
+  2) If the evidence clearly provides a value but it does NOT match any allowed option label/code:
+     - If the field has an "Other" option AND has a nested/branching "Other specify" text field:
+       * Select/check the "Other" option (use its REDCap code)
+       * Put the exact unmatched value phrase from the evidence into the "Other specify" field
+     - If the field has "Other" option but no specify field:
+       * Select/check "Other" and do not invent text
+     - If the field does not have an "Other" option:
+       * Output null and add the variable name to not_found
+- Do NOT use "Other" when the value matches a valid option label or a clear synonym of a valid option.
+
+JSON TEMPLATE (schema + answer placeholders):
+{
+  "Form Name": "infection_details",
+  "Questions": {
+    "infect_seq": {
+      "Variable / Field Name": "infect_seq",
+      "Form Name": "infection_details",
+      "Field Label": "Sequence number",
+      "Field Type": "text",
+      "Field Note": "Ex: 1",
+      "Required Field?": "y",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "infect_infectno": {
+      "Variable / Field Name": "infect_infectno",
+      "Form Name": "infection_details",
+      "Field Label": "No infections reported for this patient",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "No infections reported for this patient"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "No infections reported for this patient": "True|False"
+      },
+      "codes": {
+        "No infections reported for this patient": "1"
+      }
+    },
+    "infect_infectdt": {
+      "Variable / Field Name": "infect_infectdt",
+      "Form Name": "infection_details",
+      "Field Label": "Date of confirmed infection",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "infect_infttyp": {
+      "Variable / Field Name": "infect_infttyp",
+      "Form Name": "infection_details",
+      "Field Label": "Type of infection",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Virus",
+        "2": "Bacteria",
+        "3": "Fungi",
+        "4": "Parasites",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Virus": "True|False",
+        "Bacteria": "True|False",
+        "Fungi": "True|False",
+        "Parasites": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Virus": "1",
+        "Bacteria": "2",
+        "Fungi": "3",
+        "Parasites": "4",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "infect_inftv": {
+          "Variable / Field Name": "infect_inftv",
+          "Form Name": "infection_details",
+          "Field Label": "Type of virus",
+          "Field Type": "dropdown",
+          "Required Field?": "y",
+          "Branching Logic": "[infect_infttyp] = '1'",
+          "Possible Values (code->label)": {
+            "1": "EBV",
+            "2": "CMV",
+            "3": "HHV6",
+            "4": "HIV",
+            "5": "COVID-19",
+            "7": "Mononucleosis",
+            "8": "Influenza A",
+            "98": "Other",
+            "99": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "EBV": "True|False",
+            "CMV": "True|False",
+            "HHV6": "True|False",
+            "HIV": "True|False",
+            "COVID-19": "True|False",
+            "Mononucleosis": "True|False",
+            "Influenza A": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "EBV": "1",
+            "CMV": "2",
+            "HHV6": "3",
+            "HIV": "4",
+            "COVID-19": "5",
+            "Mononucleosis": "7",
+            "Influenza A": "8",
+            "Other": "98",
+            "Unknown": "99"
+          }
+        },
+        "infect_inftvo": {
+          "Variable / Field Name": "infect_inftvo",
+          "Form Name": "infection_details",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[infect_infttyp] = '1' and [infect_inftv] = '98'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "infect_inftbfp": {
+          "Variable / Field Name": "infect_inftbfp",
+          "Form Name": "infection_details",
+          "Field Label": "Please specify the name of infection",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[infect_infttyp] = '2'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "infect_fungi": {
+          "Variable / Field Name": "infect_fungi",
+          "Form Name": "infection_details",
+          "Field Label": "If fungi",
+          "Field Type": "dropdown",
+          "Required Field?": "y",
+          "Branching Logic": "[infect_infttyp] = '3'",
+          "Possible Values (code->label)": {
+            "1": "Histoplasma",
+            "2": "Aspergillus",
+            "99": "Other",
+            "98": "Unknown"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Histoplasma": "True|False",
+            "Aspergillus": "True|False",
+            "Other": "True|False",
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Histoplasma": "1",
+            "Aspergillus": "2",
+            "Other": "99",
+            "Unknown": "98"
+          }
+        },
+        "infect_fungio": {
+          "Variable / Field Name": "infect_fungio",
+          "Form Name": "infection_details",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[infect_infttyp] = '3' and [infect_fungi] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "infect_dchinfc": {
+          "Variable / Field Name": "infect_dchinfc",
+          "Form Name": "infection_details",
+          "Field Label": "Specify the identity of infection, please specify the organism:",
+          "Field Type": "dropdown",
+          "Branching Logic": "[infect_infttyp] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Escherichia coli",
+            "2": "Clostridium difficile",
+            "3": "Haemophilus influenzae",
+            "4": "Listeria monocytogenes",
+            "5": "Neisseria meningitidi",
+            "6": "Pseudomonas aeruginosa",
+            "7": "Staphylococcus aureus",
+            "8": "Streptococcus pneumonia",
+            "9": "Streptococcus pyogenes",
+            "99": "Other"
+          },
+          "answer_type": "single_choice",
+          "answer_template": {
+            "Escherichia coli": "True|False",
+            "Clostridium difficile": "True|False",
+            "Haemophilus influenzae": "True|False",
+            "Listeria monocytogenes": "True|False",
+            "Neisseria meningitidi": "True|False",
+            "Pseudomonas aeruginosa": "True|False",
+            "Staphylococcus aureus": "True|False",
+            "Streptococcus pneumonia": "True|False",
+            "Streptococcus pyogenes": "True|False",
+            "Other": "True|False"
+          },
+          "codes": {
+            "Escherichia coli": "1",
+            "Clostridium difficile": "2",
+            "Haemophilus influenzae": "3",
+            "Listeria monocytogenes": "4",
+            "Neisseria meningitidi": "5",
+            "Pseudomonas aeruginosa": "6",
+            "Staphylococcus aureus": "7",
+            "Streptococcus pneumonia": "8",
+            "Streptococcus pyogenes": "9",
+            "Other": "99"
+          }
+        },
+        "infect_dchinfco": {
+          "Variable / Field Name": "infect_dchinfco",
+          "Form Name": "infection_details",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[infect_infttyp] = '2' and [infect_dchinfc] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        },
+        "infect_dchinfcu": {
+          "Variable / Field Name": "infect_dchinfcu",
+          "Form Name": "infection_details",
+          "Field Label": "Organism unknown",
+          "Field Type": "checkbox",
+          "Branching Logic": "[infect_infttyp] = '2'",
+          "Possible Values (code->label)": {
+            "1": "Unknown"
+          },
+          "answer_type": "multi_choice",
+          "answer_template": {
+            "Unknown": "True|False"
+          },
+          "codes": {
+            "Unknown": "1"
+          }
+        }
+      }
+    },
+    "infect_infcloc": {
+      "Variable / Field Name": "infect_infcloc",
+      "Form Name": "infection_details",
+      "Field Label": "Please specify the location of the organism",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Skin",
+        "2": "CNS",
+        "3": "Blood",
+        "4": "Lungs",
+        "5": "Urinary system",
+        "6": "Tonsils",
+        "7": "Nasopharyngeal",
+        "8": "Stool",
+        "99": "Other"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Skin": "True|False",
+        "CNS": "True|False",
+        "Blood": "True|False",
+        "Lungs": "True|False",
+        "Urinary system": "True|False",
+        "Tonsils": "True|False",
+        "Nasopharyngeal": "True|False",
+        "Stool": "True|False",
+        "Other": "True|False"
+      },
+      "codes": {
+        "Skin": "1",
+        "CNS": "2",
+        "Blood": "3",
+        "Lungs": "4",
+        "Urinary system": "5",
+        "Tonsils": "6",
+        "Nasopharyngeal": "7",
+        "Stool": "8",
+        "Other": "99"
+      },
+      "Nested Fields": {
+        "infect_infcloco": {
+          "Variable / Field Name": "infect_infcloco",
+          "Form Name": "infection_details",
+          "Field Label": "Please specify",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[infect_infcloc] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "infect_infclocu": {
+      "Variable / Field Name": "infect_infclocu",
+      "Form Name": "infection_details",
+      "Field Label": "Location of organism unknown",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Unknown"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Unknown": "1"
+      }
+    },
+    "infect_notes": {
+      "Variable / Field Name": "infect_notes",
+      "Form Name": "infection_details",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    },
+    "profile_ab_notes": {
+      "Variable / Field Name": "profile_ab_notes",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    }
+  }
+}

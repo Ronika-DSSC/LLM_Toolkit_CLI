@@ -1,0 +1,2076 @@
+#### PROMPT_SET: specialized_laboratory_test_hlh_diagnosis
+---RAG---
+REDCap form: specialized_laboratory_test_hlh_diagnosis
+Retrieve document text needed to answer this form.
+Prefer labeled fields/tables; ignore repetitive footers/headers.
+Additional cues: demographics/face sheet, problem list, assessment & plan, discharge summary, lab results/flowsheets, medication list, imaging/pathology reports.
+Key terms: Neopterin, cerebrospinal, fluid, CSF, White, blood, cells, not, date, value, unit, Normal, Proteins, available, Abnormal, RBCs, Monocytes, Lymphocytes, Neutrophils, Was, Hemophagocytosis, present, Perforin, Lower, Limit, unknown, Upper, Granzyme, cell, activity
+
+---USER---
+You are a clinical information extractor.
+Given a clinical note (or EHR text), extract answers for the REDCap form: eligibility_and_patient_profile.
+
+Instructions:
+- Fill in the JSON TEMPLATE below using ONLY evidence explicitly present in the text. Do not guess.
+- Keep the same JSON keys and nesting.
+- For choice questions: replace 'True|False' with true or false.
+  * Single-choice (radio/dropdown/yes-no): set exactly one option to true if supported.
+  * Multi-choice (checkbox): set all supported options to true.
+- For 'String'/'Number'/'Integer'/'Date' placeholders: replace with the extracted value (or null if not found).
+- Only populate 'Nested Fields' (e.g., 'please specify') when the parent condition is met AND evidence supports it.
+- Output ONLY the filled JSON (no extra commentary).
+
+EVIDENCE / PAGE CITATION RULE (for auditability):
+- The retrieved Context snippets may include headers like [<source> p<page>] or [<source> p<start>-<end>].
+- For every non-null extracted field (any field whose answer is not null and/or any option you set to true), add an evidence line into profile_ab_notes.
+- Evidence line format (one per field): <VariableName>: <EvidenceTag> — <verbatim short phrase>.
+  * Example: profile_elig1: [patient.pdf p3] — "clinically suspected HLH"
+- Use the EvidenceTag exactly as shown in the Context header (including page number).
+- If no page header is present, cite the source header only (e.g., [note]) and still provide a short verbatim phrase.
+- Do NOT add new JSON keys for evidence; record all citations ONLY inside profile_ab_notes.
+
+OUTPUT FORMAT OVERRIDE (CRITICAL):
+- The JSON TEMPLATE below is REFERENCE ONLY (schema/choices/branching). Do NOT output it.
+- Output ONLY an ANSWERS JSON object, where EACH variable is formatted as:
+  "<variable_name>": { "answer": <value> }
+- Do NOT output "Form Name", "Questions", "Variable / Field Name", "Field Label", "Field Type",
+  "Possible Values", "answer_type", "answer_template", or "codes".
+- Keep the same variable names (e.g., record_id, profile_brthyr, profile_cntry, profile_usregn).
+- Output ONLY valid JSON (no commentary, no markdown, no extra keys).
+
+ANSWERS JSON TEMPLATE (THIS IS THE ONLY THING YOU SHOULD OUTPUT):
+{
+  "labcd_csfnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labcd_csfdt": {
+    "answer": null
+  },
+  "labcd_csfv": {
+    "answer": null
+  },
+  "labcd_csfu": {
+    "answer": {
+      "nmol/mL": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labcd_csfuo": {
+      "answer": null
+    }
+  },
+  "labcd_csfunl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labcd_wbcnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labcd_wbcdt": {
+    "answer": null
+  },
+  "labcd_wbcv": {
+    "answer": null
+  },
+  "labcd_wbcu": {
+    "answer": {
+      "cells/L": false,
+      "cells/µL": false,
+      "cells/mm^3": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labcd_wbcuo": {
+      "answer": null
+    }
+  },
+  "labcd_wbcnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labcd_prtnnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labcd_prtndt": {
+    "answer": null
+  },
+  "labcd_prtnv": {
+    "answer": null
+  },
+  "labcd_prtnu": {
+    "answer": {
+      "mg/dL": false,
+      "g/L": false,
+      "g/dL": false,
+      "g/100mL": false,
+      "mg/mL": false,
+      "g%": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labcd_prtnuo": {
+      "answer": null
+    }
+  },
+  "labcd_prtnnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labcd_rbcnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labcd_rbcdt": {
+    "answer": null
+  },
+  "labcd_rbcv": {
+    "answer": null
+  },
+  "labcd_rbcu": {
+    "answer": {
+      "cells/L": false,
+      "cells/µL": false,
+      "cells/mm^3": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labcd_rbcuo": {
+      "answer": null
+    }
+  },
+  "labcd_rbcnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labcd_monond": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labcd_monodt": {
+    "answer": null
+  },
+  "labcd_monov": {
+    "answer": null
+  },
+  "labcd_monou": {
+    "answer": {
+      "%": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labcd_monouo": {
+      "answer": null
+    }
+  },
+  "labcd_mononl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labcd_lympnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labcd_lympdt": {
+    "answer": null
+  },
+  "labcd_lympv": {
+    "answer": null
+  },
+  "labcd_lympu": {
+    "answer": {
+      "%": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labcd_lympuo": {
+      "answer": null
+    }
+  },
+  "labcd_lympnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labcd_neutnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labcd_neutdt": {
+    "answer": null
+  },
+  "labcd_neutv": {
+    "answer": null
+  },
+  "labcd_neutu": {
+    "answer": {
+      "%": false,
+      "Other": false,
+      "Unknown": false
+    },
+    "labcd_neutuo": {
+      "answer": null
+    }
+  },
+  "labcd_neutnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labcd_hemopyn": {
+    "answer": {
+      "Yes": false,
+      "No": false,
+      "Not available": false
+    }
+  },
+  "labcd_prfrnnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labcd_prfrndt": {
+    "answer": null
+  },
+  "labcd_prfrnv": {
+    "answer": null
+  },
+  "labcd_prfru": {
+    "answer": {
+      "MFI in NK cells": false
+    }
+  },
+  "labcd_prfrnll": {
+    "answer": null
+  },
+  "labcd_prfrnllu": {
+    "answer": {
+      "Unknown": false
+    }
+  },
+  "labcd_prfrnul": {
+    "answer": null
+  },
+  "labcd_prfrnulu": {
+    "answer": {
+      "Unknown": false
+    }
+  },
+  "labcd_prfrnnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labcd_grnzymnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labcd_grnzymdt": {
+    "answer": null
+  },
+  "labcd_grnzymv": {
+    "answer": null
+  },
+  "labcd_grnzyu": {
+    "answer": {
+      "MFI in NK Cells": false
+    }
+  },
+  "labcd_grnzymll": {
+    "answer": null
+  },
+  "labcd_grnzyllu": {
+    "answer": {
+      "Unknown": false
+    }
+  },
+  "labcd_grnzymul": {
+    "answer": null
+  },
+  "labcd_grnzyulu": {
+    "answer": {
+      "Unknown": false
+    }
+  },
+  "labcd_grnzymnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labcd_nknd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labcd_nkdt": {
+    "answer": null
+  },
+  "labcd_nkv": {
+    "answer": null
+  },
+  "labcd_nku": {
+    "answer": {
+      "Lytic unit": false
+    }
+  },
+  "labcd_nkpll": {
+    "answer": null
+  },
+  "labcd_nkpllu": {
+    "answer": {
+      "Unknown": false
+    }
+  },
+  "labcd_nkcul": {
+    "answer": null
+  },
+  "labcd_nkculu": {
+    "answer": {
+      "Unknown": false
+    }
+  },
+  "labcd_nkcnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labcd_cd107nd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labcd_cd107dt": {
+    "answer": null
+  },
+  "labcd_cd107v": {
+    "answer": null
+  },
+  "labcd_cd10u": {
+    "answer": {
+      "% positive": false
+    }
+  },
+  "labcd_cd107ll": {
+    "answer": null
+  },
+  "labcd_cd107llu": {
+    "answer": {
+      "Unknown": false
+    }
+  },
+  "labcd_cd107ul": {
+    "answer": null
+  },
+  "labcd_cd107ulu": {
+    "answer": {
+      "Unknown": false
+    }
+  },
+  "labcd_cd107nl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labcd_cd107mnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labcd_cd107mdt": {
+    "answer": null
+  },
+  "labcd_cd107mv": {
+    "answer": null
+  },
+  "labcd_cd107u": {
+    "answer": {
+      "MFI in T cells": false
+    }
+  },
+  "labcd_cd107mll": {
+    "answer": null
+  },
+  "labcd_cd107mlu": {
+    "answer": {
+      "Unknown": false
+    }
+  },
+  "labcd_cd107mul": {
+    "answer": null
+  },
+  "labcd_cd107muu": {
+    "answer": {
+      "Unknown": false
+    }
+  },
+  "labcd_cd107mnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labcd_cdnknd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labcd_cdnkdt": {
+    "answer": null
+  },
+  "labcd_cdnkv": {
+    "answer": null
+  },
+  "labcd_cdnku": {
+    "answer": {
+      "% positive": false
+    }
+  },
+  "labcd_cdnkll": {
+    "answer": null
+  },
+  "labcd_cdnkllu": {
+    "answer": {
+      "Unknown": false
+    }
+  },
+  "labcd_cdnkul": {
+    "answer": null
+  },
+  "labcd_cdnkulu": {
+    "answer": {
+      "Unknown": false
+    }
+  },
+  "labcd_cdnknl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labcd_cdnkmnd": {
+    "answer": {
+      "Not available": false
+    }
+  },
+  "labcd_cdnkmdt": {
+    "answer": null
+  },
+  "labcd_cdnkmv": {
+    "answer": null
+  },
+  "labcd_cdnku1": {
+    "answer": {
+      "MFI in NK cells": false
+    }
+  },
+  "labcd_cdnkmll": {
+    "answer": null
+  },
+  "labcd_cdnkmllu": {
+    "answer": {
+      "Unknown": false
+    }
+  },
+  "labcd_cdnkmul": {
+    "answer": null
+  },
+  "labcd_cdnkmulu": {
+    "answer": {
+      "Unknown": false
+    }
+  },
+  "labcd_cdnkmnl": {
+    "answer": {
+      "Normal": false,
+      "Abnormal": false,
+      "Unknown": false
+    }
+  },
+  "labcd_notes": {
+    "answer": null
+  },
+  "profile_ab_notes": {
+    "answer": null
+  }
+}
+
+GENERAL "OTHER" FALLBACK RULE (applies to ALL fields):
+- For any radio/dropdown/checkbox field:
+  1) First try to map the evidence to one of the allowed option labels (or clear synonyms).
+  2) If the evidence clearly provides a value but it does NOT match any allowed option label/code:
+     - If the field has an "Other" option AND has a nested/branching "Other specify" text field:
+       * Select/check the "Other" option (use its REDCap code)
+       * Put the exact unmatched value phrase from the evidence into the "Other specify" field
+     - If the field has "Other" option but no specify field:
+       * Select/check "Other" and do not invent text
+     - If the field does not have an "Other" option:
+       * Output null and add the variable name to not_found
+- Do NOT use "Other" when the value matches a valid option label or a clear synonym of a valid option.
+
+JSON TEMPLATE (schema + answer placeholders):
+{
+  "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+  "Questions": {
+    "labcd_csfnd": {
+      "Variable / Field Name": "labcd_csfnd",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Neopterin in the cerebrospinal fluid (CSF) not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labcd_csfdt": {
+      "Variable / Field Name": "labcd_csfdt",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Neopterin in the cerebrospinal fluid (CSF) date",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_csfv": {
+      "Variable / Field Name": "labcd_csfv",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Neopterin in the cerebrospinal fluid (CSF) value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_csfu": {
+      "Variable / Field Name": "labcd_csfu",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Neopterin in the cerebrospinal fluid (CSF) unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "nmol/mL",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "nmol/mL": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "nmol/mL": "1",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labcd_csfuo": {
+          "Variable / Field Name": "labcd_csfuo",
+          "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+          "Field Label": "Neopterin in the cerebrospinal fluid (CSF) Other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labcd_csfu] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labcd_csfunl": {
+      "Variable / Field Name": "labcd_csfunl",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Neopterin in the cerebrospinal fluid (CSF) Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labcd_wbcnd": {
+      "Variable / Field Name": "labcd_wbcnd",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "White blood cells in CSF not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labcd_wbcdt": {
+      "Variable / Field Name": "labcd_wbcdt",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "White blood cells in CSF date",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_wbcv": {
+      "Variable / Field Name": "labcd_wbcv",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "White blood cells in CSF value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_wbcu": {
+      "Variable / Field Name": "labcd_wbcu",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "White blood cells in CSF unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "cells/L",
+        "2": "cells/µL",
+        "3": "cells/mm^3",
+        "98": "Other",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "cells/L": "True|False",
+        "cells/µL": "True|False",
+        "cells/mm^3": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "cells/L": "1",
+        "cells/µL": "2",
+        "cells/mm^3": "3",
+        "Other": "98",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "labcd_wbcuo": {
+          "Variable / Field Name": "labcd_wbcuo",
+          "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+          "Field Label": "White blood cells in CSF Other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labcd_wbcu] = '98'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labcd_wbcnl": {
+      "Variable / Field Name": "labcd_wbcnl",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "White blood cells in CSF Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labcd_prtnnd": {
+      "Variable / Field Name": "labcd_prtnnd",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Proteins in CSF not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labcd_prtndt": {
+      "Variable / Field Name": "labcd_prtndt",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Proteins in CSF date",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_prtnv": {
+      "Variable / Field Name": "labcd_prtnv",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Proteins in CSF value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_prtnu": {
+      "Variable / Field Name": "labcd_prtnu",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Proteins in CSF unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "mg/dL",
+        "2": "g/L",
+        "3": "g/dL",
+        "4": "g/100mL",
+        "5": "mg/mL",
+        "6": "g%",
+        "98": "Other",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "mg/dL": "True|False",
+        "g/L": "True|False",
+        "g/dL": "True|False",
+        "g/100mL": "True|False",
+        "mg/mL": "True|False",
+        "g%": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "mg/dL": "1",
+        "g/L": "2",
+        "g/dL": "3",
+        "g/100mL": "4",
+        "mg/mL": "5",
+        "g%": "6",
+        "Other": "98",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "labcd_prtnuo": {
+          "Variable / Field Name": "labcd_prtnuo",
+          "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+          "Field Label": "Proteins in CSF Other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labcd_prtnu] = '98'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labcd_prtnnl": {
+      "Variable / Field Name": "labcd_prtnnl",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Proteins in CSF Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labcd_rbcnd": {
+      "Variable / Field Name": "labcd_rbcnd",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "RBCs in CSF not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labcd_rbcdt": {
+      "Variable / Field Name": "labcd_rbcdt",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "RBCs in CSF date",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_rbcv": {
+      "Variable / Field Name": "labcd_rbcv",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "RBCs in CSF value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_rbcu": {
+      "Variable / Field Name": "labcd_rbcu",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "RBCs in CSF unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "cells/L",
+        "2": "cells/µL",
+        "3": "cells/mm^3",
+        "98": "Other",
+        "99": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "cells/L": "True|False",
+        "cells/µL": "True|False",
+        "cells/mm^3": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "cells/L": "1",
+        "cells/µL": "2",
+        "cells/mm^3": "3",
+        "Other": "98",
+        "Unknown": "99"
+      },
+      "Nested Fields": {
+        "labcd_rbcuo": {
+          "Variable / Field Name": "labcd_rbcuo",
+          "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+          "Field Label": "RBCs in CSF Other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labcd_rbcu] = '98'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labcd_rbcnl": {
+      "Variable / Field Name": "labcd_rbcnl",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "RBCs in CSF Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labcd_monond": {
+      "Variable / Field Name": "labcd_monond",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Monocytes in CSF not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labcd_monodt": {
+      "Variable / Field Name": "labcd_monodt",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Monocytes in CSF date",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_monov": {
+      "Variable / Field Name": "labcd_monov",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Monocytes in CSF value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_monou": {
+      "Variable / Field Name": "labcd_monou",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Monocytes in CSF unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "%",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "%": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "%": "1",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labcd_monouo": {
+          "Variable / Field Name": "labcd_monouo",
+          "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+          "Field Label": "Monocytes in CSF Other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labcd_monou] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labcd_mononl": {
+      "Variable / Field Name": "labcd_mononl",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Monocytes in CSF normal or abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labcd_lympnd": {
+      "Variable / Field Name": "labcd_lympnd",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Lymphocytes in CSF not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labcd_lympdt": {
+      "Variable / Field Name": "labcd_lympdt",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Lymphocytes in CSF date",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_lympv": {
+      "Variable / Field Name": "labcd_lympv",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Lymphocytes in CSF value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_lympu": {
+      "Variable / Field Name": "labcd_lympu",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Lymphocytes in CSF unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "%",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "%": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "%": "1",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labcd_lympuo": {
+          "Variable / Field Name": "labcd_lympuo",
+          "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+          "Field Label": "Lymphocytes in CSF Other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labcd_lympu] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labcd_lympnl": {
+      "Variable / Field Name": "labcd_lympnl",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Lymphocytes in CSF normal or abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labcd_neutnd": {
+      "Variable / Field Name": "labcd_neutnd",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Neutrophils in CSF not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labcd_neutdt": {
+      "Variable / Field Name": "labcd_neutdt",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Neutrophils in CSF date",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_neutv": {
+      "Variable / Field Name": "labcd_neutv",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Neutrophils in CSF value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_neutu": {
+      "Variable / Field Name": "labcd_neutu",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Neutrophils in CSF unit",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "%",
+        "99": "Other",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "%": "True|False",
+        "Other": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "%": "1",
+        "Other": "99",
+        "Unknown": "98"
+      },
+      "Nested Fields": {
+        "labcd_neutuo": {
+          "Variable / Field Name": "labcd_neutuo",
+          "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+          "Field Label": "Neutrophils in CSF Other unit",
+          "Field Type": "text",
+          "Required Field?": "y",
+          "Branching Logic": "[labcd_neutu] = '99'",
+          "answer_type": "string",
+          "answer_template": "String"
+        }
+      }
+    },
+    "labcd_neutnl": {
+      "Variable / Field Name": "labcd_neutnl",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Neutrophils in CSF normal or abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labcd_hemopyn": {
+      "Variable / Field Name": "labcd_hemopyn",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Was Hemophagocytosis present in CSF?",
+      "Field Type": "radio",
+      "Required Field?": "y",
+      "Possible Values (code->label)": {
+        "1": "Yes",
+        "2": "No",
+        "98": "Not available"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Yes": "True|False",
+        "No": "True|False",
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Yes": "1",
+        "No": "2",
+        "Not available": "98"
+      }
+    },
+    "labcd_prfrnnd": {
+      "Variable / Field Name": "labcd_prfrnnd",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Perforin not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labcd_prfrndt": {
+      "Variable / Field Name": "labcd_prfrndt",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Perforin date",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_prfrnv": {
+      "Variable / Field Name": "labcd_prfrnv",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Perforin value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_prfru": {
+      "Variable / Field Name": "labcd_prfru",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Perforin unit",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "MFI in NK cells"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "MFI in NK cells": "True|False"
+      },
+      "codes": {
+        "MFI in NK cells": "1"
+      }
+    },
+    "labcd_prfrnll": {
+      "Variable / Field Name": "labcd_prfrnll",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Perforin Lower Limit",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_prfrnllu": {
+      "Variable / Field Name": "labcd_prfrnllu",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Perforin Lower Limit unknown",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Unknown"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Unknown": "1"
+      }
+    },
+    "labcd_prfrnul": {
+      "Variable / Field Name": "labcd_prfrnul",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Perforin Upper Limit",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_prfrnulu": {
+      "Variable / Field Name": "labcd_prfrnulu",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Perforin Upper Limit unknown",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Unknown"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Unknown": "1"
+      }
+    },
+    "labcd_prfrnnl": {
+      "Variable / Field Name": "labcd_prfrnnl",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Perforin Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labcd_grnzymnd": {
+      "Variable / Field Name": "labcd_grnzymnd",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Granzyme not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labcd_grnzymdt": {
+      "Variable / Field Name": "labcd_grnzymdt",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Granzyme date",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_grnzymv": {
+      "Variable / Field Name": "labcd_grnzymv",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Granzyme value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_grnzyu": {
+      "Variable / Field Name": "labcd_grnzyu",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Granzyme unit",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "MFI in NK Cells"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "MFI in NK Cells": "True|False"
+      },
+      "codes": {
+        "MFI in NK Cells": "1"
+      }
+    },
+    "labcd_grnzymll": {
+      "Variable / Field Name": "labcd_grnzymll",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Granzyme Lower Limit",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_grnzyllu": {
+      "Variable / Field Name": "labcd_grnzyllu",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Granzyme Lower Limit unknown",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Unknown"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Unknown": "1"
+      }
+    },
+    "labcd_grnzymul": {
+      "Variable / Field Name": "labcd_grnzymul",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Granzyme Upper Limit",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_grnzyulu": {
+      "Variable / Field Name": "labcd_grnzyulu",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Granzyme Upper Limit unknown",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Unknown"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Unknown": "1"
+      }
+    },
+    "labcd_grnzymnl": {
+      "Variable / Field Name": "labcd_grnzymnl",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Granzyme Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labcd_nknd": {
+      "Variable / Field Name": "labcd_nknd",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "NK cell activity not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labcd_nkdt": {
+      "Variable / Field Name": "labcd_nkdt",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "NK cell activity date",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_nkv": {
+      "Variable / Field Name": "labcd_nkv",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "NK cell activity value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_nku": {
+      "Variable / Field Name": "labcd_nku",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Nk cell activity unit",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Lytic unit"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Lytic unit": "True|False"
+      },
+      "codes": {
+        "Lytic unit": "1"
+      }
+    },
+    "labcd_nkpll": {
+      "Variable / Field Name": "labcd_nkpll",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "NK cell activity Lower Limit",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_nkpllu": {
+      "Variable / Field Name": "labcd_nkpllu",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "NK cell activity Lower Limit unknown",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Unknown"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Unknown": "1"
+      }
+    },
+    "labcd_nkcul": {
+      "Variable / Field Name": "labcd_nkcul",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "NK cell activity Upper Limit",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_nkculu": {
+      "Variable / Field Name": "labcd_nkculu",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "NK cell activity Upper Limit unknown",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Unknown"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Unknown": "1"
+      }
+    },
+    "labcd_nkcnl": {
+      "Variable / Field Name": "labcd_nkcnl",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "NK cell activity Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labcd_cd107nd": {
+      "Variable / Field Name": "labcd_cd107nd",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in T cells not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labcd_cd107dt": {
+      "Variable / Field Name": "labcd_cd107dt",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in T cells date",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_cd107v": {
+      "Variable / Field Name": "labcd_cd107v",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in T cells value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_cd10u": {
+      "Variable / Field Name": "labcd_cd10u",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in T cells unit",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "% positive"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "% positive": "True|False"
+      },
+      "codes": {
+        "% positive": "1"
+      }
+    },
+    "labcd_cd107ll": {
+      "Variable / Field Name": "labcd_cd107ll",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in T cells Lower Limit",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_cd107llu": {
+      "Variable / Field Name": "labcd_cd107llu",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in T cells Lower Limit unknown",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Unknown"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Unknown": "1"
+      }
+    },
+    "labcd_cd107ul": {
+      "Variable / Field Name": "labcd_cd107ul",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in T cells Upper Limit",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_cd107ulu": {
+      "Variable / Field Name": "labcd_cd107ulu",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in T cells Upper Limit unknown",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Unknown"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Unknown": "1"
+      }
+    },
+    "labcd_cd107nl": {
+      "Variable / Field Name": "labcd_cd107nl",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in T cells Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labcd_cd107mnd": {
+      "Variable / Field Name": "labcd_cd107mnd",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in T cells not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labcd_cd107mdt": {
+      "Variable / Field Name": "labcd_cd107mdt",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in T cells date",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_cd107mv": {
+      "Variable / Field Name": "labcd_cd107mv",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in T cells value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_cd107u": {
+      "Variable / Field Name": "labcd_cd107u",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in T cells unit",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "MFI in T cells"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "MFI in T cells": "True|False"
+      },
+      "codes": {
+        "MFI in T cells": "1"
+      }
+    },
+    "labcd_cd107mll": {
+      "Variable / Field Name": "labcd_cd107mll",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in T cells Lower Limit",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_cd107mlu": {
+      "Variable / Field Name": "labcd_cd107mlu",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in T cells Lower Limit unknown",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Unknown"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Unknown": "1"
+      }
+    },
+    "labcd_cd107mul": {
+      "Variable / Field Name": "labcd_cd107mul",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in T cells Upper Limit",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_cd107muu": {
+      "Variable / Field Name": "labcd_cd107muu",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in T cells Upper Limit unknown",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Unknown"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Unknown": "1"
+      }
+    },
+    "labcd_cd107mnl": {
+      "Variable / Field Name": "labcd_cd107mnl",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in T cells Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labcd_cdnknd": {
+      "Variable / Field Name": "labcd_cdnknd",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in NK cells not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labcd_cdnkdt": {
+      "Variable / Field Name": "labcd_cdnkdt",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in NK cells date",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_cdnkv": {
+      "Variable / Field Name": "labcd_cdnkv",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in NK cells value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_cdnku": {
+      "Variable / Field Name": "labcd_cdnku",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in NK cells unit",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "% positive"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "% positive": "True|False"
+      },
+      "codes": {
+        "% positive": "1"
+      }
+    },
+    "labcd_cdnkll": {
+      "Variable / Field Name": "labcd_cdnkll",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in NK cells Lower Limit",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_cdnkllu": {
+      "Variable / Field Name": "labcd_cdnkllu",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in NK cells Lower Limit unknown",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Unknown"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Unknown": "1"
+      }
+    },
+    "labcd_cdnkul": {
+      "Variable / Field Name": "labcd_cdnkul",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in NK cells Upper Limit",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_cdnkulu": {
+      "Variable / Field Name": "labcd_cdnkulu",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in NK cells Upper Limit unknown",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Unknown"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Unknown": "1"
+      }
+    },
+    "labcd_cdnknl": {
+      "Variable / Field Name": "labcd_cdnknl",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in NK cells Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labcd_cdnkmnd": {
+      "Variable / Field Name": "labcd_cdnkmnd",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in NK cells not available",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Not available"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Not available": "True|False"
+      },
+      "codes": {
+        "Not available": "1"
+      }
+    },
+    "labcd_cdnkmdt": {
+      "Variable / Field Name": "labcd_cdnkmdt",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in NK cells date",
+      "Field Type": "text",
+      "Field Note": "Ex: 03-Mar-2026",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_cdnkmv": {
+      "Variable / Field Name": "labcd_cdnkmv",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in NK cells value",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_cdnku1": {
+      "Variable / Field Name": "labcd_cdnku1",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in NK cells unit",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "MFI in NK cells"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "MFI in NK cells": "True|False"
+      },
+      "codes": {
+        "MFI in NK cells": "1"
+      }
+    },
+    "labcd_cdnkmll": {
+      "Variable / Field Name": "labcd_cdnkmll",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in NK cells Lower Limit",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_cdnkmllu": {
+      "Variable / Field Name": "labcd_cdnkmllu",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in NK cells Lower Limit unknown",
+      "Field Type": "radio",
+      "Possible Values (code->label)": {
+        "1": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Unknown": "1"
+      }
+    },
+    "labcd_cdnkmul": {
+      "Variable / Field Name": "labcd_cdnkmul",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in NK cells Upper Limit",
+      "Field Type": "text",
+      "answer_type": "string",
+      "answer_template": "String"
+    },
+    "labcd_cdnkmulu": {
+      "Variable / Field Name": "labcd_cdnkmulu",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in NK cells Upper Limit",
+      "Field Type": "checkbox",
+      "Possible Values (code->label)": {
+        "1": "Unknown"
+      },
+      "answer_type": "multi_choice",
+      "answer_template": {
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Unknown": "1"
+      }
+    },
+    "labcd_cdnkmnl": {
+      "Variable / Field Name": "labcd_cdnkmnl",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "CD107 mobilization/degranulation in NK cells Normal or Abnormal",
+      "Field Type": "dropdown",
+      "Possible Values (code->label)": {
+        "1": "Normal",
+        "2": "Abnormal",
+        "98": "Unknown"
+      },
+      "answer_type": "single_choice",
+      "answer_template": {
+        "Normal": "True|False",
+        "Abnormal": "True|False",
+        "Unknown": "True|False"
+      },
+      "codes": {
+        "Normal": "1",
+        "Abnormal": "2",
+        "Unknown": "98"
+      }
+    },
+    "labcd_notes": {
+      "Variable / Field Name": "labcd_notes",
+      "Form Name": "specialized_laboratory_test_hlh_diagnosis",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    },
+    "profile_ab_notes": {
+      "Variable / Field Name": "profile_ab_notes",
+      "Form Name": "eligibility_and_patient_profile",
+      "Field Label": "Abstractor Notes:",
+      "Field Type": "notes",
+      "answer_type": "string",
+      "answer_template": "String (free text)"
+    }
+  }
+}

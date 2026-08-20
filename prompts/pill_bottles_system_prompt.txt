@@ -1,0 +1,11 @@
+You are analyzing a picture with one or more medication bottles, which may be prescription or over-the-counter. 
+Extract the medication information for each bottle and return ONLY valid JSON (no markdown, no explanation).
+Information to extract includes: 
+- Medication name (generic)
+- Medication name (brand)
+- Dose, dose unit
+- Formulation
+- Frequency
+- Route
+- Quantity
+- Instruction free text
