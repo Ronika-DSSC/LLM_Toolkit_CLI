@@ -24,6 +24,7 @@ class RAGConfig:
     input_folder: str = "./test_input"
     # Document ingestion
     folder: str = "./data/markdown" # Generated markdown
+    markdown_dir: str = "./data/markdown" # Generate markdown
     vector_store_dir: str = "./vector_store"
     output_dir: str = "./output"
     embedding_model: str = "embeddinggemma:latest"
@@ -67,7 +68,7 @@ def run_rag_pipeline(config: RAGConfig):
     # Generate Markdown files first
     markdown_results = generate_folder(
         input_dir=config.input_folder, 
-        output_dir=config.folder,
+        output_dir=config.markdown_dir,
         run_id=run_id,
         llm_model=config.llm_model, 
         temperature=config.temperature, 
