@@ -19,7 +19,7 @@ Examples:
     python LLM_Toolkit_CLI.py \
         --markdown-dir ./data/markdown \
         --folder ./data/markdown \
-        --backend faiss \
+        --backend chroma \
         --collection-name clinical_chromaDB_test_docs \
         --max-tokens 400 \
         --overlap-tokens 40 \
