@@ -1,6 +1,6 @@
 # Create a conda environment to install all the required packages.
 # Create a .env file with the LLM and EMBEDDING URLs and API keys.
-# .env file:
+.env file must contain the LLM and EMBEDDING URLs and API keys:
 EMBEDDING_URL=<embedding_url> \
 LLM_URL=<llm_url> \
 EMBEDDING_API_KEY=<your_api_key> \
