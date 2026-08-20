@@ -1,17 +1,16 @@
-# Create a conda environment to install all the required packages.
-# Create a .env file with the LLM and EMBEDDING URLs and API keys.
-
-
 Requirements: \
-(1) .env file must contain the LLM and EMBEDDING URLs and API keys: \
+(1) Create a conda environment to install all the required packages. \
+ \
+(2) Create a .env file with the LLM and EMBEDDING URLs and API keys. \
+
+.env file must contain the LLM and EMBEDDING URLs and API keys: \
 EMBEDDING_URL=<embedding_url> \
 LLM_URL=<llm_url> \
 EMBEDDING_API_KEY=<your_api_key> \
 LLM_API_KEY=<your_api_key>
 
-
-
-
+ \
+ \
 (2) job.bat file for job submission to the HPC: \
 source <path_to_conda.sh>
 conda activate llm_toolkit
