@@ -4,7 +4,7 @@
 source <path_to_conda.sh>
 conda activate llm_toolkit
 
-python LLM_Toolkit_CLI.py   --input-folder ./UD7/Medical_Record \
+python LLM_Toolkit_CLI.py   --input-folder ./test_input \
                             --markdown-dir ./data/markdown \
                             --folder ./data/markdown \
                             --backend chroma \
