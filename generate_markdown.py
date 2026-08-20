@@ -40,9 +40,7 @@ def generate_markdown(
     markdown_path = result.get("markdown_path")
 
     if not markdown_path:
-        raise RuntimeError(
-            f"text_pipeline did not return markdown_path for {input_path}"
-        )
+        raise RuntimeError(f"text_pipeline did not return markdown_path for {input_path}")
 
     markdown_path = Path(markdown_path)
 
@@ -157,9 +155,7 @@ if __name__ == "__main__":
         print(f"\nProcessed {len(results)} file(s).")
 
     else:
-        raise FileNotFoundError(
-            f"Input does not exist: {input_path}"
-        )
+        raise FileNotFoundError(f"Input does not exist: {input_path}")
 
 
 
