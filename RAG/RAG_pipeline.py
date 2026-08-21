@@ -2,7 +2,7 @@ from RAG.embedding import ingest_folder, configure_vector_store_paths
 from RAG.retrieval import retrieve_top_k
 from RAG.generate_markdown import generate_folder
 from RAG.llm import call_chat_llm
-from RAG.prompt_loader import load_promptsets_from_file
+from RAG.prompt_loader import load_promptsets
 import logging
 import numpy as np
 import os
@@ -14,7 +14,7 @@ import logging
 import hashlib
 import faiss
 import chromadb
-from typing import Dict, Any
+from typing import Dict, Any, List
 from dataclasses import dataclass
 
 
@@ -37,8 +37,7 @@ class RAGConfig:
     top_k: int = 5
     cosine_threshold: float = 0.3
     # Prompts
-    prompt_file: str = "prompts/promptset/patient_diagnosis_prompts_v3_with_page_evidence.txt"
-    prompt_index: int = 0
+    prompt_dir: str = "prompts/promptset"
     # LLM
     llm_model: str = "phi4:14b"
     system_prompt: str = "You are a clinical information extraction assistant."
@@ -80,12 +79,10 @@ def run_rag_pipeline(config: RAGConfig):
     configure_vector_store_paths(config.vector_store_dir)
     logging.info("Using vector store directory: %s", config.vector_store_dir,)
     # -------------------------
-    # Load Prompt
+    # Load all Prompts
     # -------------------------
-    promptsets = load_promptsets_from_file(config.prompt_file)
-    prompt = promptsets[config.prompt_index]
-    rag_prompt = prompt["rag"]
-    user_prompt = prompt["user"]
+    promptsets = load_promptsets(config.prompt_dir)
+    logging.info("Loaded %d prompt set(s) from %s", len(promptsets), config.prompt_dir,)
     # -------------------------------------
     # Build Vector Stores and Retrieve
     # -------------------------------------
@@ -102,14 +99,6 @@ def run_rag_pipeline(config: RAGConfig):
         overlap_tokens=config.overlap_tokens, 
         use_text_pipeline=config.use_text_pipeline,)
         collection_size = collection.count()
-                
-        top_retrieved_chunks = retrieve_top_k(
-        query=rag_prompt, 
-        embedding_model=config.embedding_model, 
-        backend="chroma", 
-        collection_name=config.collection_name, 
-        cosine_threshold=config.cosine_threshold, 
-        k=config.top_k,)
     
     elif config.backend == 'numpy':
         store = ingest_folder(
@@ -120,13 +109,6 @@ def run_rag_pipeline(config: RAGConfig):
         overlap_tokens=config.overlap_tokens, 
         use_text_pipeline=config.use_text_pipeline,)
         collection_size = len(store)
-        
-        top_retrieved_chunks = retrieve_top_k(
-        query=rag_prompt, store=store, 
-        embedding_model=config.embedding_model, 
-        backend="numpy", 
-        cosine_threshold=config.cosine_threshold, 
-        k=config.top_k,)
     
     elif config.backend == 'faiss':
         faiss_index, faiss_metadata = ingest_folder(
@@ -139,72 +121,94 @@ def run_rag_pipeline(config: RAGConfig):
             use_text_pipeline=config.use_text_pipeline,
         )
         collection_size = faiss_index.ntotal
-        
-        top_retrieved_chunks = retrieve_top_k(
-        query=rag_prompt, 
-        embedding_model=config.embedding_model, 
-        backend="faiss", 
-        cosine_threshold=config.cosine_threshold, 
-        k=config.top_k,)
-    # -------------------------
-    # Build Context
-    # -------------------------
-    context = format_context(top_retrieved_chunks)
-    combined_user_prompt = f"""
-{user_prompt}
-Evidence from patient records:
-{context}
-"""
-    # -------------------------
-    # LLM
-    # -------------------------
-    llm_response = call_chat_llm(model=config.llm_model, system_prompt=config.system_prompt, user_prompt=combined_user_prompt, temperature=config.temperature,)
-    return {
-        "response": llm_response,
-        "context": context,
-        "retrieved_chunks": top_retrieved_chunks,
-        "collection_size": collection_size,
-        "backend": config.backend,
-    }
+    
+    else:
+        raise ValueError(f"Unsupported backend: {config.backend}")
+    # -----------------------------------------------------
+    # Run EVERY prompt set
+    # -----------------------------------------------------
+    results = []
+    for prompt_number, prompt in enumerate(promptsets, start=1,):
+        prompt_id = prompt["id"]
+        logging.info("Running prompt %d/%d: %s", prompt_number, len(promptsets), prompt_id,)
+        rag_prompt = prompt["rag"]
+        user_prompt = prompt["user"]
+        # -----------------------------------------------------
+        # Retrieve evidence for this prompt
+        # -----------------------------------------------------
+        if config.backend == "chroma":
+            top_retrieved_chunks = retrieve_top_k(
+                query=rag_prompt,
+                embedding_model=config.embedding_model,
+                backend="chroma",
+                collection_name=config.collection_name,
+                cosine_threshold=config.cosine_threshold,
+                k=config.top_k,
+            )
+
+        elif config.backend == "numpy":
+            top_retrieved_chunks = retrieve_top_k(
+                query=rag_prompt,
+                store=store,
+                embedding_model=config.embedding_model,
+                backend="numpy",
+                cosine_threshold=config.cosine_threshold,
+                k=config.top_k,
+            )
+
+        elif config.backend == "faiss":
+            top_retrieved_chunks = retrieve_top_k(
+                query=rag_prompt,
+                embedding_model=config.embedding_model,
+                backend="faiss",
+                cosine_threshold=config.cosine_threshold,
+                k=config.top_k,
+            )
+        # -----------------------------------------------------
+        # Build context
+        # -----------------------------------------------------
+        context = format_context(top_retrieved_chunks)
+        combined_user_prompt = f"""{user_prompt} Evidence from patient records: {context}"""
+        # Call LLM
+        llm_response = call_chat_llm(model=config.llm_model, system_prompt=config.system_prompt, user_prompt=combined_user_prompt, temperature=config.temperature,)
+        # Store result
+        results.append({"prompt_id": prompt_id, "source_file": prompt.get("source_file"), "response": llm_response, "context": context, "retrieved_chunks": top_retrieved_chunks,})
+        logging.info("Completed prompt: %s", prompt_id,)
+    # =========================================================
+    # 6. Return all results
+    # =========================================================
+    return {"results": results, "collection_size": collection_size, "backend": config.backend,}
 
 
-def save_rag_output(result: Dict[str, Any], output_dir: str) -> str:
-    """
-    Save the final RAG response and retrieved context to a timestamped file.
-    """
+def save_rag_output(result: Dict[str, Any], output_dir: str,) -> List[str]:
     os.makedirs(output_dir, exist_ok=True)
-
-    timestamp = time.strftime("%Y%m%d_%H%M%S")
-    output_path = os.path.join(output_dir, f"rag_output_{timestamp}.txt",)
-
-    with open(output_path, "w", encoding="utf-8") as f:
-        f.write("========================================\n")
-        f.write("              RAG RESPONSE\n")
-        f.write("========================================\n\n")
-
-        f.write(result["response"])
-        f.write("\n\n")
-
-        f.write("========================================\n")
-        f.write("           RETRIEVED CONTEXT\n")
-        f.write("========================================\n\n")
-
-        f.write(result["context"])
-        f.write("\n\n")
-
-        f.write("========================================\n")
-        f.write("           PIPELINE INFO\n")
-        f.write("========================================\n\n")
-
-        f.write(f"Backend: {result['backend']}\n")
-        f.write(f"Collection size: {result['collection_size']}\n")
-        f.write(
-            f"Retrieved chunks: {len(result['retrieved_chunks'])}\n"
-        )
-
-    logging.info("RAG output saved to: %s", output_path)
-
-    return output_path
+    saved_files = []
+    for item in result["results"]:
+        prompt_id = item["prompt_id"]
+        timestamp = time.strftime("%Y%m%d_%H%M%S")
+        output_path = os.path.join(output_dir, f"{prompt_id}_{timestamp}.txt",)
+        with open(output_path, "w", encoding="utf-8",) as f:
+            f.write("========================================\n")
+            f.write("              RAG RESPONSE\n")
+            f.write("========================================\n\n")
+            f.write(f"Prompt: {prompt_id}\n")
+            if item.get("source_file"):
+                f.write(f"Prompt file: {item['source_file']}\n")
+            f.write("\n")
+            f.write(item["response"])
+            f.write("\n\n========================================\n")
+            f.write("           RETRIEVED CONTEXT\n")
+            f.write("========================================\n\n")
+            f.write(item["context"])
+            f.write("\n\n========================================\n")
+            f.write("           PIPELINE INFO\n")
+            f.write("========================================\n\n")
+            f.write(f"Backend: {result['backend']}\n")
+            f.write(f"Collection size: " f"{result['collection_size']}\n")
+            f.write(f"Retrieved chunks: " f"{len(item['retrieved_chunks'])}\n")
+        logging.info("RAG output saved to: %s", output_path,)
+        saved_files.append(output_path)
+    return saved_files
 
 
 if __name__ == "__main__":

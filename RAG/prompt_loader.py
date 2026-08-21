@@ -1,5 +1,6 @@
 import re
 import os
+import logging
 from typing import List, Dict
 
 
@@ -26,20 +27,16 @@ def parse_promptset_text(text: str) -> List[Dict[str, str]]:
     """
     if not text:
         return []
-
     # Find all set headers
     headers = list(PROMPTSET_RE.finditer(text))
     if not headers:
         # allow files without header -> treat whole file as one set if contains delimiters
         headers = [re.match(r"^", text)]
-
     sets: List[Dict[str, str]] = []
-
     # If we used the dummy header, name becomes stem later.
     if headers and headers[0] is not None and hasattr(headers[0], 'groupdict') and 'name' not in headers[0].groupdict():
         # This shouldn't happen with our dummy match; handled below.
         pass
-
     # Build segments between headers
     for i, h in enumerate(headers):
         start = h.start()
@@ -57,7 +54,6 @@ def parse_promptset_text(text: str) -> List[Dict[str, str]]:
         user_text = block[user_marker.end():].strip()
         if rag_text and user_text:
             sets.append({"name": name, "rag": rag_text, "user": user_text})
-
     return sets
 
 
@@ -91,5 +87,30 @@ def load_promptsets_from_file(path: str) -> List[Dict[str, str]]:
     return out
 
 
+def load_promptsets_from_dir(directory: str) -> List[Dict[str, str]]:
+    """Load all prompt sets from all .txt files in a directory."""
+    if not os.path.isdir(directory):
+        raise RuntimeError(f"Prompt directory does not exist: {directory}")
+    files = sorted(os.path.join(directory, filename) for filename in os.listdir(directory) if filename.lower().endswith(".txt"))
+    if not files:
+        raise RuntimeError(f"No .txt prompt files found in {directory}")
+    all_promptsets = []
+    for path in files:
+        logging.info("Loading prompt file: %s", path)
+        promptsets = load_promptsets_from_file(path)
+        for promptset in promptsets:
+            promptset["source_file"] = path
+            all_promptsets.append(promptset)
+    if not all_promptsets:
+        raise RuntimeError(f"No valid prompt sets found in {directory}")
+    return all_promptsets
 
+
+def load_promptsets(path: str) -> List[Dict[str, str]]:
+    """Load prompt sets from either a file or directory."""
+    if os.path.isdir(path):
+        return load_promptsets_from_dir(path)
+    if os.path.isfile(path):
+        return load_promptsets_from_file(path)
+    raise RuntimeError(f"Prompt path does not exist: {path}")
 

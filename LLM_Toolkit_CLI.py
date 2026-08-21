@@ -14,6 +14,7 @@ Examples:
         --embedding-model embeddinggemma:latest \
         --top-k 5 \
         --cosine-threshold 0.3 \
+        --prompt-dir ./prompts/promptset \
         --llm-model phi4:14b
 
     python LLM_Toolkit_CLI.py \
@@ -25,8 +26,7 @@ Examples:
         --overlap-tokens 40 \
         --top-k 5 \
         --cosine-threshold 0.3 \
-        --prompt-file prompts/promptset/patient_diagnosis_prompts_v3_with_page_evidence.txt \
-        --prompt-index 0 \
+        --prompt-dir ./prompts/promptset \
         --llm-model phi4:14b \
         --temperature 0.1 \
         --verbose
@@ -39,7 +39,6 @@ import logging
 import sys
 
 from RAG.RAG_pipeline import RAGConfig, run_rag_pipeline, save_rag_output
-
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="rag-cli",
@@ -67,8 +66,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     # ============================================== Prompt configuration ===================================================
     prompts = parser.add_argument_group("Prompt configuration")
-    prompts.add_argument("--prompt-file", type=str, default=("prompts/promptset/patient_diagnosis_prompts_v3_with_page_evidence.txt"), help="Prompt-set file.",)
-    prompts.add_argument("--prompt-index", type=int, default=0, help="Zero-based index of the prompt set to use.",)
+    prompts.add_argument("--prompt-dir", type=str, default="./prompts/promptset", help="Directory containing prompt-set .txt files.",)
 
     # ========================================================= LLM =========================================================
     llm = parser.add_argument_group("LLM")
@@ -99,8 +97,6 @@ def validate_args(args: argparse.Namespace) -> None:
         raise ValueError("--cosine-threshold must be between 0.0 and 1.0.")
     if args.temperature < 0:
         raise ValueError("--temperature cannot be negative.")
-    if args.prompt_index < 0:
-        raise ValueError("--prompt-index cannot be negative.")
 
 
 def configure_logging(verbose: bool) -> None:
@@ -121,15 +117,12 @@ def print_retrieved_chunks(chunks) -> None:
 def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
-
     try:
         validate_args(args)
         configure_logging(args.verbose)
-
         # -----------------------------------------------------
         # Build RAG configuration
         # -----------------------------------------------------
-
         config = RAGConfig(
             input_folder=args.input_folder,
             folder=args.folder,
@@ -143,8 +136,7 @@ def main() -> int:
             overlap_tokens=args.overlap_tokens,
             top_k=args.top_k,
             cosine_threshold=args.cosine_threshold,
-            prompt_file=args.prompt_file,
-            prompt_index=args.prompt_index,
+            prompt_dir=args.prompt_dir,
             llm_model=args.llm_model,
             system_prompt=args.system_prompt,
             temperature=args.temperature,
@@ -157,66 +149,50 @@ def main() -> int:
         logging.info("Backend: %s", config.backend)
         logging.info("Embedding model: %s", config.embedding_model)
         logging.info("LLM model: %s", config.llm_model)
-
         # -----------------------------------------------------
         # Run RAG
         # -----------------------------------------------------
-
         result = run_rag_pipeline(config)
-        output_path = save_rag_output(result, config.output_dir,)
-        print(f"\nRAG output saved to: {output_path}")
-
         # -----------------------------------------------------
-        # Final response
+        # Save all prompt-set results
         # -----------------------------------------------------
-
+        saved_files = save_rag_output(result, config.output_dir,)
         print("\n========================================")
-        print("           RAG RESPONSE")
+        print("           RAG RESULTS")
         print("========================================\n")
-
-        print(result["response"])
-
+        print(f"Prompt sets processed: {len(result['results'])}")
+        print(f"Backend:               {result['backend']}")
+        print(f"Collection size:       {result['collection_size']}")
+        print("\nSaved output files:")
+        for path in saved_files:
+            print(f"  {path}")
         # -----------------------------------------------------
-        # Optional context
+        # Print responses
         # -----------------------------------------------------
-
-        if args.show_context:
+        for item in result["results"]:
             print("\n========================================")
-            print("           RETRIEVED CONTEXT")
+            print(f"           {item['prompt_id']}")
             print("========================================\n")
-
-            print(result["context"])
-
-        # -----------------------------------------------------
-        # Optional metadata
-        # -----------------------------------------------------
-
-        if args.show_metadata:
-            print_retrieved_chunks(result["retrieved_chunks"])
-
-        # -----------------------------------------------------
-        # Pipeline information
-        # -----------------------------------------------------
-
-        print("\n========================================")
-        print("           PIPELINE INFO")
-        print("========================================")
-
-        print(f"Backend:        {result['backend']}")
-        print(f"Collection size: {result['collection_size']}")
-        print(f"Retrieved chunks: {len(result['retrieved_chunks'])}")
-        print("RAG pipeline completed successfully")
-
+            print(item["response"])
+            if args.show_context:
+                print("\n---------------------------------------- RETRIEVED CONTEXT ----------------------------------------\n")
+                print(item["context"])
+            if args.show_metadata:
+                print("\n---------------------------------------- RETRIEVED CHUNKS ----------------------------------------\n")
+                print_retrieved_chunks(item["retrieved_chunks"])
+        print("\nRAG pipeline completed successfully")
         return 0
-
     except KeyboardInterrupt:
-        print("\nInterrupted by user.", file=sys.stderr)
+        print("\nInterrupted by user.", file=sys.stderr,)
         return 130
-
     except Exception as exc:
-        logging.exception("RAG pipeline failed: %s", exc)
+        logging.exception("RAG pipeline failed: %s", exc,)
         return 1
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+
+
+
