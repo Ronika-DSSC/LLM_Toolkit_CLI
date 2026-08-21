@@ -24,8 +24,7 @@ python LLM_Toolkit_CLI.py   --input-folder ./test_input \
                             --overlap-tokens 40 \
                             --top-k 5 \
                             --cosine-threshold 0.3 \
-                            --prompt-file ./prompts/promptset/clinical_characteristics_hlh_diagnosis_prompts_v3_with_page_evidence.txt \
-                            --prompt-index 0 \
+                            --prompt-dir ./prompts/promptset \
                             --llm-model phi4:14b \
                             --temperature 0.1 \
                             --verbose
