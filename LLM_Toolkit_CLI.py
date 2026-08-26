@@ -7,29 +7,6 @@ Examples:
 
     python LLM_Toolkit_CLI.py
 
-    python LLM_Toolkit_CLI.py \
-        --markdown-dir ./data/markdown \
-        --folder ./data/markdown \
-        --backend numpy \
-        --embedding-model embeddinggemma:latest \
-        --top-k 5 \
-        --cosine-threshold 0.3 \
-        --prompt-dir ./prompts/promptset \
-        --llm-model phi4:14b
-
-    python LLM_Toolkit_CLI.py \
-        --markdown-dir ./data/markdown \
-        --folder ./data/markdown \
-        --backend chroma \
-        --collection-name clinical_chromaDB_test_docs \
-        --max-tokens 400 \
-        --overlap-tokens 40 \
-        --top-k 5 \
-        --cosine-threshold 0.3 \
-        --prompt-dir ./prompts/promptset \
-        --llm-model phi4:14b \
-        --temperature 0.1 \
-        --verbose
 """
 
 from __future__ import annotations
@@ -41,9 +18,339 @@ import sys
 from RAG.RAG_pipeline import RAGConfig, run_rag_pipeline, save_rag_output
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="rag-cli",
-        description="Command-line interface for the RAG pipeline.",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    parser = argparse.ArgumentParser(
+        prog="LLM_Toolkit_CLI.py",
+        description=(
+            "LLM Toolkit CLI - Retrieval-Augmented Generation (RAG) pipeline.\n\n"
+            "This tool runs the complete RAG workflow:\n"
+            "  1. Read source medical records (knowledgebase).\n"
+            "  2. Generate Markdown representations.\n"
+            "  3. Chunk the documents.\n"
+            "  4. Generate and cache embeddings.\n"
+            "  5. Build/update the selected vector store.\n"
+            "  6. Retrieve relevant chunks for each prompt set.\n"
+            "  7. Send retrieved evidence to the configured LLM.\n"
+            "  8. Save LLM responses and retrieved context.\n"
+        ),
+        epilog=r"""
+======================================================================
+HOW TO RUN
+======================================================================
+
+Basic execution:
+
+    python LLM_Toolkit_CLI.py
+
+
+======================================================================
+RECOMMENDED CHROMADB EXAMPLE
+======================================================================
+
+    python LLM_Toolkit_CLI.py \
+        --input-folder ./UD7/Medical_Record \
+        --markdown-dir ./CHROMA/markdown \
+        --folder ./CHROMA/markdown \
+        --backend chroma \
+        --vector-store-dir ./chroma_data_store \
+        --output-dir ./output_chroma_test_run \
+        --max-tokens 400 \
+        --overlap-tokens 40 \
+        --top-k 5 \
+        --cosine-threshold 0.3 \
+        --collection-name clinical_chromaDB_test_docs \
+        --prompt-dir /data/BCS/Services/Aditi_Paranjpe/LLM_Toolkit_test/HLH_final_prompts/ \
+        --llm-model phi4:14b \
+        --temperature 0.1 \
+        --verbose
+
+
+======================================================================
+OPTION DESCRIPTIONS
+======================================================================
+
+--input-folder
+    Directory containing the original medical records.
+
+    Example:
+        --input-folder ./UD7/Medical_Record
+
+
+--markdown-dir
+    Directory where generated Markdown files are stored.
+
+    Example:
+        --markdown-dir ./CHROMA/markdown
+
+
+--folder
+    Directory containing the documents that will be ingested into
+    the vector store.
+
+    Example:
+        --folder ./CHROMA/markdown
+
+    In the standard workflow this is the same directory as
+    --markdown-dir.
+
+
+--backend
+    Vector-store backend.
+
+    Supported values:
+        numpy
+        chroma
+        faiss
+
+    Example:
+        --backend chroma
+
+
+--vector-store-dir
+    Root directory used for vector stores and embedding caches.
+
+    Example:
+        --vector-store-dir ./chroma_data_store
+
+
+--output-dir
+    Directory where RAG responses and retrieved context are saved.
+
+    Example:
+        --output-dir ./output_chroma_test_run
+
+
+--max-tokens
+    Maximum number of tokens per document chunk.
+
+    Example:
+        --max-tokens 400
+
+
+--overlap-tokens
+    Number of overlapping tokens between adjacent chunks.
+
+    Example:
+        --overlap-tokens 40
+
+
+--top-k
+    Number of document chunks returned by retrieval.
+
+    Example:
+        --top-k 5
+
+
+--cosine-threshold
+    Minimum similarity score required for a chunk to be included
+    in the retrieved context.
+
+    Example:
+        --cosine-threshold 0.3
+
+
+--collection-name
+    Name of the ChromaDB collection.
+
+    Used when:
+        --backend chroma
+
+    Example:
+        --collection-name clinical_chromaDB_test_docs
+
+
+--prompt-dir
+    Directory containing the RAG prompt-set files.
+
+    Example:
+        --prompt-dir /data/BCS/Services/Aditi_Paranjpe/LLM_Toolkit_test/HLH_final_prompts/
+
+
+--embedding-model
+    Embedding model used for document and query embeddings.
+
+    Default:
+        embeddinggemma:latest
+
+    Example:
+        --embedding-model embeddinggemma:latest
+
+
+--llm-model
+    LLM used to generate the final response.
+
+    Example:
+        --llm-model phi4:14b
+
+
+--temperature
+    LLM sampling temperature.
+
+    Example:
+        --temperature 0.1
+
+
+--verbose
+    Enable detailed logging during execution.
+
+
+--show-context
+    Print the retrieved evidence/context to the console.
+
+
+--show-metadata
+    Print metadata for the retrieved chunks to the console.
+
+
+======================================================================
+VECTOR STORE EXAMPLES
+======================================================================
+
+ChromaDB:
+
+    python LLM_Toolkit_CLI.py \
+        --input-folder ./UD7/Medical_Record \
+        --markdown-dir ./CHROMA/markdown \
+        --folder ./CHROMA/markdown \
+        --backend chroma \
+        --vector-store-dir ./chroma_data_store \
+        --output-dir ./output_chroma_test_run \
+        --max-tokens 400 \
+        --overlap-tokens 40 \
+        --top-k 5 \
+        --cosine-threshold 0.3 \
+        --collection-name clinical_chromaDB_test_docs \
+        --prompt-dir /data/BCS/Services/Aditi_Paranjpe/LLM_Toolkit_test/HLH_final_prompts/ \
+        --llm-model phi4:14b \
+        --temperature 0.1 \
+        --verbose
+
+
+NumPy:
+
+    python LLM_Toolkit_CLI.py \
+        --input-folder ./UD7/Medical_Record \
+        --markdown-dir ./NUMPY/markdown \
+        --folder ./NUMPY/markdown \
+        --backend numpy \
+        --vector-store-dir ./numpy_data_store \
+        --output-dir ./output_numpy_test_run \
+        --max-tokens 400 \
+        --overlap-tokens 40 \
+        --top-k 5 \
+        --cosine-threshold 0.3 \
+        --prompt-dir /data/BCS/Services/Aditi_Paranjpe/LLM_Toolkit_test/HLH_final_prompts/ \
+        --llm-model phi4:14b \
+        --temperature 0.1 \
+        --verbose
+
+
+FAISS:
+
+    python LLM_Toolkit_CLI.py \
+        --input-folder ./UD7/Medical_Record \
+        --markdown-dir ./FAISS/markdown \
+        --folder ./FAISS/markdown \
+        --backend faiss \
+        --vector-store-dir ./faiss_data_store \
+        --output-dir ./output_faiss_test_run \
+        --max-tokens 400 \
+        --overlap-tokens 40 \
+        --top-k 5 \
+        --cosine-threshold 0.3 \
+        --prompt-dir /data/BCS/Services/Aditi_Paranjpe/LLM_Toolkit_test/HLH_final_prompts/ \
+        --llm-model phi4:14b \
+        --temperature 0.1 \
+        --verbose
+
+
+======================================================================
+DEBUGGING
+======================================================================
+
+Show retrieved context:
+
+    python LLM_Toolkit_CLI.py \
+        --backend chroma \
+        --show-context
+
+
+Show retrieved chunks and metadata:
+
+    python LLM_Toolkit_CLI.py \
+        --backend chroma \
+        --show-metadata
+
+
+Show both:
+
+    python LLM_Toolkit_CLI.py \
+        --backend chroma \
+        --show-context \
+        --show-metadata
+
+
+Enable verbose logging:
+
+    python LLM_Toolkit_CLI.py \
+        --backend chroma \
+        --verbose
+
+
+======================================================================
+TYPICAL DIRECTORY STRUCTURE
+======================================================================
+
+    ./UD7/Medical_Record/
+        |
+        |-- Original medical records
+        |
+        v
+    ./CHROMA/markdown/
+        |
+        |-- Generated Markdown documents
+        |
+        v
+    ./chroma_data_store/
+        |
+        |-- ChromaDB
+        |-- Embedding cache
+        |
+        v
+    ./output_chroma_test_run/
+        |
+        |-- RAG responses
+        |-- Retrieved context
+
+
+======================================================================
+QUICK REFERENCE
+======================================================================
+
+    --input-folder       Original medical records or knowledgebase
+    --markdown-dir       Generated Markdown directory
+    --folder             Documents to ingest
+    --backend             numpy | chroma | faiss
+    --vector-store-dir   Vector store/cache location
+    --output-dir         RAG output location
+    --max-tokens         Chunk size
+    --overlap-tokens     Chunk overlap
+    --top-k              Number of retrieved chunks
+    --cosine-threshold   Retrieval similarity threshold
+    --collection-name    ChromaDB collection
+    --prompt-dir         Prompt-set directory
+    --embedding-model    Embedding model
+    --llm-model          Generation model
+    --temperature        LLM temperature
+    --show-context       Print retrieved context
+    --show-metadata      Print chunk metadata
+    --verbose            Enable detailed logging
+
+For the complete list of options:
+
+    python LLM_Toolkit_CLI.py --help
+
+""",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
 
     # ================================================= Document ingestion ====================================================
@@ -75,7 +382,7 @@ def build_parser() -> argparse.ArgumentParser:
     llm.add_argument("--temperature", type=float, default=0.1, help="LLM sampling temperature.",)
 
     # ============================================== Output / debugging =====================================================
-    output = parser.add_argument_group("Output")
+    output = parser.add_argument_group("Output / debugging")
     output.add_argument("--show-context", action="store_true", help="Print the retrieved evidence/context.",)
     output.add_argument("--show-metadata", action="store_true", help="Print metadata for retrieved chunks.",)
     output.add_argument("--verbose", action="store_true", help="Enable verbose logging.",)
