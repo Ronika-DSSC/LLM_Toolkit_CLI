@@ -24,7 +24,7 @@ python LLM_Toolkit_CLI.py   --input-folder ./test_input \
                             --overlap-tokens 40 \
                             --top-k 5 \
                             --cosine-threshold 0.3 \
-                            --prompt-dir ./prompts/promptset \
+                            --prompt-dir ./test_prompts/ \
                             --llm-model phi4:14b \
                             --temperature 0.1 \
                             --verbose
