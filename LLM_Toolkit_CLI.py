@@ -47,7 +47,7 @@ RECOMMENDED CHROMADB EXAMPLE
 ======================================================================
 
     python LLM_Toolkit_CLI.py \
-        --input-folder ./UD7/Medical_Record \
+        --input-folder ./test_input \
         --markdown-dir ./CHROMA/markdown \
         --folder ./CHROMA/markdown \
         --backend chroma \
@@ -58,7 +58,7 @@ RECOMMENDED CHROMADB EXAMPLE
         --top-k 5 \
         --cosine-threshold 0.3 \
         --collection-name clinical_chromaDB_test_docs \
-        --prompt-dir /data/BCS/Services/Aditi_Paranjpe/LLM_Toolkit_test/HLH_final_prompts/ \
+        --prompt-dir ./test_prompts/ \
         --llm-model phi4:14b \
         --temperature 0.1 \
         --verbose
@@ -72,7 +72,7 @@ OPTION DESCRIPTIONS
     Directory containing the original medical records.
 
     Example:
-        --input-folder ./UD7/Medical_Record
+        --input-folder ./test_input
 
 
 --markdown-dir
@@ -162,7 +162,7 @@ OPTION DESCRIPTIONS
     Directory containing the RAG prompt-set files.
 
     Example:
-        --prompt-dir /data/BCS/Services/Aditi_Paranjpe/LLM_Toolkit_test/HLH_final_prompts/
+        --prompt-dir ./test_prompts/
 
 
 --embedding-model
@@ -208,7 +208,7 @@ VECTOR STORE EXAMPLES
 ChromaDB:
 
     python LLM_Toolkit_CLI.py \
-        --input-folder ./UD7/Medical_Record \
+        --input-folder ./test_input \
         --markdown-dir ./CHROMA/markdown \
         --folder ./CHROMA/markdown \
         --backend chroma \
@@ -219,7 +219,7 @@ ChromaDB:
         --top-k 5 \
         --cosine-threshold 0.3 \
         --collection-name clinical_chromaDB_test_docs \
-        --prompt-dir /data/BCS/Services/Aditi_Paranjpe/LLM_Toolkit_test/HLH_final_prompts/ \
+        --prompt-dir ./test_prompts/ \
         --llm-model phi4:14b \
         --temperature 0.1 \
         --verbose
@@ -228,7 +228,7 @@ ChromaDB:
 NumPy:
 
     python LLM_Toolkit_CLI.py \
-        --input-folder ./UD7/Medical_Record \
+        --input-folder ./test_input \
         --markdown-dir ./NUMPY/markdown \
         --folder ./NUMPY/markdown \
         --backend numpy \
@@ -238,7 +238,7 @@ NumPy:
         --overlap-tokens 40 \
         --top-k 5 \
         --cosine-threshold 0.3 \
-        --prompt-dir /data/BCS/Services/Aditi_Paranjpe/LLM_Toolkit_test/HLH_final_prompts/ \
+        --prompt-dir ./test_prompts/ \
         --llm-model phi4:14b \
         --temperature 0.1 \
         --verbose
@@ -247,7 +247,7 @@ NumPy:
 FAISS:
 
     python LLM_Toolkit_CLI.py \
-        --input-folder ./UD7/Medical_Record \
+        --input-folder ./test_input \
         --markdown-dir ./FAISS/markdown \
         --folder ./FAISS/markdown \
         --backend faiss \
@@ -257,7 +257,7 @@ FAISS:
         --overlap-tokens 40 \
         --top-k 5 \
         --cosine-threshold 0.3 \
-        --prompt-dir /data/BCS/Services/Aditi_Paranjpe/LLM_Toolkit_test/HLH_final_prompts/ \
+        --prompt-dir ./test_prompts/ \
         --llm-model phi4:14b \
         --temperature 0.1 \
         --verbose
@@ -300,7 +300,7 @@ Enable verbose logging:
 TYPICAL DIRECTORY STRUCTURE
 ======================================================================
 
-    ./UD7/Medical_Record/
+    ./test_input/
         |
         |-- Original medical records
         |
